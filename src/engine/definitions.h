@@ -18,4 +18,25 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
+#include <chrono>
+#include <thread>
+
+namespace pocus {
+
+typedef std::chrono::time_point<std::chrono::system_clock> Tick;
+
+static uint32_t getElapsedTime(const Tick& tick) {
+	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - tick).count();
+}
+
+static Tick getNow() {
+	return std::chrono::system_clock::now();
+}
+
+static void wait(uint32_t ms) {
+	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
+}
+
+}
+
 #endif //DEFINITIONS_H

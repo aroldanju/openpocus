@@ -15,11 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <iostream>
 #include "pocusengine.h"
 #include "log.h"
-
-#include <chrono>
-#include <thread>
+#include "definitions.h"
 
 using namespace pocus;
 
@@ -66,7 +65,14 @@ bool PocusEngine::initialize() {
 void PocusEngine::loop() {
 	LOGI << "OpenPocus is running";
 
+	const uint32_t fps = 24;
+	const uint32_t delay = (1000 / fps);
+	const uint32_t fixedFpsDelay = 16;
+	float dt = 1.0f;
+
 	while (this->running) {
+		Tick startTick = getNow();
+
 		State* state = this->stateManager.getCurrentState();
 
 		while(this->eventHandler->poll()) {
@@ -81,19 +87,32 @@ void PocusEngine::loop() {
 		}
 
 		if (state) {
-			state->update(1.0f);
+			state->update(dt);
 		}
 
 		this->renderer->clear();
 		if (state) {
 			state->render(*this->renderer);
 		}
+		this->renderer->render();
 
 		if (this->stateManager.getQuit()) {
 			this->running = false;
 		}
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(16));
+		wait(1);
+
+		uint32_t elapsed = getElapsedTime(startTick);
+		if (elapsed < delay) {
+			wait(delay - elapsed);
+		}
+
+		elapsed = getElapsedTime(startTick);
+		if (elapsed < fixedFpsDelay) {
+			elapsed = fixedFpsDelay - elapsed;
+		}
+
+		dt = (float)elapsed / (float)fixedFpsDelay;
 	}
 }
 
