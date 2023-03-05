@@ -15,19 +15,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OPENPOCUS_H
-#define OPENPOCUS_H
+#ifndef DATA_H
+#define DATA_H
 
-#include "engine/pocusengine.h"
+#include "datafile.h"
+#include "fat.h"
 
-class OpenPocus : public pocus::PocusEngine {
+#include <string>
+#include <vector>
+
+namespace pocus::data {
+
+class Data {
 public:
-	explicit OpenPocus(const pocus::RendererParameters &rendererParameters);
+	void release();
 
-protected:
-	void createStates(pocus::StateManager& stateManager) override;
-	bool loadData(pocus::data::Data& data) override;
+	bool loadFromFile(const std::string &path, const Fat& fat);
+
+	DataFile& fetchFile(uint32_t index);
+
+private:
+	std::vector<std::unique_ptr<DataFile>> files;
 };
 
+}
 
-#endif //OPENPOCUS_H
+#endif //DATA_H

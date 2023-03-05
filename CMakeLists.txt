@@ -23,6 +23,10 @@ set(engine_sources
         src/engine/pocusengine.cpp
         src/engine/provider/provider.cpp
         src/engine/statemanager.cpp
+        src/engine/data/data.cpp
+        src/engine/data/fat.cpp
+        src/engine/data/datafile.cpp
+        src/engine/data/fatloader.cpp
         )
 
 set(sdl_sources

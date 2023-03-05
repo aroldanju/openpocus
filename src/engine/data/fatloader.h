@@ -15,19 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OPENPOCUS_H
-#define OPENPOCUS_H
+#ifndef FATLOADER_H
+#define FATLOADER_H
 
-#include "engine/pocusengine.h"
+#include "fat.h"
 
-class OpenPocus : public pocus::PocusEngine {
+namespace pocus::data {
+
+class FatLoader {
 public:
-	explicit OpenPocus(const pocus::RendererParameters &rendererParameters);
+	static Fat loadFromFile(const std::string& filename);
 
-protected:
-	void createStates(pocus::StateManager& stateManager) override;
-	bool loadData(pocus::data::Data& data) override;
 };
 
+}
 
-#endif //OPENPOCUS_H
+#endif //FATLOADER_H

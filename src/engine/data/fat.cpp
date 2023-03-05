@@ -15,19 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OPENPOCUS_H
-#define OPENPOCUS_H
+#include "fat.h"
 
-#include "engine/pocusengine.h"
+using namespace pocus::data;
 
-class OpenPocus : public pocus::PocusEngine {
-public:
-	explicit OpenPocus(const pocus::RendererParameters &rendererParameters);
+void Fat::addEntry(const FatEntry& entry) {
+	this->entries.push_back(entry);
+}
 
-protected:
-	void createStates(pocus::StateManager& stateManager) override;
-	bool loadData(pocus::data::Data& data) override;
-};
+uint32_t Fat::getNumberEntries() const {
+	return this->entries.size();
+}
 
+const FatEntry& Fat::getEntry(uint32_t index) const {
+	return this->entries[index];
+}
 
-#endif //OPENPOCUS_H
+bool Fat::loadFromFile(const std::string& filename) {
+
+}

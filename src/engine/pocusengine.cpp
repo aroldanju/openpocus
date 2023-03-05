@@ -15,7 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <iostream>
 #include "pocusengine.h"
 #include "log.h"
 #include "definitions.h"
@@ -48,6 +47,11 @@ bool PocusEngine::initialize() {
 
 	if (!this->renderer || !this->renderer->initialize()) {
 		LOGE << "Engine: error initializing renderer.";
+		return false;
+	}
+
+	if (!loadData(this->data)) {
+		LOGE << "Engine: error loading data.";
 		return false;
 	}
 
@@ -130,4 +134,8 @@ void PocusEngine::release() {
 
 StateManager& PocusEngine::getStateManager() {
 	return this->stateManager;
+}
+
+data::Data& PocusEngine::getData() {
+	return this->data;
 }

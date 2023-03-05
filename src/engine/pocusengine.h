@@ -23,6 +23,7 @@
 #include "statemanager.h"
 #include "renderer.h"
 #include "eventhandler.h"
+#include "data/data.h"
 
 namespace pocus {
 
@@ -35,8 +36,10 @@ public:
 
 protected:
 	virtual void createStates(StateManager& stateManager) = 0;
+	virtual bool loadData(data::Data& data) = 0;
 
 	StateManager& getStateManager();
+	data::Data& getData();
 
 private:
 	bool initialize();
@@ -47,6 +50,8 @@ private:
 	StateManager stateManager;
 	std::unique_ptr<Renderer> renderer;
 	std::unique_ptr<EventHandler> eventHandler;
+	data::Data data;
+
 	bool running { false };
 };
 
