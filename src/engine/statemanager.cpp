@@ -71,3 +71,9 @@ State* StateManager::getCurrentState() {
 bool StateManager::getQuit() const {
 	return this->quitSignal != -1;
 }
+
+void StateManager::createStates(data::Data& data) {
+	for (auto& state : this->states) {
+		state.second->onCreate(data);
+	}
+}

@@ -19,6 +19,8 @@
 #include "engine/provider/provider.h"
 #include "stategame.h"
 #include "engine/data/fatloader.h"
+#include "version.h"
+#include "definitions.h"
 
 OpenPocus::OpenPocus(const pocus::RendererParameters &rendererParameters):
 	PocusEngine(
@@ -32,6 +34,6 @@ void OpenPocus::createStates(pocus::StateManager& stateManager) {
 }
 
 bool OpenPocus::loadData(pocus::data::Data& data) {
-	pocus::data::Fat fat = pocus::data::FatLoader::loadFromFile("../data/shareware.fat");
-	return data.loadFromFile("../hocuspocus", fat);
+	pocus::data::Fat fat = pocus::data::FatLoader::loadFromFile(FAT_FILE);
+	return data.loadFromFile(DAT_PATH, fat);
 }

@@ -27,13 +27,19 @@ set(engine_sources
         src/engine/data/fat.cpp
         src/engine/data/datafile.cpp
         src/engine/data/fatloader.cpp
+        src/engine/data/asset/image.cpp
+        src/engine/data/asset/palette.cpp
         )
 
 set(sdl_sources
         src/engine/sdl/sdlrenderer.cpp
         src/engine/sdl/sdleventhandler.cpp
+        src/engine/sdl/sdltexture.cpp
         )
 
 add_executable(OpenPocus ${sources} ${engine_sources} ${sdl_sources})
 
 target_link_libraries(OpenPocus ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES})
+
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data/shareware.fat
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

@@ -18,6 +18,7 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+#include "texture.h"
 #include <cstdint>
 #include <string>
 
@@ -35,6 +36,10 @@ public:
 	virtual void release() = 0;
 	virtual void clear() = 0;
 	virtual void render() = 0;
+	
+	virtual bool createTexture(Texture& texture) = 0;
+	
+	virtual void drawTexture(Texture& texture, int x, int y) = 0;
 };
 
 }

@@ -17,6 +17,23 @@
 
 #include "stategame.h"
 #include "engine/log.h"
+#include "engine/data/asset/image.h"
+#include "engine/data/asset/palette.h"
+#include "definitions.h"
+#include "version.h"
+
+void StateGame::onCreate(pocus::data::Data& data) {
+	pocus::data::asset::Image image;
+	pocus::data::asset::Palette palette {};
+	
+	pocus::data::DataFile& paletteFile = data.fetchFile(DATFILE_PALETTE_GAME);
+	pocus::data::DataFile& hudFile = data.fetchFile(DATFILE_IMAGE_HUD);
+	
+	palette.loadFromStream(paletteFile.getContent(), paletteFile.getLength());
+	image.loadFromStream(hudFile.getContent(), hudFile.getLength());
+	
+	this->textureHud = image.createTexture(palette);
+}
 
 void StateGame::onDetach() {
 	LOGI << "StateGame: onDetach";
@@ -35,7 +52,7 @@ void StateGame::handleEvents(pocus::EventHandler &eventHandler) {
 }
 
 void StateGame::render(pocus::Renderer &renderer) {
-
+	renderer.drawTexture(*this->textureHud, 0, SCREEN_HEIGHT - this->textureHud->getHeight());
 }
 
 void StateGame::update(float dt) {

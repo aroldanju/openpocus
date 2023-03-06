@@ -15,25 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef STATEGAME_H
-#define STATEGAME_H
+#include "palette.h"
+#include <cstring>
 
-#include <memory>
-#include "engine/texture.h"
-#include "engine/state.h"
+using namespace pocus::data::asset;
 
-class StateGame : public pocus::State {
-public:
-	void onCreate(pocus::data::Data& data) override;
-	void onDetach() override;
-	void onAttach() override;
-	void release() override;
-	void handleEvents(pocus::EventHandler &eventHandler) override;
-	void render(pocus::Renderer &renderer) override;
-	void update(float dt) override;
+bool Palette::loadFromStream(const char *stream, uint32_t length) {
+	memcpy((void*)this->colors, stream, length);
 	
-private:
-	std::unique_ptr<pocus::Texture> textureHud;
-};
+	for (int i = 0; i < 128; i++)	{
+		this->colors[i].r = this->colors[i].r << 2;
+		this->colors[i].g = this->colors[i].g << 2;
+		this->colors[i].b = this->colors[i].b << 2;
+	}
+}
 
-#endif //STATEGAME_H
+void Palette::release() {
+
+}

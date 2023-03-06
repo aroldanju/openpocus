@@ -15,25 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef STATEGAME_H
-#define STATEGAME_H
+#ifndef _TEXTURE_H
+#define _TEXTURE_H
 
-#include <memory>
-#include "engine/texture.h"
-#include "engine/state.h"
+#include <cstdint>
 
-class StateGame : public pocus::State {
+namespace pocus {
+
+class Texture {
 public:
-	void onCreate(pocus::data::Data& data) override;
-	void onDetach() override;
-	void onAttach() override;
-	void release() override;
-	void handleEvents(pocus::EventHandler &eventHandler) override;
-	void render(pocus::Renderer &renderer) override;
-	void update(float dt) override;
-	
-private:
-	std::unique_ptr<pocus::Texture> textureHud;
+	virtual bool createBlank(uint32_t width, uint32_t height) = 0;
+	virtual void setPixel(uint32_t index, uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) = 0;
+	virtual uint32_t getWidth() const = 0;
+	virtual uint32_t getHeight() const = 0;
+	virtual bool isReady() const = 0;
 };
 
-#endif //STATEGAME_H
+}
+
+#endif //_TEXTURE_H

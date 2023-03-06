@@ -19,6 +19,7 @@
 #include "../log.h"
 
 #include <fstream>
+#include <iostream>
 
 using namespace pocus::data;
 
@@ -62,9 +63,9 @@ bool Data::loadFromFile(const std::string& path, const Fat& fat) {
 }
 
 DataFile& Data::fetchFile(uint32_t index) {
-    if (this->files.size() < index) {
+    if (index < this->files.size()) {
     	return *this->files[index];
     }
-
-    throw std::exception();
+	
+	throw std::exception();
 }

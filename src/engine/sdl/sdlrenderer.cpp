@@ -17,6 +17,7 @@
 
 #include "sdlrenderer.h"
 #include "../log.h"
+#include "sdltexture.h"
 
 using namespace pocus;
 
@@ -76,4 +77,26 @@ void SdlRenderer::clear() {
 
 void SdlRenderer::render() {
 	SDL_RenderPresent(this->renderer);
+}
+
+bool SdlRenderer::createTexture(Texture &texture) {
+	auto sdlTexture = reinterpret_cast<SdlTexture*>(&texture);
+	
+	sdlTexture->texture = SDL_CreateTextureFromSurface(this->renderer, sdlTexture->surface);
+	if (!sdlTexture->texture) {
+		return false;
+	}
+	
+	return true;
+}
+
+void SdlRenderer::drawTexture(Texture& texture, int x, int y) {
+	if (!texture.isReady()) {
+		createTexture(texture);
+	}
+	
+	auto sdlTexture = reinterpret_cast<SdlTexture*>(&texture);
+	
+	SDL_Rect rect = (SDL_Rect){ x, y, (int)texture.getWidth(), (int)texture.getHeight() };
+	SDL_RenderCopy(this->renderer, sdlTexture->texture, nullptr, &rect);
 }

@@ -15,25 +15,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef STATEGAME_H
-#define STATEGAME_H
+#ifndef _IMAGE_H
+#define _IMAGE_H
 
+#include <cstdint>
+#include <vector>
 #include <memory>
-#include "engine/texture.h"
-#include "engine/state.h"
+#include "../../texture.h"
+#include "asset.h"
+#include "palette.h"
 
-class StateGame : public pocus::State {
+namespace pocus::data::asset {
+
+class Image : public Asset {
 public:
-	void onCreate(pocus::data::Data& data) override;
-	void onDetach() override;
-	void onAttach() override;
+	enum { BLOCKS = 4 };
+	
+public:
+	bool loadFromStream(const char* stream, uint32_t length) override;
 	void release() override;
-	void handleEvents(pocus::EventHandler &eventHandler) override;
-	void render(pocus::Renderer &renderer) override;
-	void update(float dt) override;
+	
+	std::unique_ptr<Texture> createTexture(const Palette& palette);
 	
 private:
-	std::unique_ptr<pocus::Texture> textureHud;
+	uint16_t width;
+	uint16_t height;
+	std::vector<uint8_t> blocks;
 };
 
-#endif //STATEGAME_H
+}
+
+#endif //_IMAGE_H
