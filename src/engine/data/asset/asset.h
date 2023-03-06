@@ -15,25 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef STATEGAME_H
-#define STATEGAME_H
+#ifndef _ASSET_H
+#define _ASSET_H
 
-#include <memory>
-#include "engine/texture.h"
-#include "engine/state.h"
+namespace pocus::data::asset {
 
-class StateGame : public pocus::State {
+class Asset {
 public:
-	void onCreate(pocus::data::Data& data) override;
-	void onDetach() override;
-	void onAttach() override;
-	void release() override;
-	void handleEvents(pocus::EventHandler &eventHandler) override;
-	void render(pocus::Renderer &renderer) override;
-	void update(float dt) override;
-	
-private:
-	std::unique_ptr<pocus::Texture> textureHud;
+	virtual bool loadFromStream(const char* stream, uint32_t length) = 0;
+	virtual void release() = 0;
 };
 
-#endif //STATEGAME_H
+}
+
+#endif //_ASSET_H

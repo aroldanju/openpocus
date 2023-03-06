@@ -21,6 +21,7 @@
 #include <SDL2/SDL.h>
 
 #include "../renderer.h"
+#include "../texture.h"
 
 namespace pocus {
 
@@ -32,6 +33,10 @@ public:
 	virtual void release() override;
 	virtual void clear() override;
 	virtual void render() override;
+	
+	bool createTexture(Texture& texture) override;
+	
+	void drawTexture(Texture& texture, int x, int y) override;
 
 private:
 	RendererParameters parameters;

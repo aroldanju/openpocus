@@ -60,6 +60,7 @@ bool PocusEngine::initialize() {
 		LOGE << "Engine: no state was selected.";
 		return false;
 	}
+	this->stateManager.createStates(getData());
 
 	this->running = true;
 

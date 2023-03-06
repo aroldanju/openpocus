@@ -20,6 +20,7 @@
 
 #include <vector>
 #include <cstdint>
+#include <string>
 
 namespace pocus::data {
 

@@ -15,25 +15,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef STATEGAME_H
-#define STATEGAME_H
+#ifndef _SDLTEXTURE_H
+#define _SDLTEXTURE_H
 
-#include <memory>
-#include "engine/texture.h"
-#include "engine/state.h"
+#include <SDL2/SDL.h>
+#include "../texture.h"
 
-class StateGame : public pocus::State {
+namespace pocus {
+
+class SdlTexture : public Texture {
 public:
-	void onCreate(pocus::data::Data& data) override;
-	void onDetach() override;
-	void onAttach() override;
-	void release() override;
-	void handleEvents(pocus::EventHandler &eventHandler) override;
-	void render(pocus::Renderer &renderer) override;
-	void update(float dt) override;
+	friend class SdlRenderer;
+	
+public:
+	SdlTexture();
+	virtual ~SdlTexture();
+	
+	bool createBlank(uint32_t width, uint32_t height) override;
+	void setPixel(uint32_t index, uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) override;
+	uint32_t getWidth() const override;
+	uint32_t getHeight() const override;
+	bool isReady() const override;
 	
 private:
-	std::unique_ptr<pocus::Texture> textureHud;
+	SDL_Surface* surface;
+	SDL_Texture* texture;
 };
 
-#endif //STATEGAME_H
+}
+
+#endif //_SDLTEXTURE_H

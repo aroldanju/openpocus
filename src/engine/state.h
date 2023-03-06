@@ -20,11 +20,13 @@
 
 #include "renderer.h"
 #include "eventhandler.h"
+#include "data/data.h"
 
 namespace pocus {
 
 class State {
 public:
+	virtual void onCreate(data::Data& data) = 0;
 	virtual void onDetach() = 0;
 	virtual void onAttach() = 0;
 	virtual void release() = 0;
