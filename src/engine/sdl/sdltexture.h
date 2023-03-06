@@ -36,6 +36,7 @@ public:
 	uint32_t getWidth() const override;
 	uint32_t getHeight() const override;
 	bool isReady() const override;
+	bool loadFromStream(const char* stream, uint32_t length) override;
 	
 private:
 	SDL_Surface* surface;

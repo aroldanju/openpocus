@@ -20,7 +20,7 @@
 #include "stategame.h"
 #include "engine/data/fatloader.h"
 #include "version.h"
-#include "definitions.h"
+#include "apogeesplash.h"
 
 OpenPocus::OpenPocus(const pocus::RendererParameters &rendererParameters):
 	PocusEngine(
@@ -30,10 +30,11 @@ OpenPocus::OpenPocus(const pocus::RendererParameters &rendererParameters):
 }
 
 void OpenPocus::createStates(pocus::StateManager& stateManager) {
+	stateManager.addState("splash_apogee", std::make_unique<ApogeeSplash>());
 	stateManager.addState("my_state", std::make_unique<StateGame>());
 }
 
 bool OpenPocus::loadData(pocus::data::Data& data) {
 	pocus::data::Fat fat = pocus::data::FatLoader::loadFromFile(FAT_FILE);
-	return data.loadFromFile(DAT_PATH, fat);
+	return data.loadFromFile("../hocuspocus", fat);
 }

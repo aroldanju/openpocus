@@ -15,25 +15,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _VERSION_H
-#define _VERSION_H
+#ifndef _APOGEESPLASH_H
+#define _APOGEESPLASH_H
 
-#define VERSION SHAREWARE
+#include <memory>
+#include "engine/texture.h"
+#include "engine/state.h"
+#include "engine/definitions.h"
 
-#if(VERSION == SHAREWARE)
-#define FAT_FILE			"shareware.fat"
-enum DatFile {
-	DATFILE_SPLASH_APOGEE = 1,
-	DATFILE_PALETTE_GAME = 6,
-	DATFILE_IMAGE_HUD = 11
+class ApogeeSplash : public pocus::State {
+public:
+	enum { TIME = 10000 };
+	
+public:
+	void onCreate(pocus::data::Data& data) override;
+	void onDetach() override;
+	void onAttach() override;
+	void release() override;
+	void handleEvents(pocus::EventHandler &eventHandler) override;
+	void render(pocus::Renderer &renderer) override;
+	void update(float dt) override;
+
+private:
+	std::unique_ptr<pocus::Texture> backgroundImage;
+	pocus::Tick startTick { pocus::getNow() };
 };
-#elif(VERSION == REGISTERED)
-#define FAT_FILE			"registered.fat"
-enum DatFile {
-	DATFILE_SPLASH_APOGEE = 1,
-	DATFILE_PALETTE_GAME = 7,
-	DATFILE_IMAGE_HUD = 12
-};
-#endif
 
-#endif //_VERSION_H
+#endif //_APOGEESPLASH_H

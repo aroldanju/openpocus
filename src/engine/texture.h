@@ -29,6 +29,7 @@ public:
 	virtual uint32_t getWidth() const = 0;
 	virtual uint32_t getHeight() const = 0;
 	virtual bool isReady() const = 0;
+	virtual bool loadFromStream(const char* stream, uint32_t length) = 0;
 };
 
 }
