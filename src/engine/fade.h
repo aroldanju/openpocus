@@ -15,35 +15,56 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RENDERER_H
-#define RENDERER_H
+#ifndef FADE_H
+#define FADE_H
 
-#include "texture.h"
+#include "definitions.h"
+#include "renderer.h"
 #include "color.h"
-#include <cstdint>
-#include <string>
+#include <chrono>
+#include <functional>
 
 namespace pocus {
 
-struct RendererParameters {
-	uint32_t width;
-	uint32_t height;
-	std::string title;
-};
-
-class Renderer {
+class Fade {
 public:
-	virtual bool initialize() = 0;
-	virtual void release() = 0;
-	virtual void clear() = 0;
-	virtual void render() = 0;
+	enum Fade_t {
+		FADE_IN, FADE_OUT
+	};
 	
-	virtual bool createTexture(Texture& texture) = 0;
+public:
+	Fade() = default;
+	virtual ~Fade() = default;
 	
-	virtual void drawTexture(Texture& texture, int x, int y) = 0;
-	virtual void drawRect(int x, int y, int w, int h, const Color& color) = 0;
+	void start(const Fade_t& type);
+	
+	void stop();
+	
+	void update(float dt);
+	
+	void render(Renderer &renderer);
+	
+	void setSpeed(float speed);
+	
+	[[nodiscard]] float getSpeed() const;
+	
+	void setOnFinished(std::function<void()> onFinished);
+	
+	bool isRunning() const;
+	
+private:
+	Tick tickStart;
+	Tick tickLastUpdate;
+	Color color { color::black };
+	float alpha { 0.0f };
+	float speed { 3.0f };
+	bool running { false };
+	Fade_t type { FADE_IN };
+	
+	std::function<void()> onFinished { nullptr };
+	
 };
 
 }
 
-#endif //RENDERER_H
+#endif //FADE_H

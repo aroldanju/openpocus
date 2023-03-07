@@ -15,35 +15,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RENDERER_H
-#define RENDERER_H
+#ifndef COLOR_H
+#define COLOR_H
 
-#include "texture.h"
-#include "color.h"
 #include <cstdint>
-#include <string>
 
 namespace pocus {
 
-struct RendererParameters {
-	uint32_t width;
-	uint32_t height;
-	std::string title;
+struct Color {
+	uint8_t red;
+	uint8_t green;
+	uint8_t blue;
+	uint8_t alpha;
 };
 
-class Renderer {
-public:
-	virtual bool initialize() = 0;
-	virtual void release() = 0;
-	virtual void clear() = 0;
-	virtual void render() = 0;
-	
-	virtual bool createTexture(Texture& texture) = 0;
-	
-	virtual void drawTexture(Texture& texture, int x, int y) = 0;
-	virtual void drawRect(int x, int y, int w, int h, const Color& color) = 0;
-};
+namespace color {
+	static const Color red = (Color) {255, 0, 0, 255};
+	static const Color pink = (Color) {255, 0, 255, 255};
+	static const Color green = (Color) {0, 255, 0, 255};
+	static const Color blue = (Color) {0, 0, 255, 255};
+	static const Color black = (Color) {0, 0, 0, 255};
+	static const Color white = (Color) {255, 255, 255, 255};
+	static const Color yellow = (Color) {255, 255, 0, 255};
+}
 
 }
 
-#endif //RENDERER_H
+#endif //COLOR_H

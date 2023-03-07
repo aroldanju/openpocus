@@ -37,6 +37,7 @@ void ApogeeSplash::onDetach() {
 void ApogeeSplash::onAttach() {
 	LOGI << "StateGame: onAttach";
 	
+	this->fade.start(pocus::Fade::FADE_IN);
 	this->startTick = pocus::getNow();
 }
 
@@ -50,10 +51,14 @@ void ApogeeSplash::handleEvents(pocus::EventHandler &eventHandler) {
 
 void ApogeeSplash::render(pocus::Renderer &renderer) {
 	renderer.drawTexture(*this->backgroundImage, 0, 0);
+	this->fade.render(renderer);
 }
 
 void ApogeeSplash::update(float dt) {
-	if (pocus::getElapsedTime(this->startTick) >= ApogeeSplash::TIME) {
-		exit(1);
+	this->fade.update(dt);
+	
+	if (pocus::getElapsedTime(this->startTick) >= ApogeeSplash::TIME && !this->fade.isRunning()) {
+		this->fade.start(pocus::Fade::FADE_OUT);
+		this->fade.setOnFinished([] { exit(1); });
 	}
 }

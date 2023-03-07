@@ -31,6 +31,7 @@ set(engine_sources
         src/engine/data/asset/image.cpp
         src/engine/data/asset/palette.cpp
         src/engine/data/asset/pcx.cpp
+        src/engine/fade.cpp
         )
 
 set(sdl_sources

@@ -22,10 +22,11 @@
 #include "engine/texture.h"
 #include "engine/state.h"
 #include "engine/definitions.h"
+#include "engine/fade.h"
 
 class ApogeeSplash : public pocus::State {
 public:
-	enum { TIME = 10000 };
+	enum { TIME = 6000 };
 	
 public:
 	void onCreate(pocus::data::Data& data) override;
@@ -39,6 +40,7 @@ public:
 private:
 	std::unique_ptr<pocus::Texture> backgroundImage;
 	pocus::Tick startTick { pocus::getNow() };
+	pocus::Fade fade;
 };
 
 #endif //_APOGEESPLASH_H
