@@ -100,3 +100,14 @@ void SdlRenderer::drawTexture(Texture& texture, int x, int y) {
 	SDL_Rect rect = (SDL_Rect){ x, y, (int)texture.getWidth(), (int)texture.getHeight() };
 	SDL_RenderCopy(this->renderer, sdlTexture->texture, nullptr, &rect);
 }
+
+void SdlRenderer::drawRect(int x, int y, int w, int h, const Color &color) {
+	if (w == -1 || h == -1) {
+		w = (int)this->parameters.width;
+		h = (int)this->parameters.height;
+	}
+	
+	SDL_Rect rect = (SDL_Rect){x, y, w, h};
+	SDL_SetRenderDrawColor(this->renderer, color.red, color.green, color.blue, color.alpha);
+	SDL_RenderFillRect(this->renderer, &rect);
+}

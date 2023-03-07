@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <iostream>
 #include "pocusengine.h"
 #include "log.h"
 #include "definitions.h"
@@ -93,6 +94,7 @@ void PocusEngine::loop() {
 
 		if (state) {
 			state->update(dt);
+			processStateMessage(state);
 		}
 
 		this->renderer->clear();
@@ -105,19 +107,43 @@ void PocusEngine::loop() {
 			this->running = false;
 		}
 
-		wait(1);
+		dt = processFrameRate(startTick, delay, fixedFpsDelay);
+	}
+}
 
-		uint32_t elapsed = getElapsedTime(startTick);
-		if (elapsed < delay) {
-			wait(delay - elapsed);
-		}
+float PocusEngine::processFrameRate(const Tick& startTick, int delay, int fixedFpsDelay) {
+	wait(1);
+	
+	uint32_t elapsed = getElapsedTime(startTick);
+	if (elapsed < delay) {
+		wait(delay - elapsed);
+	}
+	
+	elapsed = getElapsedTime(startTick);
+	if (elapsed < fixedFpsDelay) {
+		elapsed = fixedFpsDelay - elapsed;
+	}
+	
+	return (float)elapsed / (float)fixedFpsDelay;
+}
 
-		elapsed = getElapsedTime(startTick);
-		if (elapsed < fixedFpsDelay) {
-			elapsed = fixedFpsDelay - elapsed;
-		}
+void PocusEngine::processStateMessage(State* state) {
+	if (!state) {
+		return;
+	}
 
-		dt = (float)elapsed / (float)fixedFpsDelay;
+	const State::Message_t& message = state->message.first;
+	switch (message) {
+		case State::MESSAGE_QUIT:
+			this->stateManager.quit(0);
+			break;
+
+		case State::MESSAGE_CHANGE:
+			this->stateManager.changeState(reinterpret_cast<char*>(state->message.second));
+			break;
+
+		default:
+			break;
 	}
 }
 

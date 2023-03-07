@@ -20,6 +20,7 @@
 #include "stategame.h"
 #include "engine/data/fatloader.h"
 #include "version.h"
+#include "apogeesplash.h"
 #include "definitions.h"
 
 OpenPocus::OpenPocus(const pocus::RendererParameters &rendererParameters):
@@ -30,6 +31,7 @@ OpenPocus::OpenPocus(const pocus::RendererParameters &rendererParameters):
 }
 
 void OpenPocus::createStates(pocus::StateManager& stateManager) {
+	stateManager.addState("splash_apogee", std::make_unique<ApogeeSplash>());
 	stateManager.addState("my_state", std::make_unique<StateGame>());
 }
 

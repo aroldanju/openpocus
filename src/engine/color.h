@@ -15,25 +15,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _VERSION_H
-#define _VERSION_H
+#ifndef COLOR_H
+#define COLOR_H
 
-#define VERSION SHAREWARE
+#include <cstdint>
 
-#if(VERSION == SHAREWARE)
-#define FAT_FILE			"shareware.fat"
-enum DatFile {
-	DATFILE_SPLASH_APOGEE = 1,
-	DATFILE_PALETTE_GAME = 6,
-	DATFILE_IMAGE_HUD = 11
+namespace pocus {
+
+struct Color {
+	uint8_t red;
+	uint8_t green;
+	uint8_t blue;
+	uint8_t alpha;
 };
-#elif(VERSION == REGISTERED)
-#define FAT_FILE			"registered.fat"
-enum DatFile {
-	DATFILE_SPLASH_APOGEE = 1,
-	DATFILE_PALETTE_GAME = 7,
-	DATFILE_IMAGE_HUD = 12
-};
-#endif
 
-#endif //_VERSION_H
+namespace color {
+	static const Color red = (Color) {255, 0, 0, 255};
+	static const Color pink = (Color) {255, 0, 255, 255};
+	static const Color green = (Color) {0, 255, 0, 255};
+	static const Color blue = (Color) {0, 0, 255, 255};
+	static const Color black = (Color) {0, 0, 0, 255};
+	static const Color white = (Color) {255, 255, 255, 255};
+	static const Color yellow = (Color) {255, 255, 0, 255};
+}
+
+}
+
+#endif //COLOR_H

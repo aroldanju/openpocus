@@ -37,6 +37,7 @@ public:
 	bool createTexture(Texture& texture) override;
 	
 	void drawTexture(Texture& texture, int x, int y) override;
+	void drawRect(int x, int y, int w, int h, const Color& color) override;
 
 private:
 	RendererParameters parameters;

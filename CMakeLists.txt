@@ -16,6 +16,7 @@ set(sources
         src/main.cpp
         src/openpocus.cpp
         src/stategame.cpp
+        src/apogeesplash.cpp
         )
 
 set(engine_sources
@@ -29,6 +30,8 @@ set(engine_sources
         src/engine/data/fatloader.cpp
         src/engine/data/asset/image.cpp
         src/engine/data/asset/palette.cpp
+        src/engine/data/asset/pcx.cpp
+        src/engine/fade.cpp
         )
 
 set(sdl_sources

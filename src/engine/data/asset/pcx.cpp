@@ -15,25 +15,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _VERSION_H
-#define _VERSION_H
+#include <memory>
+#include "pcx.h"
+#include "../../provider/provider.h"
 
-#define VERSION SHAREWARE
+using namespace pocus::data::asset;
 
-#if(VERSION == SHAREWARE)
-#define FAT_FILE			"shareware.fat"
-enum DatFile {
-	DATFILE_SPLASH_APOGEE = 1,
-	DATFILE_PALETTE_GAME = 6,
-	DATFILE_IMAGE_HUD = 11
-};
-#elif(VERSION == REGISTERED)
-#define FAT_FILE			"registered.fat"
-enum DatFile {
-	DATFILE_SPLASH_APOGEE = 1,
-	DATFILE_PALETTE_GAME = 7,
-	DATFILE_IMAGE_HUD = 12
-};
-#endif
+bool Pcx::loadFromStream(const char *stream, uint32_t length) {
+	this->data.resize(length);
+	for (uint32_t i = 0; i < length; i++) {
+		this->data[i] = stream[i];
+	}
+}
 
-#endif //_VERSION_H
+void Pcx::release() {
+
+}
+
+std::unique_ptr<pocus::Texture> Pcx::createTexture() {
+	std::unique_ptr<Texture> texture = Provider::provideTexture();
+	texture->loadFromStream(reinterpret_cast<char*>(this->data.data()), data.size());
+	return std::move(texture);
+}

@@ -19,6 +19,7 @@
 #define RENDERER_H
 
 #include "texture.h"
+#include "color.h"
 #include <cstdint>
 #include <string>
 
@@ -40,6 +41,7 @@ public:
 	virtual bool createTexture(Texture& texture) = 0;
 	
 	virtual void drawTexture(Texture& texture, int x, int y) = 0;
+	virtual void drawRect(int x, int y, int w, int h, const Color& color) = 0;
 };
 
 }

@@ -15,25 +15,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _VERSION_H
-#define _VERSION_H
+#ifndef _PCX_H
+#define _PCX_H
 
-#define VERSION SHAREWARE
+#include <cstdint>
+#include <vector>
+#include "asset.h"
+#include "../../texture.h"
 
-#if(VERSION == SHAREWARE)
-#define FAT_FILE			"shareware.fat"
-enum DatFile {
-	DATFILE_SPLASH_APOGEE = 1,
-	DATFILE_PALETTE_GAME = 6,
-	DATFILE_IMAGE_HUD = 11
+namespace pocus::data::asset {
+
+class Pcx : public Asset {
+public:
+	bool loadFromStream(const char* stream, uint32_t length) override;
+	void release() override;
+	
+	std::unique_ptr<Texture> createTexture();
+	
+private:
+	std::vector<uint8_t> data;
 };
-#elif(VERSION == REGISTERED)
-#define FAT_FILE			"registered.fat"
-enum DatFile {
-	DATFILE_SPLASH_APOGEE = 1,
-	DATFILE_PALETTE_GAME = 7,
-	DATFILE_IMAGE_HUD = 12
-};
-#endif
 
-#endif //_VERSION_H
+}
+
+#endif //_PCX_H

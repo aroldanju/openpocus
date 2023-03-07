@@ -15,44 +15,55 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef STATE_H
-#define STATE_H
+#ifndef FADE_H
+#define FADE_H
 
-#include <vector>
+#include "definitions.h"
 #include "renderer.h"
-#include "eventhandler.h"
-#include "data/data.h"
+#include "color.h"
+#include <chrono>
+#include <functional>
 
 namespace pocus {
 
-class State {
+class Fade {
 public:
-	friend class PocusEngine;
-
-public:
-	enum Message_t {
-		MESSAGE_NONE,
-		MESSAGE_QUIT,
-		MESSAGE_CHANGE
+	enum Fade_t {
+		FADE_IN, FADE_OUT
 	};
 	
 public:
-	virtual void onCreate(data::Data& data) = 0;
-	virtual void onDetach() = 0;
-	virtual void onAttach() = 0;
-	virtual void release() = 0;
-	virtual void handleEvents(EventHandler &eventHandler) = 0;
-	virtual void render(Renderer &renderer) = 0;
-	virtual void update(float dt) = 0;
-
-protected:
-	void setMessage(const Message_t& type, void* parameter = nullptr) {
-		this->message = std::make_pair(type, parameter);
-	}
-
-	std::pair<Message_t, void*> message { std::make_pair(MESSAGE_NONE, nullptr) };
+	Fade() = default;
+	virtual ~Fade() = default;
+	
+	void start(const Fade_t& type, std::function<void()> onFinished = nullptr);
+	
+	void stop();
+	
+	void update(float dt);
+	
+	void render(Renderer &renderer);
+	
+	void setSpeed(float speed);
+	
+	[[nodiscard]] float getSpeed() const;
+	
+	void setOnFinished(std::function<void()> onFinished);
+	
+	bool isRunning() const;
+	
+private:
+	Tick tickStart;
+	Color color { color::black };
+	float alpha { 0.0f };
+	float speed { 3.0f };
+	bool running { false };
+	Fade_t type { FADE_IN };
+	
+	std::function<void()> onFinished { nullptr };
+	
 };
 
 }
 
-#endif //STATE_H
+#endif //FADE_H

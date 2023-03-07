@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <SDL_image.h>
 #include "sdltexture.h"
 
 using namespace pocus;
@@ -61,4 +62,23 @@ uint32_t SdlTexture::getHeight() const {
 
 bool SdlTexture::isReady() const {
 	return this->texture != nullptr;
+}
+
+bool SdlTexture::loadFromStream(const char *stream, uint32_t length) {
+	SDL_RWops* rWops;
+	
+	rWops = SDL_RWFromConstMem((const void*)stream, (int)length);
+	if (!rWops)	{
+		return false;
+	}
+	
+	this->surface = IMG_Load_RW(rWops, 0);
+	if (!this->surface)	{
+		SDL_FreeRW(rWops);
+		return false;
+	}
+	
+	SDL_FreeRW(rWops);
+	
+	return true;
 }
