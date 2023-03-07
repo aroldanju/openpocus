@@ -59,6 +59,8 @@ void ApogeeSplash::update(float dt) {
 	
 	if (pocus::getElapsedTime(this->startTick) >= ApogeeSplash::TIME && !this->fade.isRunning()) {
 		this->fade.start(pocus::Fade::FADE_OUT);
-		this->fade.setOnFinished([] { exit(1); });
+		this->fade.setOnFinished([this] {
+			this->messages.emplace(pocus::State::MESSAGE_QUIT, nullptr);
+		});
 	}
 }

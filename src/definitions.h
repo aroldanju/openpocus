@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DEFINITIONS_H
-#define DEFINITIONS_H
+#ifndef OPENPOCUS_DEFINITIONS_H
+#define OPENPOCUS_DEFINITIONS_H
 
 #define GAME_NAME  		"Open Pocus"
 #define SCREEN_WIDTH	320
@@ -24,4 +24,4 @@
 
 #define DAT_PATH		"../hocuspocus"
 
-#endif //DEFINITIONS_H
+#endif // OPENPOCUS_DEFINITIONS_H

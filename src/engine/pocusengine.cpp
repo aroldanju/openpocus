@@ -93,6 +93,7 @@ void PocusEngine::loop() {
 
 		if (state) {
 			state->update(dt);
+			processStateMessageQueue(state);
 		}
 
 		this->renderer->clear();
@@ -105,19 +106,44 @@ void PocusEngine::loop() {
 			this->running = false;
 		}
 
-		wait(1);
+		dt = processFrameRate(startTick, delay, fixedFpsDelay);
+	}
+}
 
-		uint32_t elapsed = getElapsedTime(startTick);
-		if (elapsed < delay) {
-			wait(delay - elapsed);
+float PocusEngine::processFrameRate(const Tick& startTick, int delay, int fixedFpsDelay) {
+	wait(1);
+	
+	uint32_t elapsed = getElapsedTime(startTick);
+	if (elapsed < delay) {
+		wait(delay - elapsed);
+	}
+	
+	elapsed = getElapsedTime(startTick);
+	if (elapsed < fixedFpsDelay) {
+		elapsed = fixedFpsDelay - elapsed;
+	}
+	
+	return (float)elapsed / (float)fixedFpsDelay;
+}
+
+void PocusEngine::processStateMessageQueue(State* state) {
+	while (!state->messages.empty()) {
+		const std::pair<State::Message_t, void*>& message = state->messages.back();
+		switch (message.first) {
+			case State::MESSAGE_QUIT:
+				this->stateManager.quit(0);
+				break;
+			
+			case State::MESSAGE_CHANGE:
+				this->stateManager.changeState(reinterpret_cast<char*>(message.second));
+				break;
+			
+			default:
+				LOGE << "Unknown StateMessage";
+				break;
 		}
-
-		elapsed = getElapsedTime(startTick);
-		if (elapsed < fixedFpsDelay) {
-			elapsed = fixedFpsDelay - elapsed;
-		}
-
-		dt = (float)elapsed / (float)fixedFpsDelay;
+		
+		state->messages.pop();
 	}
 }
 

@@ -18,6 +18,7 @@
 #ifndef STATE_H
 #define STATE_H
 
+#include <queue>
 #include "renderer.h"
 #include "eventhandler.h"
 #include "data/data.h"
@@ -25,6 +26,15 @@
 namespace pocus {
 
 class State {
+public:
+	friend class PocusEngine;
+
+public:
+	enum Message_t {
+		MESSAGE_QUIT,
+		MESSAGE_CHANGE
+	};
+	
 public:
 	virtual void onCreate(data::Data& data) = 0;
 	virtual void onDetach() = 0;
@@ -34,6 +44,8 @@ public:
 	virtual void render(Renderer &renderer) = 0;
 	virtual void update(float dt) = 0;
 
+protected:
+	std::queue<std::pair<Message_t, void*>> messages;
 };
 
 }

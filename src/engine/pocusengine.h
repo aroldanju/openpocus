@@ -24,6 +24,7 @@
 #include "renderer.h"
 #include "eventhandler.h"
 #include "data/data.h"
+#include "definitions.h"
 
 namespace pocus {
 
@@ -45,6 +46,9 @@ private:
 	bool initialize();
 	void loop();
 	void release();
+	
+	void processStateMessageQueue(State* state);
+	float processFrameRate(const Tick& startTick, int delay, int fixedFpsDelay);
 
 private:
 	StateManager stateManager;
