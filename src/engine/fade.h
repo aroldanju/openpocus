@@ -36,7 +36,7 @@ public:
 	Fade() = default;
 	virtual ~Fade() = default;
 	
-	void start(const Fade_t& type);
+	void start(const Fade_t& type, std::function<void()> onFinished = nullptr);
 	
 	void stop();
 	
@@ -54,7 +54,6 @@ public:
 	
 private:
 	Tick tickStart;
-	Tick tickLastUpdate;
 	Color color { color::black };
 	float alpha { 0.0f };
 	float speed { 3.0f };

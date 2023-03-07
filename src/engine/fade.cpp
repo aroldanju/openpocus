@@ -22,12 +22,12 @@
 
 using namespace pocus;
 
-void Fade::start(const Fade_t& type) {
+void Fade::start(const Fade_t& type, std::function<void()> onFinished) {
+	this->onFinished = std::move(onFinished);
 	this->type = type;
 	this->running = true;
 	this->tickStart = getNow();
-	this->tickLastUpdate = this->tickStart;
-	
+
 	switch (type) {
 		case FADE_IN:
 			this->alpha = 255;
