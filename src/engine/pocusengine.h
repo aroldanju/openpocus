@@ -47,7 +47,7 @@ private:
 	void loop();
 	void release();
 	
-	void processStateMessageQueue(State* state);
+	void processStateMessage(State* state);
 	float processFrameRate(const Tick& startTick, int delay, int fixedFpsDelay);
 
 private:

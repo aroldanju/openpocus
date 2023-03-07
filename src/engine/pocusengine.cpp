@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <iostream>
 #include "pocusengine.h"
 #include "log.h"
 #include "definitions.h"
@@ -93,7 +94,7 @@ void PocusEngine::loop() {
 
 		if (state) {
 			state->update(dt);
-			processStateMessageQueue(state);
+			processStateMessage(state);
 		}
 
 		this->renderer->clear();
@@ -126,24 +127,23 @@ float PocusEngine::processFrameRate(const Tick& startTick, int delay, int fixedF
 	return (float)elapsed / (float)fixedFpsDelay;
 }
 
-void PocusEngine::processStateMessageQueue(State* state) {
-	while (!state->messages.empty()) {
-		const std::pair<State::Message_t, void*>& message = state->messages.back();
-		switch (message.first) {
-			case State::MESSAGE_QUIT:
-				this->stateManager.quit(0);
-				break;
-			
-			case State::MESSAGE_CHANGE:
-				this->stateManager.changeState(reinterpret_cast<char*>(message.second));
-				break;
-			
-			default:
-				LOGE << "Unknown StateMessage";
-				break;
-		}
-		
-		state->messages.pop();
+void PocusEngine::processStateMessage(State* state) {
+	if (!state) {
+		return;
+	}
+
+	const State::Message_t& message = state->message.first;
+	switch (message) {
+		case State::MESSAGE_QUIT:
+			this->stateManager.quit(0);
+			break;
+
+		case State::MESSAGE_CHANGE:
+			this->stateManager.changeState(reinterpret_cast<char*>(state->message.second));
+			break;
+
+		default:
+			break;
 	}
 }
 

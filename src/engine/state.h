@@ -18,7 +18,7 @@
 #ifndef STATE_H
 #define STATE_H
 
-#include <queue>
+#include <vector>
 #include "renderer.h"
 #include "eventhandler.h"
 #include "data/data.h"
@@ -31,6 +31,7 @@ public:
 
 public:
 	enum Message_t {
+		MESSAGE_NONE,
 		MESSAGE_QUIT,
 		MESSAGE_CHANGE
 	};
@@ -45,7 +46,11 @@ public:
 	virtual void update(float dt) = 0;
 
 protected:
-	std::queue<std::pair<Message_t, void*>> messages;
+	void setMessage(const Message_t& type, void* parameter = nullptr) {
+		this->message = std::make_pair(type, parameter);
+	}
+
+	std::pair<Message_t, void*> message { std::make_pair(MESSAGE_NONE, nullptr) };
 };
 
 }

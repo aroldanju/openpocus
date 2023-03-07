@@ -21,6 +21,7 @@
 #include "engine/data/fatloader.h"
 #include "version.h"
 #include "apogeesplash.h"
+#include "definitions.h"
 
 OpenPocus::OpenPocus(const pocus::RendererParameters &rendererParameters):
 	PocusEngine(
@@ -36,5 +37,5 @@ void OpenPocus::createStates(pocus::StateManager& stateManager) {
 
 bool OpenPocus::loadData(pocus::data::Data& data) {
 	pocus::data::Fat fat = pocus::data::FatLoader::loadFromFile(FAT_FILE);
-	return data.loadFromFile("../hocuspocus", fat);
+	return data.loadFromFile(DAT_PATH, fat);
 }
