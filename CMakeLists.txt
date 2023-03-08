@@ -19,11 +19,7 @@ set(sources
         src/apogeesplash.cpp
         )
 
-set(engine_sources
-        src/engine/log.cpp
-        src/engine/pocusengine.cpp
-        src/engine/provider/provider.cpp
-        src/engine/statemanager.cpp
+set(data_sources
         src/engine/data/data.cpp
         src/engine/data/fat.cpp
         src/engine/data/datafile.cpp
@@ -31,16 +27,31 @@ set(engine_sources
         src/engine/data/asset/image.cpp
         src/engine/data/asset/palette.cpp
         src/engine/data/asset/pcx.cpp
+        src/engine/data/asset/voc.cpp
+        src/engine/data/asset/midi.cpp
+        )
+
+set(engine_sources
+        src/engine/log.cpp
+        src/engine/pocusengine.cpp
+        src/engine/provider/provider.cpp
+        src/engine/statemanager.cpp
         src/engine/fade.cpp
+        src/engine/sound.h
+        src/engine/texture.h
+        src/engine/renderer.h
+        src/engine/audio.h
         )
 
 set(sdl_sources
         src/engine/sdl/sdlrenderer.cpp
         src/engine/sdl/sdleventhandler.cpp
         src/engine/sdl/sdltexture.cpp
+        src/engine/sdl/sdlsound.cpp
+        src/engine/sdl/sdlaudio.cpp
         )
 
-add_executable(OpenPocus ${sources} ${engine_sources} ${sdl_sources})
+add_executable(OpenPocus ${sources} ${data_sources} ${engine_sources} ${sdl_sources})
 
 target_link_libraries(OpenPocus ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES})
 

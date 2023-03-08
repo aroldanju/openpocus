@@ -15,27 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _VERSION_H
-#define _VERSION_H
+#ifndef SOUND_H
+#define SOUND_H
 
-#define VERSION SHAREWARE
+#include <memory>
+#include <cstdint>
 
-#if(VERSION == SHAREWARE)
-#define FAT_FILE			"shareware.fat"
-enum DatFile {
-	DATFILE_SPLASH_APOGEE = 1,
-	DATFILE_PALETTE_GAME = 6,
-	DATFILE_IMAGE_HUD = 11,
-	DATFILE_MUSIC_APOGEE = 201
+namespace pocus {
+
+class Sound {
+public:
+	virtual bool loadFromStream(const char *stream, uint32_t length) = 0;
+	virtual void play() = 0;
+	virtual void release() = 0;
 };
-#elif(VERSION == REGISTERED)
-#define FAT_FILE			"registered.fat"
-enum DatFile {
-	DATFILE_SPLASH_APOGEE = 1,
-	DATFILE_PALETTE_GAME = 7,
-	DATFILE_IMAGE_HUD = 12,
-	DATFILE_MUSIC_APOGEE = 599
-};
-#endif
 
-#endif //_VERSION_H
+}
+
+#endif //_SOUND_H

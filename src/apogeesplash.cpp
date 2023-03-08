@@ -19,15 +19,20 @@
 #include "engine/log.h"
 #include "engine/data/asset/pcx.h"
 #include "version.h"
+#include "engine/data/asset/midi.h"
 
 void ApogeeSplash::onCreate(pocus::data::Data& data) {
 	pocus::data::asset::Pcx apogeeSplashImage;
+	pocus::data::asset::Midi apogeeMusicMidi;
 	
 	pocus::data::DataFile& apogeeSplashFile = data.fetchFile(DATFILE_SPLASH_APOGEE);
+	pocus::data::DataFile& apogeeMusicFile = data.fetchFile(DATFILE_MUSIC_APOGEE);
 	
 	apogeeSplashImage.loadFromStream(apogeeSplashFile.getContent(), apogeeSplashFile.getLength());
+	apogeeMusicMidi.loadFromStream(apogeeMusicFile.getContent(), apogeeMusicFile.getLength());
 	
 	this->backgroundImage = apogeeSplashImage.createTexture();
+	this->backgroundMusic = apogeeMusicMidi.createAsSound();
 }
 
 void ApogeeSplash::onDetach() {
@@ -39,6 +44,7 @@ void ApogeeSplash::onAttach() {
 	
 	this->fade.start(pocus::Fade::FADE_IN);
 	this->startTick = pocus::getNow();
+	this->backgroundMusic->play();
 }
 
 void ApogeeSplash::release() {

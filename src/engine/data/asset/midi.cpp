@@ -15,27 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _VERSION_H
-#define _VERSION_H
+#include "midi.h"
+#include "../../provider/provider.h"
 
-#define VERSION SHAREWARE
+using namespace pocus::data::asset;
 
-#if(VERSION == SHAREWARE)
-#define FAT_FILE			"shareware.fat"
-enum DatFile {
-	DATFILE_SPLASH_APOGEE = 1,
-	DATFILE_PALETTE_GAME = 6,
-	DATFILE_IMAGE_HUD = 11,
-	DATFILE_MUSIC_APOGEE = 201
-};
-#elif(VERSION == REGISTERED)
-#define FAT_FILE			"registered.fat"
-enum DatFile {
-	DATFILE_SPLASH_APOGEE = 1,
-	DATFILE_PALETTE_GAME = 7,
-	DATFILE_IMAGE_HUD = 12,
-	DATFILE_MUSIC_APOGEE = 599
-};
-#endif
+bool Midi::loadFromStream(const char *stream, uint32_t length) {
+	this->data.resize(length);
+	for (uint32_t i = 0; i < length; i++) {
+		this->data[i] = stream[i];
+	}
+	
+	return true;
+}
 
-#endif //_VERSION_H
+void Midi::release() {
+	this->data.erase(this->data.begin(), this->data.end());
+}
+
+std::unique_ptr<pocus::Sound> Midi::createAsSound() {
+	std::unique_ptr<Sound> sound = Provider::provideSound();
+	sound->loadFromStream(reinterpret_cast<char*>(this->data.data()), data.size());
+	return std::move(sound);
+}

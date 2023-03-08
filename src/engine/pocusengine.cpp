@@ -15,16 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <iostream>
 #include "pocusengine.h"
 #include "log.h"
 #include "definitions.h"
 
 using namespace pocus;
 
-PocusEngine::PocusEngine(std::unique_ptr<Renderer> renderer, std::unique_ptr<EventHandler> eventHandler):
+PocusEngine::PocusEngine(std::unique_ptr<Renderer> renderer, std::unique_ptr<EventHandler> eventHandler, std::unique_ptr<Audio> audio):
 	renderer(std::move(renderer)),
-	eventHandler(std::move(eventHandler))
+	eventHandler(std::move(eventHandler)),
+	audio(std::move(audio))
 {
 }
 
@@ -50,6 +50,11 @@ bool PocusEngine::initialize() {
 		LOGE << "Engine: error initializing renderer.";
 		return false;
 	}
+	
+	if (!this->audio || !this->audio->initialize()) {
+		LOGE << "Engine: error initializing audio system.";
+		return false;
+	}
 
 	if (!loadData(this->data)) {
 		LOGE << "Engine: error loading data.";
@@ -57,11 +62,12 @@ bool PocusEngine::initialize() {
 	}
 
 	createStates(this->stateManager);
+	this->stateManager.createStates(getData());
 	if (!this->stateManager.getCurrentState()) {
 		LOGE << "Engine: no state was selected.";
 		return false;
 	}
-	this->stateManager.createStates(getData());
+	this->stateManager.changeState(this->stateManager.getStartupState());
 
 	this->running = true;
 
@@ -152,6 +158,11 @@ void PocusEngine::release() {
 
 	if (auto state = this->stateManager.getCurrentState()) {
 		state->onDetach();
+	}
+	
+	if (this->audio) {
+		this->audio->release();
+		this->audio = nullptr;
 	}
 
 	if (this->renderer) {
