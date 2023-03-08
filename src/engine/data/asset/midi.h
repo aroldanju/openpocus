@@ -15,27 +15,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _VERSION_H
-#define _VERSION_H
+#ifndef MIDI_H
+#define MIDI_H
 
-#define VERSION SHAREWARE
+#include <vector>
+#include <memory>
+#include <cstdint>
+#include "../../sound.h"
+#include "asset.h"
 
-#if(VERSION == SHAREWARE)
-#define FAT_FILE			"shareware.fat"
-enum DatFile {
-	DATFILE_SPLASH_APOGEE = 1,
-	DATFILE_PALETTE_GAME = 6,
-	DATFILE_IMAGE_HUD = 11,
-	DATFILE_MUSIC_APOGEE = 201
+namespace pocus::data::asset {
+
+class Midi : public Asset {
+public:
+	bool loadFromStream(const char* stream, uint32_t length) override;
+	void release() override;
+	
+	std::unique_ptr<Sound> createAsSound();
+
+private:
+	std::vector<uint8_t> data;
 };
-#elif(VERSION == REGISTERED)
-#define FAT_FILE			"registered.fat"
-enum DatFile {
-	DATFILE_SPLASH_APOGEE = 1,
-	DATFILE_PALETTE_GAME = 7,
-	DATFILE_IMAGE_HUD = 12,
-	DATFILE_MUSIC_APOGEE = 599
-};
-#endif
 
-#endif //_VERSION_H
+}
+
+#endif // MIDI_H

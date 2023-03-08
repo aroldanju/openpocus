@@ -26,13 +26,17 @@
 OpenPocus::OpenPocus(const pocus::RendererParameters &rendererParameters):
 	PocusEngine(
 			pocus::Provider::provideRenderer(rendererParameters),
-			pocus::Provider::provideEventHandler())
+			pocus::Provider::provideEventHandler(),
+			pocus::Provider::provideAudio()
+			)
 {
 }
 
 void OpenPocus::createStates(pocus::StateManager& stateManager) {
 	stateManager.addState("splash_apogee", std::make_unique<ApogeeSplash>());
 	stateManager.addState("my_state", std::make_unique<StateGame>());
+	
+	stateManager.setStartupState("splash_apogee");
 }
 
 bool OpenPocus::loadData(pocus::data::Data& data) {

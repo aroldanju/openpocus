@@ -25,12 +25,13 @@
 #include "eventhandler.h"
 #include "data/data.h"
 #include "definitions.h"
+#include "audio.h"
 
 namespace pocus {
 
 class PocusEngine {
 public:
-	PocusEngine(std::unique_ptr<Renderer> renderer, std::unique_ptr<EventHandler> eventHandler);
+	PocusEngine(std::unique_ptr<Renderer> renderer, std::unique_ptr<EventHandler> eventHandler, std::unique_ptr<Audio> audio);
 	virtual ~PocusEngine() = default;
 
 	int run(int argc, char* argv[]);
@@ -54,6 +55,7 @@ private:
 	StateManager stateManager;
 	std::unique_ptr<Renderer> renderer;
 	std::unique_ptr<EventHandler> eventHandler;
+	std::unique_ptr<Audio> audio;
 	data::Data data;
 
 	bool running { false };

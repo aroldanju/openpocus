@@ -15,27 +15,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _VERSION_H
-#define _VERSION_H
+#ifndef SDLSOUND_H
+#define SDLSOUND_H
 
-#define VERSION SHAREWARE
-
-#if(VERSION == SHAREWARE)
-#define FAT_FILE			"shareware.fat"
-enum DatFile {
-	DATFILE_SPLASH_APOGEE = 1,
-	DATFILE_PALETTE_GAME = 6,
-	DATFILE_IMAGE_HUD = 11,
-	DATFILE_MUSIC_APOGEE = 201
-};
-#elif(VERSION == REGISTERED)
-#define FAT_FILE			"registered.fat"
-enum DatFile {
-	DATFILE_SPLASH_APOGEE = 1,
-	DATFILE_PALETTE_GAME = 7,
-	DATFILE_IMAGE_HUD = 12,
-	DATFILE_MUSIC_APOGEE = 599
-};
+#ifdef __APPLE__
+#include <SDL2_mixer/SDL_mixer.h>
+#else
+#include <SDL2/SDL_mixer.h>
 #endif
 
-#endif //_VERSION_H
+#include "../sound.h"
+
+namespace pocus {
+
+class SdlSound : public Sound {
+public:
+	bool loadFromStream(const char *stream, uint32_t length) override;
+	void play() override;
+	void release() override;
+
+private:
+	Mix_Chunk* chunk { nullptr };
+	Mix_Music* music { nullptr };
+};
+
+}
+
+#endif // SDLSOUND_H

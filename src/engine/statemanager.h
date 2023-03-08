@@ -43,6 +43,10 @@ public:
 	void changeState(const std::string &name);
 	State* getCurrentState();
 	
+	void setStartupState(const std::string& name);
+	
+	const std::string& getStartupState() const;
+	
 protected:
 	void createStates(data::Data& data);
 
