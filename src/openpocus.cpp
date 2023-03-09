@@ -36,7 +36,7 @@ void OpenPocus::createStates(pocus::StateManager& stateManager) {
 	stateManager.addState("splash_apogee", std::make_unique<ApogeeSplash>());
 	stateManager.addState("my_state", std::make_unique<StateGame>());
 	
-	stateManager.setStartupState("splash_apogee");
+	stateManager.setStartupState("my_state");
 }
 
 bool OpenPocus::loadData(pocus::data::Data& data) {

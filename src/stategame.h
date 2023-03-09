@@ -34,6 +34,7 @@ public:
 	
 private:
 	std::unique_ptr<pocus::Texture> textureHud;
+	std::unique_ptr<pocus::Texture> label;
 };
 
 #endif //STATEGAME_H

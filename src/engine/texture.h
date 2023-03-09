@@ -26,10 +26,14 @@ class Texture {
 public:
 	virtual bool createBlank(uint32_t width, uint32_t height) = 0;
 	virtual void setPixel(uint32_t index, uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) = 0;
+	virtual void getPixel(uint32_t index, uint8_t* red, uint8_t* green, uint8_t* blue, uint8_t* alpha) = 0;
 	virtual uint32_t getWidth() const = 0;
 	virtual uint32_t getHeight() const = 0;
 	virtual bool isReady() const = 0;
 	virtual bool loadFromStream(const char* stream, uint32_t length) = 0;
+	virtual void fill(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255) = 0;
+	virtual void paste(const Texture& texture, uint32_t fx, uint32_t fy, uint32_t tx, uint32_t ty) = 0;
+	virtual void setColorKey(uint8_t red, uint8_t green, uint8_t blue) = 0;
 };
 
 }

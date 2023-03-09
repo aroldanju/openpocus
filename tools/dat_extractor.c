@@ -15,29 +15,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _VERSION_H
-#define _VERSION_H
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
 
-#define VERSION SHAREWARE
+int main(int argc, char* argv[]) {
+    FILE *file;
+    uint32_t offset, length;
+    char* data;
 
-#if(VERSION == SHAREWARE)
-#define FAT_FILE			"shareware.fat"
-enum DatFile {
-	DATFILE_FONT_MAIN = 0,
-	DATFILE_SPLASH_APOGEE = 1,
-	DATFILE_PALETTE_GAME = 6,
-	DATFILE_IMAGE_HUD = 11,
-	DATFILE_MUSIC_APOGEE = 201
-};
-#elif(VERSION == REGISTERED)
-#define FAT_FILE			"registered.fat"
-enum DatFile {
-	DATFILE_FONT_MAIN = 0,
-	DATFILE_SPLASH_APOGEE = 1,
-	DATFILE_PALETTE_GAME = 7,
-	DATFILE_IMAGE_HUD = 12,
-	DATFILE_MUSIC_APOGEE = 599
-};
-#endif
+	offset = atoi(argv[1]);
+	length = atoi(argv[2]);
+	
+	data = (char*)malloc(sizeof(char) * length);
 
-#endif //_VERSION_H
+    file = fopen("hocus.dat", "rb");
+    fseek(file, offset, SEEK_SET);
+    fread((void*)data, length, 1, file);
+    
+    fclose(file);
+
+    file = fopen("output.dat", "wb");
+    fwrite((void*)data, length, 1, file);
+    fclose(file);
+    
+    free(data);
+
+    return 0;
+}

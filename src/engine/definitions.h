@@ -23,6 +23,8 @@
 
 namespace pocus {
 
+#define getBit(n,b) ((n >> b) & 1)
+
 typedef std::chrono::time_point<std::chrono::system_clock> Tick;
 
 static uint32_t getElapsedTime(const Tick& tick) {
