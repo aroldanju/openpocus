@@ -15,22 +15,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SOUND_H
-#define SOUND_H
+#ifndef MUSICPLAYER_H
+#define MUSICPLAYER_H
 
 #include <memory>
-#include <cstdint>
+#include "sound.h"
 
 namespace pocus {
 
-class Sound {
+class MusicPlayer {
 public:
-	virtual bool loadFromStream(const char *stream, uint32_t length) = 0;
-	virtual void play() = 0;
-	virtual void release() = 0;
-	virtual void stop() = 0;
+	static MusicPlayer& getInstance();
+	
+	void play(std::unique_ptr<Sound> music = nullptr);
+	void stop();
+	
+private:
+	MusicPlayer() = default;
+	
+	std::unique_ptr<Sound> music { nullptr };
 };
 
 }
 
-#endif //_SOUND_H
+#endif // MUSICPLAYER_H

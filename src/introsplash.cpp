@@ -21,6 +21,7 @@
 #include "version.h"
 #include "engine/log.h"
 #include "engine/data/asset/voc.h"
+#include "engine/musicplayer.h"
 
 void IntroSplash::onCreate(pocus::data::Data& data) {
 	pocus::data::asset::Pcx introSplashImage;
@@ -36,8 +37,8 @@ void IntroSplash::onCreate(pocus::data::Data& data) {
 	laughSoundVoc.loadFromStream(laughSoundFile.getContent(), laughSoundFile.getLength());
 	
 	this->backgroundImage = introSplashImage.createTexture();
-	this->backgroundMusic = titleMusicMidi.createAsSound();
 	this->laughSound = laughSoundVoc.createAsSound();
+	this->backgroundMusic = titleMusicMidi.createAsSound();
 }
 
 void IntroSplash::onDetach() {
@@ -49,8 +50,9 @@ void IntroSplash::onAttach() {
 	
 	this->fade.start(pocus::Fade::FADE_IN);
 	this->startTick = pocus::getNow();
-	this->backgroundMusic->play();
 	this->laughSound->play();
+	
+	pocus::MusicPlayer::getInstance().play(std::move(this->backgroundMusic));
 }
 
 void IntroSplash::release() {
@@ -61,7 +63,7 @@ void IntroSplash::handleEvents(pocus::EventHandler &eventHandler) {
 	if (!this->fade.isRunning() && pocus::getElapsedTime(this->startTick) >= IntroSplash::MIN_TIME) {
 		if (eventHandler.isAnyButtonDown()) {
 			this->fade.start(pocus::Fade::FADE_OUT, [this] {
-				setMessage(pocus::State::MESSAGE_QUIT);
+				setMessage(pocus::State::MESSAGE_CHANGE, (void*)"my_state");
 			});
 		}
 	}
@@ -77,7 +79,7 @@ void IntroSplash::update(float dt) {
 	
 	if (pocus::getElapsedTime(this->startTick) >= IntroSplash::TIME && !this->fade.isRunning()) {
 		this->fade.start(pocus::Fade::FADE_OUT, [this]{
-			setMessage(pocus::State::MESSAGE_QUIT);
+			setMessage(pocus::State::MESSAGE_CHANGE, (void*)"my_state");
 		});
 	}
 }

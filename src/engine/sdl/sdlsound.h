@@ -33,6 +33,7 @@ public:
 	bool loadFromStream(const char *stream, uint32_t length) override;
 	void play() override;
 	void release() override;
+	void stop() override;
 
 private:
 	Mix_Chunk* chunk { nullptr };
