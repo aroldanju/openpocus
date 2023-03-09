@@ -179,6 +179,19 @@ std::unique_ptr<pocus::Texture> Font::writeShadow(const std::string& text, const
 	return std::move(textureLabel);
 }
 
+std::unique_ptr<pocus::Texture> Font::writeGradient(const std::string& text, const Palette& palette, uint8_t startColor, uint8_t capitalLetter) {
+	auto capitalTexture = writeGradient(std::string(text.substr(0, 1)), palette, capitalLetter);
+	auto textTexture = writeGradient(std::string(text.substr(1, text.length())), palette, startColor);
+	
+	auto layout = pocus::Provider::provideTexture(calculateWidth(text), Font::GLYPH_SIZE);
+	layout->fill(255, 0, 255);
+	layout->paste(*capitalTexture, 0, 0, 0, 0);
+	layout->paste(*textTexture, 0, 0, calculateWidth(std::string(text.substr(0, 1))), 0);
+	layout->setColorKey(255, 0, 255);
+	
+	return std::move(layout);
+}
+
 std::unique_ptr<pocus::Texture> Font::writeGradient(const std::string& text, const Palette& palette, uint8_t startColor) {
 	auto textureLabel = internalWrite(text);
 	

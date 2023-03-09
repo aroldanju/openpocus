@@ -15,18 +15,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OPENPOCUS_DEFINITIONS_H
-#define OPENPOCUS_DEFINITIONS_H
+#ifndef MAINMENU_H
+#define MAINMENU_H
 
-#define GAME_NAME  		"Open Pocus"
-#define SCREEN_WIDTH	320
-#define SCREEN_HEIGHT	200
+#include "engine/state.h"
+#include "engine/menu.h"
 
-#define DAT_PATH		"../hocuspocus"
+class MainMenu : public pocus::State {
+public:
+	void onCreate(pocus::data::Data& data) override;
+	void onDetach() override;
+	void onAttach() override;
+	void release() override;
+	void handleEvents(pocus::EventHandler &eventHandler) override;
+	void render(pocus::Renderer &renderer) override;
+	void update(float dt) override;
+	
+/*
+"Begin a new game",
+"Restore an old game",
+"Ordering Information",
+"Instructions"
+"Legends and hints!",
+"Change game options",
+"High scores",
+"Preview future levels",
+"Quit - return to DOS"
+*/
+private:
+	pocus::Menu menu;
+};
 
-#define STATE_SPLASH_APOGEE		"splash_apogee"
-#define STATE_SPLASH_INTRO		"splash_intro"
-#define STATE_GAME				"game"
-#define STATE_MENU_MAIN			"main_menu"
-
-#endif // OPENPOCUS_DEFINITIONS_H
+#endif // MAINMENU_H
