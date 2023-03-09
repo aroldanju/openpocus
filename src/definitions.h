@@ -24,4 +24,8 @@
 
 #define DAT_PATH		"../hocuspocus"
 
+#define STATE_SPLASH_APOGEE		"splash_apogee"
+#define STATE_SPLASH_INTRO		"splash_intro"
+#define STATE_GAME				"game"
+
 #endif // OPENPOCUS_DEFINITIONS_H

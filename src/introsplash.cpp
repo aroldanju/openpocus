@@ -22,6 +22,7 @@
 #include "engine/log.h"
 #include "engine/data/asset/voc.h"
 #include "engine/musicplayer.h"
+#include "definitions.h"
 
 void IntroSplash::onCreate(pocus::data::Data& data) {
 	pocus::data::asset::Pcx introSplashImage;
@@ -63,7 +64,7 @@ void IntroSplash::handleEvents(pocus::EventHandler &eventHandler) {
 	if (!this->fade.isRunning() && pocus::getElapsedTime(this->startTick) >= IntroSplash::MIN_TIME) {
 		if (eventHandler.isAnyButtonDown()) {
 			this->fade.start(pocus::Fade::FADE_OUT, [this] {
-				setMessage(pocus::State::MESSAGE_CHANGE, (void*)"my_state");
+				setMessage(pocus::State::MESSAGE_CHANGE, (void*)STATE_GAME);
 			});
 		}
 	}
@@ -79,7 +80,7 @@ void IntroSplash::update(float dt) {
 	
 	if (pocus::getElapsedTime(this->startTick) >= IntroSplash::TIME && !this->fade.isRunning()) {
 		this->fade.start(pocus::Fade::FADE_OUT, [this]{
-			setMessage(pocus::State::MESSAGE_CHANGE, (void*)"my_state");
+			setMessage(pocus::State::MESSAGE_CHANGE, (void*)STATE_GAME);
 		});
 	}
 }

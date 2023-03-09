@@ -20,6 +20,7 @@
 #include "engine/data/asset/pcx.h"
 #include "version.h"
 #include "engine/data/asset/midi.h"
+#include "definitions.h"
 
 void ApogeeSplash::onCreate(pocus::data::Data& data) {
 	pocus::data::asset::Pcx apogeeSplashImage;
@@ -55,7 +56,7 @@ void ApogeeSplash::handleEvents(pocus::EventHandler &eventHandler) {
 	if (!this->fade.isRunning()) {
 		this->fade.start(pocus::Fade::FADE_OUT, [this]{
 			this->backgroundMusic->stop();
-			setMessage(pocus::State::MESSAGE_CHANGE, (void*)"intro_splash");
+			setMessage(pocus::State::MESSAGE_CHANGE, (void*)STATE_SPLASH_INTRO);
 		});
 	}
 }
@@ -71,7 +72,7 @@ void ApogeeSplash::update(float dt) {
 	if (pocus::getElapsedTime(this->startTick) >= ApogeeSplash::TIME && !this->fade.isRunning()) {
 		this->fade.start(pocus::Fade::FADE_OUT, [this]{
 			this->backgroundMusic->stop();
-			setMessage(pocus::State::MESSAGE_CHANGE, (void*)"intro_splash");
+			setMessage(pocus::State::MESSAGE_CHANGE, (void*)STATE_SPLASH_INTRO);
 		});
 	}
 }

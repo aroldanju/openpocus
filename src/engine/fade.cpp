@@ -82,10 +82,6 @@ void Fade::update(float dt) {
 }
 
 void Fade::render(Renderer& renderer) {
-	if (!this->running) {
-		return;
-	}
-	
 	renderer.drawRect(0, 0, -1, -1, this->color);
 }
 

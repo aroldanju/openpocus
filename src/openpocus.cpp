@@ -34,11 +34,11 @@ OpenPocus::OpenPocus(const pocus::RendererParameters &rendererParameters):
 }
 
 void OpenPocus::createStates(pocus::StateManager& stateManager) {
-	stateManager.addState("splash_apogee", std::make_unique<ApogeeSplash>());
-	stateManager.addState("intro_splash", std::make_unique<IntroSplash>());
-	stateManager.addState("my_state", std::make_unique<StateGame>());
+	stateManager.addState(STATE_SPLASH_APOGEE, std::make_unique<ApogeeSplash>());
+	stateManager.addState(STATE_SPLASH_INTRO, std::make_unique<IntroSplash>());
+	stateManager.addState(STATE_GAME, std::make_unique<StateGame>());
 	
-	stateManager.setStartupState("splash_apogee");
+	stateManager.setStartupState(STATE_SPLASH_APOGEE);
 }
 
 bool OpenPocus::loadData(pocus::data::Data& data) {
