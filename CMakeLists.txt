@@ -43,6 +43,7 @@ set(engine_sources
         src/engine/texture.h
         src/engine/renderer.h
         src/engine/audio.h
+        src/engine/musicplayer.cpp
         )
 
 set(sdl_sources

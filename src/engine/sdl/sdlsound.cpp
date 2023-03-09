@@ -59,3 +59,15 @@ void SdlSound::play() {
 		return;
 	}
 }
+
+void SdlSound::stop() {
+	if (this->music) {
+		Mix_HaltMusic();
+		return;
+	}
+	
+	if (this->chunk) {
+		Mix_HaltChannel(-1);
+		return;
+	}
+}
