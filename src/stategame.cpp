@@ -21,18 +21,23 @@
 #include "engine/data/asset/palette.h"
 #include "definitions.h"
 #include "version.h"
+#include "engine/data/asset/font.h"
 
 void StateGame::onCreate(pocus::data::Data& data) {
 	pocus::data::asset::Image image;
 	pocus::data::asset::Palette palette {};
+	pocus::data::asset::Font font;
 	
 	pocus::data::DataFile& paletteFile = data.fetchFile(DATFILE_PALETTE_GAME);
 	pocus::data::DataFile& hudFile = data.fetchFile(DATFILE_IMAGE_HUD);
+	pocus::data::DataFile& fontFile = data.fetchFile(DATFILE_FONT_MAIN);
 	
 	palette.loadFromStream(paletteFile.getContent(), paletteFile.getLength());
 	image.loadFromStream(hudFile.getContent(), hudFile.getLength());
+	font.loadFromStream(fontFile.getContent(), fontFile.getLength());
 	
 	this->textureHud = image.createTexture(palette);
+	this->label = font.write("This is a label using Hocus Pocus font.", palette, 5);
 }
 
 void StateGame::onDetach() {
@@ -53,6 +58,7 @@ void StateGame::handleEvents(pocus::EventHandler &eventHandler) {
 
 void StateGame::render(pocus::Renderer &renderer) {
 	renderer.drawTexture(*this->textureHud, 0, SCREEN_HEIGHT - this->textureHud->getHeight());
+	renderer.drawTexture(*this->label, 0, 0);
 }
 
 void StateGame::update(float dt) {

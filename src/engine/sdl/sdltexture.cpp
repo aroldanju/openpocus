@@ -82,3 +82,33 @@ bool SdlTexture::loadFromStream(const char *stream, uint32_t length) {
 	
 	return true;
 }
+
+void SdlTexture::fill(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) {
+	uint32_t color = SDL_MapRGBA(this->surface->format, red, green, blue, alpha);
+	SDL_FillRect(this->surface, nullptr, color);
+}
+
+void SdlTexture::paste(const Texture& texture, uint32_t fx, uint32_t fy, uint32_t tx, uint32_t ty) {
+	SDL_Rect sdlRectSrc = (SDL_Rect){ (int)fx, (int)fy, (int)texture.getWidth(), (int)texture.getHeight() };
+	SDL_Rect sdlRectDst = (SDL_Rect){ (int)tx, (int)ty, (int)texture.getWidth(), (int)texture.getHeight() };
+	
+	const auto& sdlTexture = reinterpret_cast<const SdlTexture&>(texture);
+	
+	SDL_BlitSurface(sdlTexture.surface, &sdlRectSrc, this->surface, &sdlRectDst);
+}
+
+void SdlTexture::getPixel(uint32_t index, uint8_t* red, uint8_t* green, uint8_t* blue, uint8_t* alpha) {
+	Uint32 *pixels = (Uint32*)this->surface->pixels;
+	Uint32 tempPixel = pixels[index];
+	
+	if (alpha == nullptr) {
+		SDL_GetRGB(tempPixel, this->surface->format, red, green, blue);
+	}
+	else {
+		SDL_GetRGBA(tempPixel, this->surface->format, red, green, blue, alpha);
+	}
+}
+
+void SdlTexture::setColorKey(uint8_t red, uint8_t green, uint8_t blue) {
+	SDL_SetColorKey(this->surface, SDL_TRUE, SDL_MapRGB(this->surface->format, red, green, blue));
+}

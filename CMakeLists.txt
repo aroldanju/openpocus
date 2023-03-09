@@ -29,6 +29,7 @@ set(data_sources
         src/engine/data/asset/pcx.cpp
         src/engine/data/asset/voc.cpp
         src/engine/data/asset/midi.cpp
+        src/engine/data/asset/font.cpp
         )
 
 set(engine_sources
