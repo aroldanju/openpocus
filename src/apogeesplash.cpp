@@ -52,7 +52,11 @@ void ApogeeSplash::release() {
 }
 
 void ApogeeSplash::handleEvents(pocus::EventHandler &eventHandler) {
-
+	if (!this->fade.isRunning()) {
+		this->fade.start(pocus::Fade::FADE_OUT, [this]{
+			setMessage(pocus::State::MESSAGE_CHANGE, (void*)"intro_splash");
+		});
+	}
 }
 
 void ApogeeSplash::render(pocus::Renderer &renderer) {
@@ -65,7 +69,7 @@ void ApogeeSplash::update(float dt) {
 	
 	if (pocus::getElapsedTime(this->startTick) >= ApogeeSplash::TIME && !this->fade.isRunning()) {
 		this->fade.start(pocus::Fade::FADE_OUT, [this]{
-			setMessage(pocus::State::MESSAGE_QUIT);
+			setMessage(pocus::State::MESSAGE_CHANGE, (void*)"intro_splash");
 		});
 	}
 }

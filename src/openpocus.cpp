@@ -22,6 +22,7 @@
 #include "version.h"
 #include "apogeesplash.h"
 #include "definitions.h"
+#include "introsplash.h"
 
 OpenPocus::OpenPocus(const pocus::RendererParameters &rendererParameters):
 	PocusEngine(
@@ -34,9 +35,10 @@ OpenPocus::OpenPocus(const pocus::RendererParameters &rendererParameters):
 
 void OpenPocus::createStates(pocus::StateManager& stateManager) {
 	stateManager.addState("splash_apogee", std::make_unique<ApogeeSplash>());
+	stateManager.addState("intro_splash", std::make_unique<IntroSplash>());
 	stateManager.addState("my_state", std::make_unique<StateGame>());
 	
-	stateManager.setStartupState("my_state");
+	stateManager.setStartupState("splash_apogee");
 }
 
 bool OpenPocus::loadData(pocus::data::Data& data) {

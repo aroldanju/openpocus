@@ -17,6 +17,7 @@ set(sources
         src/openpocus.cpp
         src/stategame.cpp
         src/apogeesplash.cpp
+        src/introsplash.cpp
         )
 
 set(data_sources
