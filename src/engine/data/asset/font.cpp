@@ -83,17 +83,36 @@ void Font::release() {
 	this->glyphs.erase(this->glyphs.begin(), this->glyphs.end());
 }
 
-std::unique_ptr<pocus::Texture> Font::write(const std::string& text, const Palette& palette, uint8_t color) {
-	const uint32_t labelWidth = text.length() * GLYPH_SIZE;
+uint32_t Font::calculateWidth(const std::string& text) {
+	uint32_t width = 0;
+	
+	for (auto& character : text) {
+		auto glyph = this->glyphs.find(character);
+		uint8_t characterWidth = Font::SPACE_WIDTH;
+		
+		if (glyph != this->glyphs.end()) {
+			characterWidth = glyph->second.getWidth() + 1;
+		}
+		
+		width += characterWidth;
+	}
+	
+	return width;
+}
+
+std::unique_ptr<pocus::Texture> Font::internalWrite(const std::string& text) {
+	const uint32_t labelWidth = calculateWidth(text);
 	const uint32_t labelHeight = GLYPH_SIZE;
 	uint32_t offset = 0;
 	
 	auto textureLabel = pocus::Provider::provideTexture(labelWidth, labelHeight);
 	
+	textureLabel->fill(255, 0, 255, 255);
+	
 	// Create label
 	for (auto& character : text) {
 		auto glyph = this->glyphs.find(character);
-		uint8_t characterWidth = Font::GLYPH_SIZE;
+		uint8_t characterWidth = Font::SPACE_WIDTH;
 		
 		if (glyph != this->glyphs.end()) {
 			textureLabel->paste(glyph->second.getTexture(), 0, 0, offset, 0);
@@ -103,11 +122,75 @@ std::unique_ptr<pocus::Texture> Font::write(const std::string& text, const Palet
 		offset += characterWidth;
 	}
 	
+	return std::move(textureLabel);
+}
+
+std::unique_ptr<pocus::Texture> Font::write(const std::string& text, const Palette& palette, uint8_t color) {
+	auto textureLabel = internalWrite(text);
+	
 	// Apply color
 	for (uint32_t i = 0; i < textureLabel->getWidth() * textureLabel->getHeight(); i++) {
 		uint8_t red, green, blue;
 		const PaletteColor& paletteColor = palette.colors[color];
 		textureLabel->getPixel(i, &red, &green, &blue, nullptr);
+		if (red == 255 && green == 255 && blue == 255) {
+			textureLabel->setPixel(i, paletteColor.r, paletteColor.g, paletteColor.b, 255);
+		}
+	}
+	
+	textureLabel->setColorKey(255, 0, 255);
+	
+	return std::move(textureLabel);
+}
+
+std::unique_ptr<pocus::Texture> Font::writeShadow(const std::string& text, const Palette& palette, uint8_t color) {
+	auto textureLabel = pocus::Provider::provideTexture(calculateWidth(text) + 1, GLYPH_SIZE + 1);
+	textureLabel->fill(255, 0, 255, 255);
+	
+	auto foreground = internalWrite(text);
+	auto shadow = internalWrite(text);
+	
+	// Apply color
+	for (uint32_t i = 0; i < textureLabel->getWidth() * textureLabel->getHeight(); i++) {
+		uint8_t red, green, blue;
+		const PaletteColor& paletteColor = palette.colors[color];
+		
+		foreground->getPixel(i, &red, &green, &blue, nullptr);
+		if (red == 255 && green == 255 && blue == 255) {
+			foreground->setPixel(i, paletteColor.r, paletteColor.g, paletteColor.b, 255);
+		}
+		
+		shadow->getPixel(i, &red, &green, &blue, nullptr);
+		if (red == 255 && green == 255 && blue == 255) {
+			shadow->setPixel(i, 0, 0, 0, 255);
+		}
+	}
+	
+	// Lay out both
+	shadow->setColorKey(255, 0, 255);
+	textureLabel->paste(*shadow, 0, 0, 1, 1);
+	
+	foreground->setColorKey(255, 0, 255);
+	textureLabel->paste(*foreground, 0, 0, 0, 0);
+	
+	// Color key
+	textureLabel->setColorKey(255, 0, 255);
+	
+	return std::move(textureLabel);
+}
+
+std::unique_ptr<pocus::Texture> Font::writeGradient(const std::string& text, const Palette& palette, uint8_t startColor) {
+	auto textureLabel = internalWrite(text);
+	
+	// Apply color
+	for (uint32_t i = 0; i < textureLabel->getWidth() * textureLabel->getHeight(); i++) {
+		const uint32_t y = i / textureLabel->getWidth();
+		uint8_t red, green, blue;
+		
+		const PaletteColor& paletteColor = palette.colors[startColor + y];
+		
+		textureLabel->getPixel(i, &red, &green, &blue, nullptr);
+		
 		if (red == 255 && green == 255 && blue == 255) {
 			textureLabel->setPixel(i, paletteColor.r, paletteColor.g, paletteColor.b, 255);
 		}

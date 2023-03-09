@@ -37,7 +37,9 @@ void StateGame::onCreate(pocus::data::Data& data) {
 	font.loadFromStream(fontFile.getContent(), fontFile.getLength());
 	
 	this->textureHud = image.createTexture(palette);
-	this->label = font.write("This is a label using Hocus Pocus font.", palette, 5);
+	//this->label = font.writeShadow("This is a label using Hocus Pocus font.", palette, 8);
+	//this->label = font.writeShadow("This is a label using Hocus Pocus font.", palette, 8);
+	this->label = font.writeGradient("This is a label using Hocus Pocus font.", palette, 8);
 }
 
 void StateGame::onDetach() {

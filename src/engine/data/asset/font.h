@@ -43,16 +43,22 @@ private:
 
 class Font : public Asset {
 public:
-	enum { GLYPH_SIZE = 8 };
+	enum { GLYPH_SIZE = 8, SPACE_WIDTH = 6 };
 	
 public:
 	bool loadFromStream(const char* stream, uint32_t length) override;
 	void release() override;
 	
 	std::unique_ptr<Texture> write(const std::string& text, const Palette& palette, uint8_t color);
+	std::unique_ptr<Texture> writeShadow(const std::string& text, const Palette& palette, uint8_t color);
+	std::unique_ptr<Texture> writeGradient(const std::string& text, const Palette& palette, uint8_t startColor);
+	
+	uint32_t calculateWidth(const std::string& text);
 	
 private:
 	std::unordered_map<char, FontGlyph> glyphs;
+	
+	std::unique_ptr<Texture> internalWrite(const std::string& text);
 };
 
 }
