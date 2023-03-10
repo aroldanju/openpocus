@@ -18,6 +18,7 @@ set(sources
         src/stategame.cpp
         src/apogeesplash.cpp
         src/introsplash.cpp
+        src/mainmenu.cpp
         )
 
 set(data_sources
@@ -44,6 +45,9 @@ set(engine_sources
         src/engine/renderer.h
         src/engine/audio.h
         src/engine/musicplayer.cpp
+        src/engine/menu.cpp
+        src/engine/particles.cpp
+        src/engine/animation.cpp
         )
 
 set(sdl_sources

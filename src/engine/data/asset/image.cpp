@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <iostream>
 #include "image.h"
 #include "../../provider/provider.h"
 #include "../../log.h"
@@ -52,18 +53,25 @@ void Image::release() {
 
 }
 
-std::unique_ptr<pocus::Texture> Image::createTexture(const Palette& palette)	{
+std::unique_ptr<pocus::Texture> Image::createTexture(const Palette& palette, uint32_t paletteIndexOffset)	{
 	std::unique_ptr<Texture> texture = Provider::provideTexture(this->width, this->height);
 	
 	for (int i = 0; i < Image::BLOCKS; i++)	{
 		for (int y = 0; y < this->height; y++)	{
 			for (int x = 0; x < this->width; x++)	{
 				const int index = ((y * this->width) + x);
-				const PaletteColor &color = palette.colors[this->blocks[index]];
-				texture->setPixel(index, color.r, color.g, color.b, 255);
+				if (this->blocks[index] != 0) {
+					const PaletteColor &color = palette.colors[this->blocks[index] - paletteIndexOffset];
+					texture->setPixel(index, color.r, color.g, color.b, 255);
+				}
+				else {
+					texture->setPixel(index, 255, 0, 255, 0);
+				}
 			}
 		}
 	}
+	
+	texture->setColorKey(255, 0, 255);
 	
 	return std::move(texture);
 }

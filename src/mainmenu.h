@@ -15,34 +15,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _IMAGE_H
-#define _IMAGE_H
+#ifndef MAINMENU_H
+#define MAINMENU_H
 
-#include <cstdint>
-#include <vector>
-#include <memory>
-#include "../../texture.h"
-#include "asset.h"
-#include "palette.h"
+#include "engine/state.h"
+#include "engine/menu.h"
+#include "engine/particles.h"
+#include "engine/animation.h"
+#include "engine/fade.h"
 
-namespace pocus::data::asset {
-
-class Image : public Asset {
+class MainMenu : public pocus::State {
 public:
-	enum { BLOCKS = 4 };
-	
-public:
-	bool loadFromStream(const char* stream, uint32_t length) override;
+	void onCreate(pocus::data::Data& data) override;
+	void onDetach() override;
+	void onAttach() override;
 	void release() override;
-	
-	std::unique_ptr<Texture> createTexture(const Palette& palette, uint32_t paletteIndexOffset = 0);
+	void handleEvents(pocus::EventHandler &eventHandler) override;
+	void render(pocus::Renderer &renderer) override;
+	void update(float dt) override;
 	
 private:
-	uint16_t width;
-	uint16_t height;
-	std::vector<uint8_t> blocks;
+	pocus::Menu menu;
+	pocus::Particles particles;
+	std::unique_ptr<pocus::Texture> bottomTexture;
+	std::unique_ptr<pocus::Texture> topTexture;
+	pocus::Fade fade;
 };
 
-}
-
-#endif //_IMAGE_H
+#endif // MAINMENU_H

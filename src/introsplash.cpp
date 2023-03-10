@@ -64,7 +64,7 @@ void IntroSplash::handleEvents(pocus::EventHandler &eventHandler) {
 	if (!this->fade.isRunning() && pocus::getElapsedTime(this->startTick) >= IntroSplash::MIN_TIME) {
 		if (eventHandler.isAnyButtonDown()) {
 			this->fade.start(pocus::Fade::FADE_OUT, [this] {
-				setMessage(pocus::State::MESSAGE_CHANGE, (void*)STATE_GAME);
+				setMessage(pocus::State::MESSAGE_CHANGE, (void*)STATE_MENU_MAIN);
 			});
 		}
 	}
@@ -80,7 +80,7 @@ void IntroSplash::update(float dt) {
 	
 	if (pocus::getElapsedTime(this->startTick) >= IntroSplash::TIME && !this->fade.isRunning()) {
 		this->fade.start(pocus::Fade::FADE_OUT, [this]{
-			setMessage(pocus::State::MESSAGE_CHANGE, (void*)STATE_GAME);
+			setMessage(pocus::State::MESSAGE_CHANGE, (void*)STATE_MENU_MAIN);
 		});
 	}
 }

@@ -179,6 +179,19 @@ std::unique_ptr<pocus::Texture> Font::writeShadow(const std::string& text, const
 	return std::move(textureLabel);
 }
 
+std::unique_ptr<pocus::Texture> Font::writeGradient(const std::string& text, const Palette& palette, uint8_t startColor, uint8_t capitalLetter) {
+	auto capitalTexture = writeGradient(std::string(text.substr(0, 1)), palette, capitalLetter);
+	auto textTexture = writeGradient(std::string(text.substr(1, text.length())), palette, startColor);
+	
+	auto layout = pocus::Provider::provideTexture(calculateWidth(text), Font::GLYPH_SIZE);
+	layout->fill(255, 0, 255);
+	layout->paste(*capitalTexture, 0, 0, 0, 0);
+	layout->paste(*textTexture, 0, 0, calculateWidth(std::string(text.substr(0, 1))), 0);
+	layout->setColorKey(255, 0, 255);
+	
+	return std::move(layout);
+}
+
 std::unique_ptr<pocus::Texture> Font::writeGradient(const std::string& text, const Palette& palette, uint8_t startColor) {
 	auto textureLabel = internalWrite(text);
 	
@@ -195,6 +208,44 @@ std::unique_ptr<pocus::Texture> Font::writeGradient(const std::string& text, con
 			textureLabel->setPixel(i, paletteColor.r, paletteColor.g, paletteColor.b, 255);
 		}
 	}
+	
+	textureLabel->setColorKey(255, 0, 255);
+	
+	return std::move(textureLabel);
+}
+
+
+std::unique_ptr<pocus::Texture> Font::writeGradientShadow(const std::string& text, const Palette& palette, uint8_t startColor) {
+	auto textureLabel = pocus::Provider::provideTexture(calculateWidth(text) + 1, GLYPH_SIZE + 1);
+	textureLabel->fill(255, 0, 255, 255);
+	
+	auto foreground = internalWrite(text);
+	auto shadow = internalWrite(text);
+	
+	// Apply color
+	for (uint32_t i = 0; i < textureLabel->getWidth() * textureLabel->getHeight(); i++) {
+		const uint32_t y = i / textureLabel->getWidth();
+		uint8_t red, green, blue;
+		
+		const PaletteColor& paletteColor = palette.colors[startColor + y];
+		
+		foreground->getPixel(i, &red, &green, &blue, nullptr);
+		if (red == 255 && green == 255 && blue == 255) {
+			foreground->setPixel(i, paletteColor.r, paletteColor.g, paletteColor.b, 255);
+		}
+		
+		shadow->getPixel(i, &red, &green, &blue, nullptr);
+		if (red == 255 && green == 255 && blue == 255) {
+			shadow->setPixel(i, 0, 0, 0, 255);
+		}
+	}
+	
+	// Lay out both
+	shadow->setColorKey(255, 0, 255);
+	textureLabel->paste(*shadow, 0, 0, 1, 1);
+	
+	foreground->setColorKey(255, 0, 255);
+	textureLabel->paste(*foreground, 0, 0, 0, 0);
 	
 	textureLabel->setColorKey(255, 0, 255);
 	
