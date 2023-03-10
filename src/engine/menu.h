@@ -21,9 +21,12 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <functional>
 #include "texture.h"
 #include "renderer.h"
 #include "data/asset/font.h"
+#include "eventhandler.h"
+#include "animation.h"
 
 namespace pocus {
 
@@ -32,31 +35,39 @@ public:
 	enum { SPACE_HEIGHT = 4, BOTTOM_TEXT_Y = 188 };
 	
 public:
+	void setIndicator(Animation animation);
 	void addOption(const std::string& option);
+	void addOption(const std::string& option, std::function<void()> handler);
 	void addSpace();
-	[[nodiscard]] const std::vector<std::string>& getOptions() const;
 	void setFont(data::asset::Font font);
 	void setPalette(data::asset::Palette& palette);
 	void render(Renderer& renderer);
+	void handleEvents(EventHandler& eventHandler);
+	void update(float dt);
 	void setPosition(uint32_t x, uint32_t y);
 	void setLineSpacing(uint32_t spacing);
 	void setTextColor(uint8_t color);
 	void setCapitalLetterColor(uint8_t color);
 	void setBottomText(const std::string& text);
 	void setBottomTextColor(uint8_t color);
+	void moveDown();
+	void moveUp();
 	
+	int8_t getCurrentSelection() const;
+
 private:
 	data::asset::Font font;
 	data::asset::Palette palette;
 	uint32_t x { 0 };
 	uint32_t y { 0 };
 	uint32_t lineSpacing { 10 };
-	std::vector<std::string> options;
-	std::vector<std::unique_ptr<Texture>> labels;
+	std::vector<std::tuple<std::string, std::function<void()>, std::unique_ptr<Texture>>> options;
 	uint8_t textColor, capitalLetterColor;
 	uint8_t bottomTextColor;
 	std::string bottomText;
 	std::unique_ptr<Texture> bottomLabel { nullptr };
+	int8_t currentSelection { 0 };
+	Animation indicatorAnimation;
 	
 };
 

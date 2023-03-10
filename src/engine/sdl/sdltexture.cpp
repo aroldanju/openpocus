@@ -48,7 +48,7 @@ bool SdlTexture::createBlank(uint32_t width, uint32_t height) {
 }
 
 void SdlTexture::setPixel(uint32_t index, uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) {
-	Uint32* pixels = (Uint32*)this->surface->pixels;
+	auto* pixels = (Uint32*)this->surface->pixels;
 	pixels[index] = SDL_MapRGB(this->surface->format,red,green,blue);
 }
 
@@ -111,4 +111,15 @@ void SdlTexture::getPixel(uint32_t index, uint8_t* red, uint8_t* green, uint8_t*
 
 void SdlTexture::setColorKey(uint8_t red, uint8_t green, uint8_t blue) {
 	SDL_SetColorKey(this->surface, SDL_TRUE, SDL_MapRGB(this->surface->format, red, green, blue));
+}
+
+std::unique_ptr<Texture> SdlTexture::extract(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
+	auto sdlTexture = std::make_unique<SdlTexture>();
+	
+	SDL_Rect rect = (SDL_Rect){(int)x, (int)y, (int)w, (int)h};
+	
+	sdlTexture->createBlank(w, h);
+	SDL_BlitSurface(this->surface, &rect, sdlTexture->surface, nullptr);
+	
+	return std::move(sdlTexture);
 }

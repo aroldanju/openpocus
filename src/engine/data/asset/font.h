@@ -53,6 +53,7 @@ public:
 	std::unique_ptr<Texture> writeShadow(const std::string& text, const Palette& palette, uint8_t color);
 	std::unique_ptr<Texture> writeGradient(const std::string& text, const Palette& palette, uint8_t startColor);
 	std::unique_ptr<Texture> writeGradient(const std::string& text, const Palette& palette, uint8_t startColor, uint8_t capitalLetter);
+	std::unique_ptr<Texture> writeGradientShadow(const std::string& text, const Palette& palette, uint8_t startColor);
 	
 	uint32_t calculateWidth(const std::string& text);
 	

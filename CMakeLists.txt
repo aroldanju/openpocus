@@ -46,6 +46,8 @@ set(engine_sources
         src/engine/audio.h
         src/engine/musicplayer.cpp
         src/engine/menu.cpp
+        src/engine/particles.cpp
+        src/engine/animation.cpp
         )
 
 set(sdl_sources

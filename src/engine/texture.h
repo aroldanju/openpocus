@@ -19,6 +19,7 @@
 #define _TEXTURE_H
 
 #include <cstdint>
+#include <memory>
 
 namespace pocus {
 
@@ -34,6 +35,7 @@ public:
 	virtual void fill(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255) = 0;
 	virtual void paste(const Texture& texture, uint32_t fx, uint32_t fy, uint32_t tx, uint32_t ty) = 0;
 	virtual void setColorKey(uint8_t red, uint8_t green, uint8_t blue) = 0;
+	virtual std::unique_ptr<Texture> extract(uint32_t x, uint32_t y, uint32_t w, uint32_t h) = 0;
 };
 
 }

@@ -16,6 +16,7 @@
  */
 
 #include <iostream>
+#include <functional>
 #include "menu.h"
 #include "../definitions.h"
 
@@ -30,16 +31,23 @@ void Menu::setPalette(data::asset::Palette& palette) {
 }
 
 void Menu::addOption(const std::string& option) {
-	this->options.push_back(option);
-	this->labels.push_back(this->font.writeGradient(option, this->palette, this->textColor, this->capitalLetterColor));
+	this->options.emplace_back(option, nullptr, this->font.writeGradient(option, this->palette, this->textColor, this->capitalLetterColor));
+}
+
+void Menu::addOption(const std::string& option, std::function<void()> handler) {
+	this->options.emplace_back(option, std::move(handler), this->font.writeGradient(option, this->palette, this->textColor, this->capitalLetterColor));
 }
 
 void Menu::addSpace() {
-	this->options.emplace_back("");
+	this->options.emplace_back("", nullptr, nullptr);
 }
 
-const std::vector<std::string>& Menu::getOptions() const {
-	return this->options;
+void Menu::setIndicator(Animation animation) {
+	this->indicatorAnimation = std::move(animation);
+}
+
+void Menu::update(float dt) {
+	this->indicatorAnimation.update(dt);
 }
 
 void Menu::render(Renderer &renderer) {
@@ -47,12 +55,18 @@ void Menu::render(Renderer &renderer) {
 	uint32_t yOffset = this->y;
 	for (int i = 0; i < this->options.size(); i++) {
 		uint32_t offset = this->lineSpacing;
-		if (!this->options[i].empty()) {
-			renderer.drawTexture(*this->labels[label], this->x, (int)yOffset);
+		if (!std::get<0>(this->options[i]).empty()) {
+			renderer.drawTexture(*std::get<2>(this->options[i]), this->x, (int)yOffset);
 			label++;
 		}
 		else {
 			offset = Menu::SPACE_HEIGHT;
+		}
+		
+		if (this->currentSelection == i) {
+			this->indicatorAnimation.render(renderer,
+											(int)this->x - this->indicatorAnimation.getWidth() * 1.5,
+											(int)yOffset - (this->indicatorAnimation.getHeight() * 0.25));
 		}
 		
 		yOffset += offset;
@@ -61,6 +75,20 @@ void Menu::render(Renderer &renderer) {
 	// Bottom text
 	if (this->bottomLabel) {
 		renderer.drawTexture(*this->bottomLabel, SCREEN_WIDTH / 2 - this->font.calculateWidth(this->bottomText) / 2, Menu::BOTTOM_TEXT_Y);
+	}
+}
+
+void Menu::handleEvents(EventHandler& eventHandler) {
+	if (eventHandler.isButtonDown(pocus::BUTTON_DOWN)) {
+		moveDown();
+	}
+	else if (eventHandler.isButtonDown(pocus::BUTTON_UP)) {
+		moveUp();
+	}
+	else if (eventHandler.isButtonDown(pocus::BUTTON_FIRE)) {
+		if (std::get<1>(this->options[this->currentSelection])) {
+			std::get<1>(this->options[this->currentSelection])();
+		}
 	}
 }
 
@@ -87,5 +115,37 @@ void Menu::setBottomTextColor(uint8_t color) {
 
 void Menu::setBottomText(const std::string& text) {
 	this->bottomText = text;
-	this->bottomLabel = this->font.writeGradient(text, this->palette, this->bottomTextColor);
+	this->bottomLabel = this->font.writeGradientShadow(text, this->palette, this->bottomTextColor);
+}
+
+void Menu::moveDown() {
+	this->currentSelection++;
+	
+	if (this->currentSelection >= this->options.size()) {
+		this->currentSelection = 0;
+		return;
+	}
+	
+	const std::string& option = std::get<0>(this->options[this->currentSelection]);
+	if (option.empty()) {
+		moveDown();
+	}
+}
+
+void Menu::moveUp() {
+	this->currentSelection--;
+	
+	if (this->currentSelection < 0) {
+		this->currentSelection = this->options.size() - 1;
+		return;
+	}
+	
+	const std::string& option = std::get<0>(this->options[this->currentSelection]);
+	if (option.empty()) {
+		moveUp();
+	}
+}
+
+int8_t Menu::getCurrentSelection() const {
+	return currentSelection;
 }

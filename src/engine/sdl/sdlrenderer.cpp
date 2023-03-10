@@ -34,7 +34,7 @@ bool SdlRenderer::initialize() {
 	this->window = SDL_CreateWindow(
 			this->parameters.title.c_str(),
 			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-			this->parameters.width, this->parameters.height,
+			this->parameters.width * 4, this->parameters.height * 4,
 			SDL_WINDOW_RESIZABLE);
 	if (!this->window) {
 		return false;
@@ -110,4 +110,9 @@ void SdlRenderer::drawRect(int x, int y, int w, int h, const Color &color) {
 	SDL_Rect rect = (SDL_Rect){x, y, w, h};
 	SDL_SetRenderDrawColor(this->renderer, color.red, color.green, color.blue, color.alpha);
 	SDL_RenderFillRect(this->renderer, &rect);
+}
+
+void SdlRenderer::drawPoint(int x, int y, const Color& color) {
+	SDL_SetRenderDrawColor(this->renderer, color.red, color.green, color.blue, color.alpha);
+	SDL_RenderDrawPoint(this->renderer, x, y);
 }

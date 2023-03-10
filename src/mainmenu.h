@@ -20,6 +20,9 @@
 
 #include "engine/state.h"
 #include "engine/menu.h"
+#include "engine/particles.h"
+#include "engine/animation.h"
+#include "engine/fade.h"
 
 class MainMenu : public pocus::State {
 public:
@@ -31,19 +34,12 @@ public:
 	void render(pocus::Renderer &renderer) override;
 	void update(float dt) override;
 	
-/*
-"Begin a new game",
-"Restore an old game",
-"Ordering Information",
-"Instructions"
-"Legends and hints!",
-"Change game options",
-"High scores",
-"Preview future levels",
-"Quit - return to DOS"
-*/
 private:
 	pocus::Menu menu;
+	pocus::Particles particles;
+	std::unique_ptr<pocus::Texture> bottomTexture;
+	std::unique_ptr<pocus::Texture> topTexture;
+	pocus::Fade fade;
 };
 
 #endif // MAINMENU_H

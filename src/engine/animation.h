@@ -15,34 +15,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _IMAGE_H
-#define _IMAGE_H
+#ifndef ANIMATION_H
+#define ANIMATION_H
 
-#include <cstdint>
 #include <vector>
 #include <memory>
-#include "../../texture.h"
-#include "asset.h"
-#include "palette.h"
+#include "texture.h"
+#include "definitions.h"
+#include "renderer.h"
 
-namespace pocus::data::asset {
+namespace pocus {
 
-class Image : public Asset {
+class Animation {
 public:
-	enum { BLOCKS = 4 };
+	void addFrame(std::unique_ptr<Texture> texture);
 	
-public:
-	bool loadFromStream(const char* stream, uint32_t length) override;
-	void release() override;
+	void update(float dt);
+	void render(Renderer& renderer, int x, int y);
 	
-	std::unique_ptr<Texture> createTexture(const Palette& palette, uint32_t paletteIndexOffset = 0);
+	uint32_t getFps() const;
 	
+	void setFps(uint32_t fps);
+	
+	static Animation createFromTexture(Texture& texture, uint32_t columns, uint32_t rows);
+	
+	uint32_t getWidth() const;
+	uint32_t getHeight() const;
+
 private:
-	uint16_t width;
-	uint16_t height;
-	std::vector<uint8_t> blocks;
+	uint32_t fps { 5 };
+	std::vector<std::unique_ptr<Texture>> frames;
+	uint32_t currentFrame { 0 };
+	Tick lastUpdateTick;
 };
 
 }
 
-#endif //_IMAGE_H
+#endif // ANIMATION_H
