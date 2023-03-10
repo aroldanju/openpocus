@@ -32,6 +32,7 @@ set(data_sources
         src/engine/data/asset/voc.cpp
         src/engine/data/asset/midi.cpp
         src/engine/data/asset/font.cpp
+        src/engine/data/asset/level.cpp
         )
 
 set(engine_sources

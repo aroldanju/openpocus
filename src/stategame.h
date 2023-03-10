@@ -35,6 +35,8 @@ public:
 private:
 	std::unique_ptr<pocus::Texture> textureHud;
 	std::unique_ptr<pocus::Texture> label;
+	
+	void loadLevel(pocus::data::Data& data, uint8_t episode, uint8_t stage);
 };
 
 #endif //STATEGAME_H
