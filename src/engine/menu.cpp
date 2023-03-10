@@ -85,7 +85,7 @@ void Menu::handleEvents(EventHandler& eventHandler) {
 	else if (eventHandler.isButtonDown(pocus::BUTTON_UP)) {
 		moveUp();
 	}
-	else if (eventHandler.isButtonDown(pocus::BUTTON_FIRE)) {
+	else if (eventHandler.isButtonDown(pocus::BUTTON_SELECTION)) {
 		if (std::get<1>(this->options[this->currentSelection])) {
 			std::get<1>(this->options[this->currentSelection])();
 		}

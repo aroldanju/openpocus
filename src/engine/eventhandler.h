@@ -27,7 +27,8 @@ enum Button_t {
 	BUTTON_UP = 3,
 	BUTTON_FIRE = 4,
 	BUTTON_JUMP = 5,
-    BUTTON_PAUSE = 6
+    BUTTON_PAUSE = 6,
+	BUTTON_SELECTION = 7
 };
 
 class EventHandler {
