@@ -131,6 +131,58 @@ private:
 	Entry switchCoordinates[SWITCHES];
 };
 
+class ToggleCoordinates : public Asset {
+public:
+	struct Entry {
+		uint16_t requiredKey;
+		uint16_t requiredTile;
+		uint16_t upperLeftX;
+		uint16_t upperLeftY;
+		uint16_t lowerRightX;
+		uint16_t lowerRightY;
+	};
+	
+	enum { TOGGLES = 25 };
+
+public:
+	bool loadFromStream(const char *stream, uint32_t length) override;
+	void release() override;
+	
+	[[nodiscard]] const Entry *getToggles() const;
+
+private:
+	Entry toggles[TOGGLES];
+};
+
+class TileProperties : public Asset {
+public:
+	struct Entry {
+		uint16_t spriteSet;
+		uint16_t health;
+		uint16_t projectileHSpeed;
+		uint16_t projectileVSpeed;
+		uint16_t projectileXOffset;
+		uint16_t targetPlayer;
+		uint16_t unk2;
+		uint16_t shootProjectiles;
+		uint16_t unk3;
+		uint16_t wobblyProjectiles;
+		uint16_t unk4;
+		uint16_t behaviour;
+	};
+	
+	enum { PROPERTIES = 10 };
+
+public:
+	bool loadFromStream(const char *stream, uint32_t length) override;
+	void release() override;
+	
+	[[nodiscard]] const Entry *getProperties() const;
+
+private:
+	Entry properties[PROPERTIES];
+};
+
 class EnemyTrigger : public Asset {
 public:
 	struct Entry {
@@ -144,10 +196,34 @@ public:
 	bool loadFromStream(const char *stream, uint32_t length) override;
 	void release() override;
 	
-	const Entry *getEntries() const;
+	[[nodiscard]] const Entry *getEntries() const;
 
 private:
 	Entry entries[ENEMIES];
+};
+
+class MapLayer : public Asset {
+public:
+	enum { WIDTH = 240, HEIGHT = 60 };
+	
+public:
+	bool loadFromStream(const char *stream, uint32_t length) override;
+	void release() override;
+
+private:
+	uint8_t data[HEIGHT][WIDTH];
+};
+
+class EventLayer : public Asset {
+public:
+	enum { WIDTH = 240, HEIGHT = 60 };
+
+public:
+	bool loadFromStream(const char *stream, uint32_t length) override;
+	void release() override;
+
+private:
+	uint16_t data[HEIGHT][WIDTH];
 };
 
 }

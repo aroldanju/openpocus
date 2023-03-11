@@ -176,3 +176,75 @@ void SwitchCoordinates::release() {
 const SwitchCoordinates::Entry *SwitchCoordinates::getSwitches() const {
 	return switchCoordinates;
 }
+
+// Toggle coordinates -----------------------------------------------------------------------------------------
+
+bool ToggleCoordinates::loadFromStream(const char *stream, uint32_t length) {
+	for (auto &entry : this->toggles) {
+		memcpy(&entry, stream, sizeof(Entry));
+		stream += sizeof(Entry);
+	}
+	
+	return true;
+}
+
+void ToggleCoordinates::release() {
+
+}
+
+const ToggleCoordinates::Entry *ToggleCoordinates::getToggles() const {
+	return toggles;
+}
+
+// Tile properties -----------------------------------------------------------------------------------------
+
+bool TileProperties::loadFromStream(const char *stream, uint32_t length) {
+	for (auto &entry : this->properties) {
+		memcpy(&entry, stream, sizeof(Entry));
+		stream += sizeof(Entry);
+	}
+	
+	return true;
+}
+
+void TileProperties::release() {
+
+}
+
+const TileProperties::Entry *TileProperties::getProperties() const {
+	return properties;
+}
+
+// Map layer -----------------------------------------------------------------------------------------
+
+bool MapLayer::loadFromStream(const char *stream, uint32_t length) {
+	for (auto &y : this->data) {
+		for (auto& tile : y) {
+			tile = *(uint8_t*)(stream);
+			stream++;
+		}
+	}
+	
+	return true;
+}
+
+void MapLayer::release() {
+
+}
+
+// Event layer -----------------------------------------------------------------------------------------
+
+bool EventLayer::loadFromStream(const char *stream, uint32_t length) {
+	for (auto &y : this->data) {
+		for (auto& tile : y) {
+			tile = *(uint16_t*)(stream);
+			stream += sizeof(uint16_t);
+		}
+	}
+	
+	return true;
+}
+
+void EventLayer::release() {
+
+}

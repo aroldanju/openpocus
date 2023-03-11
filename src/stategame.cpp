@@ -35,7 +35,14 @@ void StateGame::loadLevel(pocus::data::Data& data, uint8_t episode, uint8_t stag
 	const uint32_t messagesOffset = 2;
 	const uint32_t teleportsOffset = 3;
 	const uint32_t switchesOffset = 4;
+	const uint32_t toggleInsertsOffset = 5;
+	const uint32_t toggleKeyHolesOffset = 6;
+	const uint32_t tilePropertiesOffset = 7;
 	const uint32_t enemyTriggersOffset = 8;
+	const uint32_t backgroundLayerOffset = 9;
+	const uint32_t mapLayerOffset = 10;
+	const uint32_t additionalLayerOffset = 11;
+	const uint32_t eventLayerOffset = 12;
 	const uint32_t fileIndex = (STAGES * episode) + stage;
 	
 	const uint32_t offsetPlayerCoordinates = DATFILE_LEVELS_START + (playerCoordinatesOffset * filesPerType) + (fileIndex);
@@ -43,14 +50,28 @@ void StateGame::loadLevel(pocus::data::Data& data, uint8_t episode, uint8_t stag
 	const uint32_t offsetMessages = DATFILE_LEVELS_START + (messagesOffset * filesPerType) + (fileIndex);
 	const uint32_t offsetTeleports = DATFILE_LEVELS_START + (teleportsOffset * filesPerType) + (fileIndex);
 	const uint32_t offsetSwitches = DATFILE_LEVELS_START + (switchesOffset * filesPerType) + (fileIndex);
+	const uint32_t offsetInserts = DATFILE_LEVELS_START + (toggleInsertsOffset * filesPerType) + (fileIndex);
+	const uint32_t offsetKeyHoles = DATFILE_LEVELS_START + (toggleKeyHolesOffset * filesPerType) + (fileIndex);
+	const uint32_t offsetTileProperties = DATFILE_LEVELS_START + (tilePropertiesOffset * filesPerType) + (fileIndex);
 	const uint32_t offsetEnemyTriggers = DATFILE_LEVELS_START + (enemyTriggersOffset * filesPerType) + (fileIndex);
+	const uint32_t offsetBackgroundLayer = DATFILE_LEVELS_START + (backgroundLayerOffset * filesPerType) + (fileIndex);
+	const uint32_t offsetMapLayer = DATFILE_LEVELS_START + (mapLayerOffset * filesPerType) + (fileIndex);
+	const uint32_t offsetAdditionalLayer = DATFILE_LEVELS_START + (additionalLayerOffset * filesPerType) + (fileIndex);
+	const uint32_t offsetEventLayer = DATFILE_LEVELS_START + (eventLayerOffset * filesPerType) + (fileIndex);
 	
 	pocus::data::DataFile& playerCoordinatesFile = data.fetchFile(offsetPlayerCoordinates);
 	pocus::data::DataFile& tileAnimationSettingsFile = data.fetchFile(offsetTileAnimationSettings);
 	pocus::data::DataFile& messagesFile = data.fetchFile(offsetMessages);
 	pocus::data::DataFile& teleportsFile = data.fetchFile(offsetTeleports);
 	pocus::data::DataFile& switchesFile = data.fetchFile(offsetSwitches);
+	pocus::data::DataFile& insertsFile = data.fetchFile(offsetInserts);
+	pocus::data::DataFile& keyHolesFile = data.fetchFile(offsetKeyHoles);
+	pocus::data::DataFile& tilePropertiesFile = data.fetchFile(offsetTileProperties);
 	pocus::data::DataFile& enemyTriggersFile = data.fetchFile(offsetEnemyTriggers);
+	pocus::data::DataFile& backgroundLayerFile = data.fetchFile(offsetBackgroundLayer);
+	pocus::data::DataFile& mapLayerFile = data.fetchFile(offsetMapLayer);
+	pocus::data::DataFile& additionalLayerFile = data.fetchFile(offsetAdditionalLayer);
+	pocus::data::DataFile& eventLayerFile = data.fetchFile(offsetEventLayer);
 	
 	pocus::data::asset::PlayerCoordinates playerCoordinates;
 	playerCoordinates.loadFromStream(playerCoordinatesFile.getContent(), playerCoordinatesFile.getLength());
@@ -67,17 +88,31 @@ void StateGame::loadLevel(pocus::data::Data& data, uint8_t episode, uint8_t stag
 	pocus::data::asset::SwitchCoordinates switchCoordinates;
 	switchCoordinates.loadFromStream(switchesFile.getContent(), switchesFile.getLength());
 	
+	pocus::data::asset::ToggleCoordinates insertToggles;
+	insertToggles.loadFromStream(insertsFile.getContent(), insertsFile.getLength());
+	
+	pocus::data::asset::ToggleCoordinates keyHoleToggles;
+	keyHoleToggles.loadFromStream(keyHolesFile.getContent(), keyHolesFile.getLength());
+	
+	pocus::data::asset::TileProperties tileProperties;
+	tileProperties.loadFromStream(tilePropertiesFile.getContent(), tilePropertiesFile.getLength());
+	
 	pocus::data::asset::EnemyTrigger enemyTrigger;
 	enemyTrigger.loadFromStream(enemyTriggersFile.getContent(), enemyTriggersFile.getLength());
 	
-	/*
-	std::cout << "Player coordinates = " << playerCoordinates.getX() << ", " << playerCoordinates.getY() << std::endl;
-	std::cout << "Settings: " << (int)tileAnimationSettings.getEntries()[0].firstIndex << std::endl;
-	for (int i = 0; i < pocus::data::asset::EnemyTrigger::ENEMIES; i++) {
-		std::cout << "Enemy: type = " << enemyTrigger.getEntries()[i].type[0] << ", offset = " << enemyTrigger.getEntries()[i].offsets[0]
-				  << std::endl;
-	}
-	*/
+	pocus::data::asset::MapLayer backgroundLayer;
+	backgroundLayer.loadFromStream(backgroundLayerFile.getContent(), backgroundLayerFile.getLength());
+	
+	pocus::data::asset::MapLayer mapLayer;
+	mapLayer.loadFromStream(mapLayerFile.getContent(), mapLayerFile.getLength());
+	
+	pocus::data::asset::MapLayer additionalLayer;
+	additionalLayer.loadFromStream(additionalLayerFile.getContent(), additionalLayerFile.getLength());
+	
+	pocus::data::asset::EventLayer eventLayer;
+	eventLayer.loadFromStream(eventLayerFile.getContent(), eventLayerFile.getLength());
+	
+	std::cout << "OK" << std::endl;
 }
 
 void StateGame::onCreate(pocus::data::Data& data) {
