@@ -67,6 +67,27 @@ private:
 	Entry entries[TILES];
 };
 
+class Messages : public Asset {
+public:
+	enum { MESSAGES = 10, LINES = 10, MESSAGE_LENGTH = 50 };
+	
+	struct Entry {
+		uint16_t x;
+		uint16_t y;
+		uint8_t lines[LINES][MESSAGE_LENGTH];
+	};
+	
+public:
+	bool loadFromStream(const char *stream, uint32_t length) override;
+	void release() override;
+	
+	[[nodiscard]] const Entry *getMessages() const;
+
+private:
+	Entry messages[MESSAGES];
+	
+};
+
 class EnemyTrigger : public Asset {
 public:
 	struct Entry {

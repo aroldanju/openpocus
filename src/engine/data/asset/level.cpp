@@ -111,3 +111,27 @@ void EnemyTrigger::release() {
 const EnemyTrigger::Entry *EnemyTrigger::getEntries() const {
 	return entries;
 }
+
+
+// Messages ---------------------------------------------------------------------
+
+bool Messages::loadFromStream(const char *stream, uint32_t length) {
+	for (auto & entry : this->messages) {
+		entry.x = *(uint16_t*)(stream);
+		stream += sizeof(uint16_t);
+		entry.y = *(uint16_t*)(stream);
+		stream += sizeof(uint16_t);
+		memcpy(entry.lines, stream, LINES * MESSAGE_LENGTH);
+		stream += LINES * MESSAGE_LENGTH;
+	}
+	
+	return true;
+}
+
+void Messages::release() {
+
+}
+
+const Messages::Entry *Messages::getMessages() const {
+	return messages;
+}
