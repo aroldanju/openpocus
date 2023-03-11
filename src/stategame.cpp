@@ -33,17 +33,23 @@ void StateGame::loadLevel(pocus::data::Data& data, uint8_t episode, uint8_t stag
 	const uint32_t playerCoordinatesOffset = 0;
 	const uint32_t tileAnimationSettingsOffset = 1;
 	const uint32_t messagesOffset = 2;
+	const uint32_t teleportsOffset = 3;
+	const uint32_t switchesOffset = 4;
 	const uint32_t enemyTriggersOffset = 8;
 	const uint32_t fileIndex = (STAGES * episode) + stage;
 	
 	const uint32_t offsetPlayerCoordinates = DATFILE_LEVELS_START + (playerCoordinatesOffset * filesPerType) + (fileIndex);
 	const uint32_t offsetTileAnimationSettings = DATFILE_LEVELS_START + (tileAnimationSettingsOffset * filesPerType) + (fileIndex);
 	const uint32_t offsetMessages = DATFILE_LEVELS_START + (messagesOffset * filesPerType) + (fileIndex);
+	const uint32_t offsetTeleports = DATFILE_LEVELS_START + (teleportsOffset * filesPerType) + (fileIndex);
+	const uint32_t offsetSwitches = DATFILE_LEVELS_START + (switchesOffset * filesPerType) + (fileIndex);
 	const uint32_t offsetEnemyTriggers = DATFILE_LEVELS_START + (enemyTriggersOffset * filesPerType) + (fileIndex);
 	
 	pocus::data::DataFile& playerCoordinatesFile = data.fetchFile(offsetPlayerCoordinates);
 	pocus::data::DataFile& tileAnimationSettingsFile = data.fetchFile(offsetTileAnimationSettings);
 	pocus::data::DataFile& messagesFile = data.fetchFile(offsetMessages);
+	pocus::data::DataFile& teleportsFile = data.fetchFile(offsetTeleports);
+	pocus::data::DataFile& switchesFile = data.fetchFile(offsetSwitches);
 	pocus::data::DataFile& enemyTriggersFile = data.fetchFile(offsetEnemyTriggers);
 	
 	pocus::data::asset::PlayerCoordinates playerCoordinates;
@@ -54,6 +60,12 @@ void StateGame::loadLevel(pocus::data::Data& data, uint8_t episode, uint8_t stag
 	
 	pocus::data::asset::Messages messages;
 	messages.loadFromStream(messagesFile.getContent(), messagesFile.getLength());
+	
+	pocus::data::asset::Teleports teleports;
+	teleports.loadFromStream(teleportsFile.getContent(), teleportsFile.getLength());
+	
+	pocus::data::asset::SwitchCoordinates switchCoordinates;
+	switchCoordinates.loadFromStream(switchesFile.getContent(), switchesFile.getLength());
 	
 	pocus::data::asset::EnemyTrigger enemyTrigger;
 	enemyTrigger.loadFromStream(enemyTriggersFile.getContent(), enemyTriggersFile.getLength());

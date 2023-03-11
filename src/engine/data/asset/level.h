@@ -88,6 +88,49 @@ private:
 	
 };
 
+class Teleports : public Asset {
+public:
+	struct Entry {
+		uint16_t startOffset;
+		uint16_t endOffset;
+	};
+	
+	enum { TELEPORTS = 10 };
+	
+public:
+	bool loadFromStream(const char *stream, uint32_t length) override;
+	void release() override;
+	
+	[[nodiscard]] const Entry *getTeleports() const;
+
+private:
+	Entry teleports[TELEPORTS];
+};
+
+class SwitchCoordinates : public Asset {
+public:
+	struct Entry {
+		uint16_t type;
+		uint16_t offsets[4];
+		uint8_t desiredTile[4];
+		uint16_t upperLeftX;
+		uint16_t upperLeftY;
+		uint16_t lowerRightX;
+		uint16_t lowerRightY;
+	};
+	
+	enum { SWITCHES = 23 };
+	
+public:
+	bool loadFromStream(const char *stream, uint32_t length) override;
+	void release() override;
+	
+	[[nodiscard]] const Entry *getSwitches() const;
+	
+private:
+	Entry switchCoordinates[SWITCHES];
+};
+
 class EnemyTrigger : public Asset {
 public:
 	struct Entry {

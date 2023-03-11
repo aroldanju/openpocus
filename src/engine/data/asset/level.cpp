@@ -135,3 +135,44 @@ void Messages::release() {
 const Messages::Entry *Messages::getMessages() const {
 	return messages;
 }
+
+// Teleports -----------------------------------------------------------------------------------------
+
+bool Teleports::loadFromStream(const char *stream, uint32_t length) {
+	for (auto & entry : this->teleports) {
+		entry.startOffset = *(uint16_t*)(stream);
+		stream += sizeof(uint16_t);
+		
+		entry.endOffset = *(uint16_t*)(stream);
+		stream += sizeof(uint16_t);
+	}
+	
+	return true;
+}
+
+void Teleports::release() {
+
+}
+
+const Teleports::Entry *Teleports::getTeleports() const {
+	return teleports;
+}
+
+// Switch coordinates -----------------------------------------------------------------------------------------
+
+bool SwitchCoordinates::loadFromStream(const char *stream, uint32_t length) {
+	for (auto &entry : this->switchCoordinates) {
+		memcpy(&entry, stream, sizeof(Entry));
+		stream += sizeof(Entry);
+	}
+	
+	return true;
+}
+
+void SwitchCoordinates::release() {
+
+}
+
+const SwitchCoordinates::Entry *SwitchCoordinates::getSwitches() const {
+	return switchCoordinates;
+}
