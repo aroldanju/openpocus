@@ -42,6 +42,31 @@ private:
 	uint16_t shootDelay { 0 };
 };
 
+class TileAnimationSettings : public Asset {
+public:
+	struct Entry {
+		uint8_t firstIndex;
+		uint8_t lastIndex;
+		uint8_t animationType;
+	};
+	
+	enum { TILES = 240 };
+	
+public:
+	bool loadFromStream(const char *stream, uint32_t length) override;
+	void release() override;
+	
+	[[nodiscard]] const Entry *getEntries() const;
+	
+private:
+	uint8_t backgroundTile;
+	uint8_t switchDownTile;
+	uint8_t switchUpTile;
+	uint8_t shootableTile;
+	
+	Entry entries[TILES];
+};
+
 class EnemyTrigger : public Asset {
 public:
 	struct Entry {

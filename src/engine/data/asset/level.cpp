@@ -65,6 +65,31 @@ void PlayerCoordinates::setShootDelay(uint16_t shootDelay) {
 	PlayerCoordinates::shootDelay = shootDelay;
 }
 
+// Tile animation settings -----------------------------------------------------------
+
+bool TileAnimationSettings::loadFromStream(const char *stream, uint32_t length) {
+	this->backgroundTile = *(uint8_t*)(stream);stream++;
+	this->switchDownTile = *(uint8_t*)(stream); stream++;
+	this->switchUpTile = *(uint8_t*)(stream); stream++;
+	this->shootableTile = *(uint8_t*)(stream); stream++;
+	
+	for (auto & entry : this->entries) {
+		entry.firstIndex = *(uint8_t*)(stream); stream++;
+		entry.lastIndex = *(uint8_t*)(stream); stream++;
+		entry.animationType = *(uint8_t*)(stream); stream++;
+	}
+	
+	return true;
+}
+
+void TileAnimationSettings::release() {
+
+}
+
+const TileAnimationSettings::Entry *TileAnimationSettings::getEntries() const {
+	return entries;
+}
+
 // Enemy trigger ---------------------------------------------------------------------
 
 bool EnemyTrigger::loadFromStream(const char *stream, uint32_t length) {

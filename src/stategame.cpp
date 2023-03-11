@@ -31,23 +31,31 @@ void StateGame::loadLevel(pocus::data::Data& data, uint8_t episode, uint8_t stag
 	
 	const uint32_t filesPerType = EPISODES * STAGES;
 	const uint32_t playerCoordinatesOffset = 0;
+	const uint32_t tileAnimationSettingsOffset = 1;
 	const uint32_t enemyTriggersOffset = 8;
 	const uint32_t fileIndex = (STAGES * episode) + stage;
 	
 	const uint32_t offsetPlayerCoordinates = DATFILE_LEVELS_START + (playerCoordinatesOffset * filesPerType) + (fileIndex);
+	const uint32_t offsetTileAnimationSettings = DATFILE_LEVELS_START + (tileAnimationSettingsOffset * filesPerType) + (fileIndex);
 	const uint32_t offsetEnemyTriggers = DATFILE_LEVELS_START + (enemyTriggersOffset * filesPerType) + (fileIndex);
 	
 	pocus::data::DataFile& playerCoordinatesFile = data.fetchFile(offsetPlayerCoordinates);
+	pocus::data::DataFile& offsetTileAnimationSettingsFile = data.fetchFile(offsetTileAnimationSettings);
 	pocus::data::DataFile& enemyTriggersFile = data.fetchFile(offsetEnemyTriggers);
 	
 	pocus::data::asset::PlayerCoordinates playerCoordinates;
 	playerCoordinates.loadFromStream(playerCoordinatesFile.getContent(), playerCoordinatesFile.getLength());
 	
+	pocus::data::asset::TileAnimationSettings tileAnimationSettings;
+	tileAnimationSettings.loadFromStream(offsetTileAnimationSettingsFile.getContent(), offsetTileAnimationSettingsFile.getLength());
+	
 	pocus::data::asset::EnemyTrigger enemyTrigger;
 	enemyTrigger.loadFromStream(enemyTriggersFile.getContent(), enemyTriggersFile.getLength());
 	
+	
 	/*
 	std::cout << "Player coordinates = " << playerCoordinates.getX() << ", " << playerCoordinates.getY() << std::endl;
+	std::cout << "Settings: " << (int)tileAnimationSettings.getEntries()[0].firstIndex << std::endl;
 	for (int i = 0; i < pocus::data::asset::EnemyTrigger::ENEMIES; i++) {
 		std::cout << "Enemy: type = " << enemyTrigger.getEntries()[i].type[0] << ", offset = " << enemyTrigger.getEntries()[i].offsets[0]
 				  << std::endl;
