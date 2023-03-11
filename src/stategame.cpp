@@ -24,6 +24,7 @@
 #include "version.h"
 #include "engine/data/asset/font.h"
 #include "engine/data/asset/level.h"
+#include "engine/data/asset/pcx.h"
 
 void StateGame::loadLevel(pocus::data::Data& data, uint8_t episode, uint8_t stage) {
 	episode--;
@@ -111,12 +112,21 @@ void StateGame::loadLevel(pocus::data::Data& data, uint8_t episode, uint8_t stag
 	
 	pocus::data::asset::EventLayer eventLayer;
 	eventLayer.loadFromStream(eventLayerFile.getContent(), eventLayerFile.getLength());
+}
+
+void StateGame::loadLevelStuff(pocus::data::Data& data, uint8_t episode, uint8_t stage) {
+	pocus::data::asset::Pcx backgroundPcx;
 	
-	std::cout << "OK" << std::endl;
+	pocus::data::DataFile& backgroundFile = data.fetchFile(DATFILE_IMAGE_BACKGROUND_01);
+	
+	backgroundPcx.loadFromStream(backgroundFile.getContent(), backgroundFile.getLength());
+	
+	this->backgroud = backgroundPcx.createTexture();
 }
 
 void StateGame::onCreate(pocus::data::Data& data) {
 	loadLevel(data, 1, 1);
+	loadLevelStuff(data, 1, 1);
 	
 	pocus::data::asset::Image image;
 	pocus::data::asset::Palette palette {};
@@ -153,6 +163,7 @@ void StateGame::handleEvents(pocus::EventHandler &eventHandler) {
 }
 
 void StateGame::render(pocus::Renderer &renderer) {
+	renderer.drawTexture(*this->backgroud, 0, 0);
 	renderer.drawTexture(*this->textureHud, 0, SCREEN_HEIGHT - this->textureHud->getHeight());
 	renderer.drawTexture(*this->label, 0, 0);
 }

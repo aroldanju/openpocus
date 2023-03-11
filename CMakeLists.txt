@@ -49,6 +49,7 @@ set(engine_sources
         src/engine/menu.cpp
         src/engine/particles.cpp
         src/engine/animation.cpp
+        src/engine/map.cpp
         )
 
 set(sdl_sources
