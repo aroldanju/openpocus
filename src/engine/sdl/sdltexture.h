@@ -19,6 +19,7 @@
 #define _SDLTEXTURE_H
 
 #include <SDL2/SDL.h>
+#include <string>
 #include "../texture.h"
 
 namespace pocus {
@@ -42,6 +43,7 @@ public:
 	void paste(const Texture& texture, uint32_t fx, uint32_t fy, uint32_t tx, uint32_t ty) override;
 	void setColorKey(uint8_t red, uint8_t green, uint8_t blue) override;
 	std::unique_ptr<Texture> extract(uint32_t x, uint32_t y, uint32_t w, uint32_t h) override;
+	bool saveToFile(const std::string& filename) override;
 	
 private:
 	SDL_Surface* surface;

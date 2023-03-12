@@ -33,20 +33,31 @@ public:
 	void update(float dt);
 	void render(Renderer& renderer, int x, int y);
 	
-	uint32_t getFps() const;
+	[[nodiscard]] uint32_t getFps() const;
 	
 	void setFps(uint32_t fps);
 	
 	static Animation createFromTexture(Texture& texture, uint32_t columns, uint32_t rows);
+	void createFrom(const Animation& animation);
 	
-	uint32_t getWidth() const;
-	uint32_t getHeight() const;
+	[[nodiscard]] uint32_t getWidth() const;
+	[[nodiscard]] uint32_t getHeight() const;
+	
+	[[nodiscard]] bool isRandomStart() const;
+	void setRandomStart(bool randomStart);
+	
+	void setCurrentFrame(uint32_t frame);
+	[[nodiscard]] uint32_t getFrameCount() const;
+	
+	//Animation& operator=(const Animation& src);
 
 private:
 	uint32_t fps { 5 };
 	std::vector<std::unique_ptr<Texture>> frames;
 	uint32_t currentFrame { 0 };
 	Tick lastUpdateTick;
+	bool randomStart { false };
+	bool playing { false };
 };
 
 }

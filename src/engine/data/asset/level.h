@@ -50,7 +50,11 @@ public:
 		uint8_t animationType;
 	};
 	
-	enum { TILES = 240 };
+	enum {
+		TILES = 240,
+		PERMANENT = 1,
+		RANDOM = 2
+	};
 	
 public:
 	bool loadFromStream(const char *stream, uint32_t length) override;
@@ -59,10 +63,10 @@ public:
 	[[nodiscard]] const Entry *getEntries() const;
 	
 private:
-	uint8_t backgroundTile;
-	uint8_t switchDownTile;
-	uint8_t switchUpTile;
-	uint8_t shootableTile;
+	uint8_t backgroundTile { 0 };
+	uint8_t switchDownTile { 0 };
+	uint8_t switchUpTile { 0 };
+	uint8_t shootableTile { 0 };
 	
 	Entry entries[TILES];
 };
@@ -204,12 +208,14 @@ private:
 
 class MapLayer : public Asset {
 public:
-	enum { WIDTH = 240, HEIGHT = 60 };
+	enum { WIDTH = 240, HEIGHT = 60, TILE_EMPTY = 0xff };
 	
 public:
 	bool loadFromStream(const char *stream, uint32_t length) override;
 	void release() override;
 
+	[[nodiscard]] uint8_t* getData() const;
+	
 private:
 	uint8_t data[HEIGHT][WIDTH];
 };

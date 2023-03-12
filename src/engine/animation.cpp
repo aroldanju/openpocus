@@ -24,11 +24,29 @@ void Animation::addFrame(std::unique_ptr<Texture> texture) {
 }
 
 void Animation::update(float dt) {
-	if (getElapsedTime(this->lastUpdateTick) >= 1000 / this->fps) {
+	if (this->frames.size() < 2) {
+		return;
+	}
+	
+	if (this->randomStart && !this->playing) {
+		if (rand() % 100 <= 0) {
+			this->playing = true;
+		}
+	}
+	else if (!this->randomStart && !this->playing) {
+		this->playing = true;
+	}
+	
+	if (this->playing && getElapsedTime(this->lastUpdateTick) >= 1000 / this->fps) {
 		this->lastUpdateTick = getNow();
 		this->currentFrame++;
 		if (this->currentFrame >= this->frames.size()) {
 			this->currentFrame = 0;
+			
+			// Stop animation to start randomly in next updates
+			if (this->randomStart) {
+				this->playing = false;
+			}
 		}
 	}
 }
@@ -80,4 +98,36 @@ uint32_t Animation::getHeight() const {
 	}
 	
 	return this->frames[this->currentFrame]->getHeight();
+}
+
+void Animation::createFrom(const Animation& animation) {
+	this->fps = animation.fps;
+	this->currentFrame = animation.currentFrame;
+	this->lastUpdateTick = animation.lastUpdateTick;
+	this->randomStart = animation.randomStart;
+	for (auto& frame : animation.frames) {
+		this->frames.push_back(frame->extract(0, 0, frame->getWidth(), frame->getHeight()));
+	}
+}
+
+/*
+Animation& Animation::operator=(const Animation& src) {
+
+}
+*/
+
+bool Animation::isRandomStart() const {
+	return randomStart;
+}
+
+void Animation::setRandomStart(bool randomStart) {
+	Animation::randomStart = randomStart;
+}
+
+void Animation::setCurrentFrame(uint32_t frame) {
+	this->currentFrame = frame;
+}
+
+uint32_t Animation::getFrameCount() const {
+	return this->frames.size();
 }

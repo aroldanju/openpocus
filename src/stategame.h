@@ -22,6 +22,7 @@
 #include "engine/texture.h"
 #include "engine/state.h"
 #include "engine/map.h"
+#include "engine/sound.h"
 
 class StateGame : public pocus::State {
 public:
@@ -35,9 +36,8 @@ public:
 	
 private:
 	std::unique_ptr<pocus::Texture> textureHud;
-	std::unique_ptr<pocus::Texture> label;
 	pocus::Map map;
-	std::unique_ptr<pocus::Texture> backgroud;
+	pocus::Point offset;
 	
 	void loadLevel(pocus::data::Data& data, uint8_t episode, uint8_t stage);
 	void loadLevelStuff(pocus::data::Data& data, uint8_t episode, uint8_t stage);

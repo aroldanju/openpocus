@@ -232,6 +232,10 @@ void MapLayer::release() {
 
 }
 
+uint8_t* MapLayer::getData() const {
+	return (uint8_t*)this->data;
+}
+
 // Event layer -----------------------------------------------------------------------------------------
 
 bool EventLayer::loadFromStream(const char *stream, uint32_t length) {

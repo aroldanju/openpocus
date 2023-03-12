@@ -15,34 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DEFINITIONS_H
-#define DEFINITIONS_H
-
-#include <chrono>
-#include <thread>
+#ifndef POINT_H
+#define POINT_H
 
 namespace pocus {
 
-#define TILE_SIZE		16
-#define MAP_WIDTH		240
-#define MAP_HEIGHT		60
+class Point {
+public:
+	Point() = default;
+	Point(float x, float y);
+	
+	[[nodiscard]] float getX() const;
+	void setX(float x);
+	[[nodiscard]] float getY() const;
+	void setY(float y);
 
-#define getBit(n,b) ((n >> b) & 1)
-
-typedef std::chrono::time_point<std::chrono::system_clock> Tick;
-
-static uint32_t getElapsedTime(const Tick& tick) {
-	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - tick).count();
-}
-
-static Tick getNow() {
-	return std::chrono::system_clock::now();
-}
-
-static void wait(uint32_t ms) {
-	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
-}
+private:
+	float x { .0f };
+	float y { .0f };
+};
 
 }
 
-#endif //DEFINITIONS_H
+#endif //POINT_H

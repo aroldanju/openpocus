@@ -50,6 +50,7 @@ set(engine_sources
         src/engine/particles.cpp
         src/engine/animation.cpp
         src/engine/map.cpp
+        src/engine/point.cpp
         )
 
 set(sdl_sources

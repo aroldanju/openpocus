@@ -15,10 +15,309 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <iostream>
 #include "map.h"
 
 using namespace pocus;
 
-void Map::setTileSet(std::unique_ptr<Texture> tileSet) {
-	this->tileSet = std::move(tileSet);
+// Tile -----------------------------------------------------------------------------------------------
+
+Tile::Tile(uint32_t x, uint32_t y):
+	tilePosition(Point((float)x, (float)y))
+{
+}
+
+const Point &Tile::getTilePosition() const {
+	return tilePosition;
+}
+
+void Tile::setTilePosition(const Point &tilePosition) {
+	Tile::tilePosition = tilePosition;
+}
+
+bool Tile::isVisible() const {
+	return visible;
+}
+
+void Tile::setVisible(bool visible) {
+	Tile::visible = visible;
+}
+
+uint16_t Tile::getId() const {
+	return id;
+}
+
+void Tile::setId(uint16_t id) {
+	Tile::id = id;
+}
+
+Animation& Tile::getAnimation() {
+	return this->animation;
+}
+
+/*
+void Tile::setAnimation(const Animation& animation) {
+	this->animation = animation;
+}
+*/
+
+// Layer -----------------------------------------------------------------------------------------------
+
+
+Layer::Layer(uint32_t width, uint32_t height)   {
+	create(width, height);
+}
+
+void Layer::create(uint32_t width, uint32_t height)    {
+	this->width = width;
+	this->height = height;
+	
+	for (uint32_t i = 0; i < this->height; i++) {
+		for (uint32_t j = 0; j < this->width; j++) {
+			this->tiles.emplace_back(j, i);
+			//this->tiles[i][j].setTilePosition((Point){(float)j, (float)i});
+		}
+	}
+}
+
+Tile& Layer::getTile(uint32_t x, uint32_t y) {
+	return this->tiles[y * this->width + x];
+}
+
+bool Layer::isVisible() const {
+	return visible;
+}
+
+void Layer::setVisible(bool visible) {
+	Layer::visible = visible;
+}
+
+// Map -------------------------------------------------------------------------------------------------
+
+Layer& Map::getLayer(uint8_t layer) {
+	return this->layers[layer];
+}
+
+void Map::setMusic(std::unique_ptr<Sound> music) {
+	this->backgroundMusic = std::move(music);
+}
+
+void Map::setTileSet(const std::unique_ptr<Texture>& tileSet) {
+	const uint32_t columns = 20;
+	const uint32_t rows = 12;
+	const uint32_t frameWidth = TILE_SIZE;
+	const uint32_t frameHeight = TILE_SIZE;
+	
+	for (int i = 0; i < columns * rows; i++) {
+		const uint32_t x = i % columns;
+		const uint32_t y = i / columns;
+		auto frame = tileSet->extract(x * frameWidth, y * frameHeight, frameWidth, frameHeight);
+		this->tileSet.push_back(std::move(frame));
+	}
+}
+
+void Map::setBackground(std::unique_ptr<Texture> texture) {
+	this->backgroundImage = std::move(texture);
+}
+
+void Map::render(Renderer &renderer, const Point& offset) {
+	renderer.drawTexture(*this->backgroundImage, 0, 0);
+	
+	for (auto& layer : this->layers) {
+		if (!layer.isVisible()) {
+			continue;
+		}
+		
+		for (uint32_t y = 0; y < this->height; y++) {
+			for (uint32_t x = 0; x < this->width; x++) {
+				const uint16_t tileId = layer.getTile(x, y).getId();
+				if (tileId != 0xff && layer.getTile(x, y).isVisible()) {
+					layer.getTile(x, y).getAnimation().render(
+						renderer,
+				  		x * 16 + offset.getX(),
+						y * 16 + offset.getY()
+					);
+				}
+			}
+		}
+	}
+}
+
+void Map::update(float dt) {
+	for (auto& layer : this->layers) {
+		for (uint32_t y = 0; y < this->height; y++) {
+			for (uint32_t x = 0; x < this->width; x++) {
+				layer.getTile(x, y).getAnimation().update(dt);
+			}
+		}
+	}
+}
+
+void Map::start() {
+	//this->backgroundMusic->play();
+}
+
+void Map::create(uint8_t layers, uint32_t width, uint32_t height) {
+	this->width = width;
+	this->height = height;
+	
+	for (uint8_t i = 0; i < layers; i++) {
+		this->layers.emplace_back(width, height);
+	}
+	
+	// Create tile animation prototypes
+	for (uint32_t i = 0; i < data::asset::TileAnimationSettings::TILES; i++) {
+		const data::asset::TileAnimationSettings::Entry& entry = this->tileAnimationSettings.getEntries()[i];
+		
+		Animation animation;
+		animation.setFps(10);
+		
+		if (entry.animationType == data::asset::TileAnimationSettings::RANDOM) {
+			animation.setRandomStart(true);
+		}
+		
+		if (entry.firstIndex != entry.lastIndex && entry.animationType == data::asset::TileAnimationSettings::PERMANENT) {
+			for (uint16_t frameIndex = entry.firstIndex; frameIndex < entry.lastIndex + 1; frameIndex++) {
+				animation.addFrame(
+					this->tileSet[frameIndex]->extract(0, 0, TILE_SIZE, TILE_SIZE)
+				);
+			}
+			
+			// Randomize starting frame
+			animation.setCurrentFrame(rand() % animation.getFrameCount());
+			
+			this->animatedTileSet.emplace_back(std::move(animation));
+		}
+		else {
+			animation.addFrame(this->tileSet[i]->extract(0, 0, TILE_SIZE, TILE_SIZE));
+			this->animatedTileSet.emplace_back(std::move(animation));
+		}
+	}
+	
+	for (uint32_t i = 0; i < width * height; i++) {
+		const uint32_t x = i % width;
+		const uint32_t y = i / width;
+		
+		// Background layer
+		const uint16_t backgroundId = this->backgroundLayer.getData()[i];
+		Tile& backgroundTile = this->layers[0].getTile(x, y);
+		backgroundTile.setId(backgroundId);
+		backgroundTile.setVisible(backgroundId != data::asset::MapLayer::TILE_EMPTY);
+		if (backgroundTile.isVisible()) {
+			backgroundTile.getAnimation().createFrom(this->animatedTileSet[backgroundId]);
+		}
+
+		// Foreground layer
+		const uint16_t tileId = this->mapLayer.getData()[i];
+		Tile& mapTile = this->layers[1].getTile(x, y);
+		mapTile.setId(tileId);
+		mapTile.setVisible(tileId != data::asset::MapLayer::TILE_EMPTY);
+		if (mapTile.isVisible()) {
+			mapTile.getAnimation().createFrom(this->animatedTileSet[tileId]);
+		}
+	}
+}
+
+data::asset::PlayerCoordinates &Map::getPlayerCoordinates() {
+	return playerCoordinates;
+}
+
+void Map::setPlayerCoordinates(const data::asset::PlayerCoordinates &playerCoordinates) {
+	Map::playerCoordinates = playerCoordinates;
+}
+
+data::asset::TileAnimationSettings &Map::getTileAnimationSettings() {
+	return tileAnimationSettings;
+}
+
+void Map::setTileAnimationSettings(const data::asset::TileAnimationSettings &tileAnimationSettings) {
+	Map::tileAnimationSettings = tileAnimationSettings;
+}
+
+data::asset::Messages &Map::getMessages() {
+	return messages;
+}
+
+void Map::setMessages(const data::asset::Messages &messages) {
+	Map::messages = messages;
+}
+
+data::asset::Teleports &Map::getTeleports() {
+	return teleports;
+}
+
+void Map::setTeleports(const data::asset::Teleports &teleports) {
+	Map::teleports = teleports;
+}
+
+data::asset::SwitchCoordinates &Map::getSwitchCoordinates() {
+	return switchCoordinates;
+}
+
+void Map::setSwitchCoordinates(const data::asset::SwitchCoordinates &switchCoordinates) {
+	Map::switchCoordinates = switchCoordinates;
+}
+
+data::asset::ToggleCoordinates &Map::getInsertToggles() {
+	return insertToggles;
+}
+
+void Map::setInsertToggles(const data::asset::ToggleCoordinates &insertToggles) {
+	Map::insertToggles = insertToggles;
+}
+
+data::asset::ToggleCoordinates &Map::getKeyHoleToggles() {
+	return keyHoleToggles;
+}
+
+void Map::setKeyHoleToggles(const data::asset::ToggleCoordinates &keyHoleToggles) {
+	Map::keyHoleToggles = keyHoleToggles;
+}
+
+data::asset::TileProperties &Map::getTileProperties() {
+	return tileProperties;
+}
+
+void Map::setTileProperties(const data::asset::TileProperties &tileProperties) {
+	Map::tileProperties = tileProperties;
+}
+
+data::asset::EnemyTrigger &Map::getEnemyTrigger() {
+	return enemyTrigger;
+}
+
+void Map::setEnemyTrigger(const data::asset::EnemyTrigger &enemyTrigger) {
+	Map::enemyTrigger = enemyTrigger;
+}
+
+data::asset::MapLayer &Map::getBackgroundLayer() {
+	return backgroundLayer;
+}
+
+void Map::setBackgroundLayer(const data::asset::MapLayer &backgroundLayer) {
+	Map::backgroundLayer = backgroundLayer;
+}
+
+data::asset::MapLayer &Map::getMapLayer() {
+	return mapLayer;
+}
+
+void Map::setMapLayer(const data::asset::MapLayer &mapLayer) {
+	Map::mapLayer = mapLayer;
+}
+
+data::asset::MapLayer &Map::getAdditionalLayer() {
+	return additionalLayer;
+}
+
+void Map::setAdditionalLayer(const data::asset::MapLayer &additionalLayer) {
+	Map::additionalLayer = additionalLayer;
+}
+
+data::asset::EventLayer& Map::getEventLayer() {
+	return eventLayer;
+}
+
+void Map::setEventLayer(const data::asset::EventLayer &eventLayer) {
+	Map::eventLayer = eventLayer;
 }
