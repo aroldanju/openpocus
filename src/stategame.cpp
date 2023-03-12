@@ -89,7 +89,7 @@ void StateGame::loadLevel(pocus::data::Data& data, uint8_t episode, uint8_t stag
 	this->map.getAdditionalLayer().loadFromStream(additionalLayerFile.getContent(), additionalLayerFile.getLength());
 	this->map.getEventLayer().loadFromStream(eventLayerFile.getContent(), eventLayerFile.getLength());
 	
-	this->map.create(2, MAP_WIDTH, MAP_HEIGHT);
+	this->map.create(MAP_WIDTH, MAP_HEIGHT);
 }
 
 void StateGame::loadLevelStuff(pocus::data::Data& data, uint8_t episode, uint8_t stage) {

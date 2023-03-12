@@ -157,13 +157,13 @@ void Map::start() {
 	//this->backgroundMusic->play();
 }
 
-void Map::create(uint8_t layers, uint32_t width, uint32_t height) {
+void Map::create(uint32_t width, uint32_t height) {
 	this->width = width;
 	this->height = height;
 	
-	for (uint8_t i = 0; i < layers; i++) {
-		this->layers.emplace_back(width, height);
-	}
+	// Create fixed layers: 0 background; 1 tiles
+	this->layers.emplace_back(width, height);
+	this->layers.emplace_back(width, height);
 	
 	// Create tile animation prototypes
 	for (uint32_t i = 0; i < data::asset::TileAnimationSettings::TILES; i++) {

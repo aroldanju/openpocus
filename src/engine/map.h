@@ -69,7 +69,8 @@ public:
 	void start();
 	void render(Renderer& renderer, const Point& offset);
 	void update(float dt);
-	void create(uint8_t layers, uint32_t width, uint32_t height);
+	void create(uint32_t width, uint32_t height);
+	
 	Layer& getLayer(uint8_t layer);
 	
 	[[nodiscard]] data::asset::PlayerCoordinates &getPlayerCoordinates();
