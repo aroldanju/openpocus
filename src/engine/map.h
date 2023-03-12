@@ -1,0 +1,135 @@
+/*
+ * Copyright (C) 2023, A. Roldán. All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#ifndef MAP_H
+#define MAP_H
+
+#include <memory>
+#include "texture.h"
+#include "sound.h"
+#include "renderer.h"
+#include "point.h"
+#include "animation.h"
+#include "data/asset/level.h"
+
+namespace pocus {
+
+class Tile {
+public:
+	Tile(uint32_t x, uint32_t y);
+	
+	[[nodiscard]] uint16_t getId() const;
+	void setId(uint16_t id);
+	[[nodiscard]] const Point &getTilePosition() const;
+	void setTilePosition(const Point &tilePosition);
+	[[nodiscard]] bool isVisible() const;
+	void setVisible(bool visible);
+	Animation& getAnimation();
+
+private:
+	Animation animation;
+	uint16_t id { 0 };
+	Point tilePosition { Point(.0f, .0f) };
+	bool visible { true };
+};
+
+class Layer {
+public:
+	Layer(uint32_t width, uint32_t height);
+	void create(uint32_t width, uint32_t height);
+	Tile& getTile(uint32_t x, uint32_t y);
+	[[nodiscard]] bool isVisible() const;
+	void setVisible(bool visible);
+
+private:
+	uint32_t width, height;
+	std::vector<Tile> tiles;
+	bool visible { true };
+};
+
+class Map {
+public:
+	void setMusic(std::unique_ptr<Sound> music);
+	void setTileSet(const std::unique_ptr<Texture>& tileSet);
+	void setBackground(std::unique_ptr<Texture> texture);
+	void start();
+	void render(Renderer& renderer, const Point& offset);
+	void update(float dt);
+	void create(uint32_t width, uint32_t height);
+	
+	Layer& getLayer(uint8_t layer);
+	
+	[[nodiscard]] data::asset::PlayerCoordinates &getPlayerCoordinates();
+	void setPlayerCoordinates(const data::asset::PlayerCoordinates &playerCoordinates);
+	[[nodiscard]] data::asset::TileAnimationSettings &getTileAnimationSettings();
+	void setTileAnimationSettings(const data::asset::TileAnimationSettings &tileAnimationSettings);
+	[[nodiscard]] data::asset::Messages &getMessages();
+	void setMessages(const data::asset::Messages &messages);
+	[[nodiscard]] data::asset::Teleports &getTeleports();
+	void setTeleports(const data::asset::Teleports &teleports);
+	[[nodiscard]] data::asset::SwitchCoordinates &getSwitchCoordinates();
+	void setSwitchCoordinates(const data::asset::SwitchCoordinates &switchCoordinates);
+	[[nodiscard]] data::asset::ToggleCoordinates &getInsertToggles();
+	void setInsertToggles(const data::asset::ToggleCoordinates &insertToggles);
+	[[nodiscard]] data::asset::ToggleCoordinates &getKeyHoleToggles();
+	void setKeyHoleToggles(const data::asset::ToggleCoordinates &keyHoleToggles);
+	[[nodiscard]] data::asset::TileProperties &getTileProperties();
+	void setTileProperties(const data::asset::TileProperties &tileProperties);
+	[[nodiscard]] data::asset::EnemyTrigger &getEnemyTrigger();
+	void setEnemyTrigger(const data::asset::EnemyTrigger &enemyTrigger);
+	[[nodiscard]] data::asset::MapLayer &getBackgroundLayer();
+	void setBackgroundLayer(const data::asset::MapLayer &backgroundLayer);
+	[[nodiscard]] data::asset::MapLayer &getMapLayer();
+	void setMapLayer(const data::asset::MapLayer &mapLayer);
+	[[nodiscard]] data::asset::MapLayer &getAdditionalLayer();
+	void setAdditionalLayer(const data::asset::MapLayer &additionalLayer);
+	[[nodiscard]] data::asset::EventLayer& getEventLayer();
+	void setEventLayer(const data::asset::EventLayer &eventLayer);
+
+private:
+	std::unique_ptr<Sound> backgroundMusic { nullptr };
+	std::unique_ptr<Texture> backgroundImage { nullptr };
+	std::vector<std::unique_ptr<Texture>> tileSet;
+	std::vector<Animation> animatedTileSet;
+	uint32_t width;
+	uint32_t height;
+	std::vector<Layer> layers;
+	std::vector<Animation> animations;
+	
+	pocus::data::asset::PlayerCoordinates playerCoordinates;
+	pocus::data::asset::TileAnimationSettings tileAnimationSettings;
+	pocus::data::asset::Messages messages;
+	pocus::data::asset::Teleports teleports;
+	pocus::data::asset::SwitchCoordinates switchCoordinates;
+	pocus::data::asset::ToggleCoordinates insertToggles;
+	pocus::data::asset::ToggleCoordinates keyHoleToggles;
+	pocus::data::asset::TileProperties tileProperties;
+	pocus::data::asset::EnemyTrigger enemyTrigger;
+	pocus::data::asset::MapLayer backgroundLayer;
+	pocus::data::asset::MapLayer mapLayer;
+	pocus::data::asset::MapLayer additionalLayer;
+	pocus::data::asset::EventLayer eventLayer;
+	
+};
+
+class MapBuilder {
+public:
+};
+
+}
+
+#endif // MAP_H

@@ -32,6 +32,7 @@ set(data_sources
         src/engine/data/asset/voc.cpp
         src/engine/data/asset/midi.cpp
         src/engine/data/asset/font.cpp
+        src/engine/data/asset/level.cpp
         )
 
 set(engine_sources
@@ -48,6 +49,8 @@ set(engine_sources
         src/engine/menu.cpp
         src/engine/particles.cpp
         src/engine/animation.cpp
+        src/engine/map.cpp
+        src/engine/point.cpp
         )
 
 set(sdl_sources

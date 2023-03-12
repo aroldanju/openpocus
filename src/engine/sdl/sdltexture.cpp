@@ -123,3 +123,7 @@ std::unique_ptr<Texture> SdlTexture::extract(uint32_t x, uint32_t y, uint32_t w,
 	
 	return std::move(sdlTexture);
 }
+
+bool SdlTexture::saveToFile(const std::string& filename) {
+	SDL_SaveBMP(this->surface, filename.c_str());
+}
