@@ -56,6 +56,7 @@ set(engine_sources
         src/engine/map.cpp
         src/engine/point.cpp
         src/engine/config.cpp
+        src/engine/player.cpp
         )
 
 set(sdl_sources
