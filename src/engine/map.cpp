@@ -75,7 +75,6 @@ void Layer::create(uint32_t width, uint32_t height)    {
 	for (uint32_t i = 0; i < this->height; i++) {
 		for (uint32_t j = 0; j < this->width; j++) {
 			this->tiles.emplace_back(j, i);
-			//this->tiles[i][j].setTilePosition((Point){(float)j, (float)i});
 		}
 	}
 }
@@ -122,7 +121,18 @@ void Map::setBackground(std::unique_ptr<Texture> texture) {
 
 void Map::render(Renderer &renderer, const Point& offset) {
 	if (this->backgroundImage) {
-		renderer.drawTexture(*this->backgroundImage, 0, 0);
+		const auto backgroundOffset = (float)((int)(offset.getX() / 2.0f) % (int)this->backgroundImage->getWidth());
+		if (backgroundOffset < 0.0f) {
+			renderer.drawTexture(*this->backgroundImage, (int)backgroundOffset, 0);
+			renderer.drawTexture(*this->backgroundImage, (int)this->backgroundImage->getWidth() + (int)backgroundOffset, 0);
+		}
+		else if (backgroundOffset > 0.0f) {
+			renderer.drawTexture(*this->backgroundImage, (int)backgroundOffset, 0);
+			renderer.drawTexture(*this->backgroundImage, -(int)this->backgroundImage->getWidth() + (int)backgroundOffset, 0);
+		}
+		else {
+			renderer.drawTexture(*this->backgroundImage, 0, 0);
+		}
 	}
 	
 	for (auto& layer : this->layers) {
