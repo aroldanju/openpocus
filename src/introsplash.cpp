@@ -24,14 +24,14 @@
 #include "engine/musicplayer.h"
 #include "definitions.h"
 
-void IntroSplash::onCreate(pocus::data::Data& data) {
+void IntroSplash::onCreate(pocus::data::DataManager& dataManager) {
 	pocus::data::asset::Pcx introSplashImage;
 	pocus::data::asset::Midi titleMusicMidi;
 	pocus::data::asset::Voc laughSoundVoc;
 	
-	pocus::data::DataFile& introSplashFile = data.fetchFile(DATFILE_SPLASH_INTRO);
-	pocus::data::DataFile& titleMusicFile = data.fetchFile(DATFILE_MUSIC_INTRO);
-	pocus::data::DataFile& laughSoundFile = data.fetchFile(DATFILE_VOC_LAUGH);
+	pocus::data::DataFile& introSplashFile = dataManager.getData().fetchFile(DATFILE_SPLASH_INTRO);
+	pocus::data::DataFile& titleMusicFile = dataManager.getData().fetchFile(DATFILE_MUSIC_INTRO);
+	pocus::data::DataFile& laughSoundFile = dataManager.getData().fetchFile(DATFILE_VOC_LAUGH);
 	
 	introSplashImage.loadFromStream(introSplashFile.getContent(), introSplashFile.getLength());
 	titleMusicMidi.loadFromStream(titleMusicFile.getContent(), titleMusicFile.getLength());

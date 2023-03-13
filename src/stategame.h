@@ -26,7 +26,7 @@
 
 class StateGame : public pocus::State {
 public:
-	void onCreate(pocus::data::Data& data) override;
+	void onCreate(pocus::data::DataManager& dataManager) override;
 	void onDetach() override;
 	void onAttach() override;
 	void release() override;
@@ -39,7 +39,7 @@ private:
 	pocus::Map map;
 	pocus::Point offset;
 	
-	void loadLevel(pocus::data::Data& data, uint8_t episode, uint8_t stage);
+	void loadLevel(pocus::data::Data& data, pocus::data::Data& executable, uint8_t episode, uint8_t stage);
 	void loadLevelStuff(pocus::data::Data& data, uint8_t episode, uint8_t stage);
 };
 

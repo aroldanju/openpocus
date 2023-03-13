@@ -21,7 +21,7 @@
 #include <vector>
 #include "renderer.h"
 #include "eventhandler.h"
-#include "data/data.h"
+#include "data/datamanager.h"
 
 namespace pocus {
 
@@ -37,7 +37,7 @@ public:
 	};
 	
 public:
-	virtual void onCreate(data::Data& data) = 0;
+	virtual void onCreate(data::DataManager& dataManager) = 0;
 	virtual void onDetach() = 0;
 	virtual void onAttach() = 0;
 	virtual void release() = 0;

@@ -28,7 +28,7 @@ public:
 	enum { MIN_TIME = 3000, TIME = 10000 };
 
 public:
-	void onCreate(pocus::data::Data& data) override;
+	void onCreate(pocus::data::DataManager& dataManager) override;
 	void onDetach() override;
 	void onAttach() override;
 	void release() override;

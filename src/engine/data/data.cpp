@@ -32,13 +32,11 @@ void Data::release() {
 }
 
 bool Data::loadFromFile(const std::string& path, const Fat& fat) {
-    std::string filename = path + "/hocus.dat";
-
     if (fat.getNumberEntries() == 0) {
     	return false;
     }
 
-    std::ifstream file(filename.c_str(), std::ios_base::binary | std::ios_base::in);
+    std::ifstream file(path.c_str(), std::ios_base::binary | std::ios_base::in);
     if (!file.is_open()) {
         return false;
     }

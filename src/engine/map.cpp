@@ -121,7 +121,9 @@ void Map::setBackground(std::unique_ptr<Texture> texture) {
 }
 
 void Map::render(Renderer &renderer, const Point& offset) {
-	renderer.drawTexture(*this->backgroundImage, 0, 0);
+	if (this->backgroundImage) {
+		renderer.drawTexture(*this->backgroundImage, 0, 0);
+	}
 	
 	for (auto& layer : this->layers) {
 		if (!layer.isVisible()) {
@@ -320,4 +322,12 @@ data::asset::EventLayer& Map::getEventLayer() {
 
 void Map::setEventLayer(const data::asset::EventLayer &eventLayer) {
 	Map::eventLayer = eventLayer;
+}
+
+uint32_t Map::getLimitTime() const {
+	return limitTime;
+}
+
+void Map::setLimitTime(uint32_t limitTime) {
+	Map::limitTime = limitTime;
 }

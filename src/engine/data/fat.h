@@ -38,7 +38,7 @@ public:
 	uint32_t getNumberEntries() const;
 
 	const FatEntry& getEntry(uint32_t index) const;
-
+	
 private:
 	std::vector<FatEntry> entries;
 };

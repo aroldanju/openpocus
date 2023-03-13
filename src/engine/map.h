@@ -99,6 +99,9 @@ public:
 	void setAdditionalLayer(const data::asset::MapLayer &additionalLayer);
 	[[nodiscard]] data::asset::EventLayer& getEventLayer();
 	void setEventLayer(const data::asset::EventLayer &eventLayer);
+	
+	[[nodiscard]] uint32_t getLimitTime() const;
+	void setLimitTime(uint32_t limitTime);
 
 private:
 	std::unique_ptr<Sound> backgroundMusic { nullptr };
@@ -123,6 +126,8 @@ private:
 	pocus::data::asset::MapLayer mapLayer;
 	pocus::data::asset::MapLayer additionalLayer;
 	pocus::data::asset::EventLayer eventLayer;
+	
+	uint32_t limitTime;
 	
 };
 

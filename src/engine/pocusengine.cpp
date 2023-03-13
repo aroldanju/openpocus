@@ -15,9 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <iostream>
+#include <filesystem>
 #include "pocusengine.h"
 #include "log.h"
 #include "definitions.h"
+#include "data/asset/leveltime.h"
+#include "data/fatloader.h"
+#include "data/asset/leveltileset.h"
 
 using namespace pocus;
 
@@ -46,6 +51,11 @@ bool PocusEngine::initialize() {
 
 	LOGI << "Initializing OpenPocus...";
 
+	if (!loadConfig()) {
+		LOGE << "Engine: error loading config.xml file.";
+		return false;
+	}
+	
 	if (!this->renderer || !this->renderer->initialize()) {
 		LOGE << "Engine: error initializing renderer.";
 		return false;
@@ -56,13 +66,18 @@ bool PocusEngine::initialize() {
 		return false;
 	}
 
-	if (!loadData(this->data)) {
+	if (!loadData()) {
 		LOGE << "Engine: error loading data.";
 		return false;
 	}
-
+	
+	if (!loadExecutable()) {
+		LOGE << "Engine: error loading executable.";
+		return false;
+	}
+	
 	createStates(this->stateManager);
-	this->stateManager.createStates(getData());
+	this->stateManager.createStates(getDataManager());
 	if (!this->stateManager.getCurrentState()) {
 		LOGE << "Engine: no state was selected.";
 		return false;
@@ -174,6 +189,46 @@ StateManager& PocusEngine::getStateManager() {
 	return this->stateManager;
 }
 
-data::Data& PocusEngine::getData() {
-	return this->data;
+data::DataManager& PocusEngine::getDataManager() {
+	return this->dataManger;
+}
+
+bool PocusEngine::loadConfig() {
+	return this->config.load("../data/config.xml");
+}
+
+bool PocusEngine::loadData() {
+	std::string path = this->config.getInstallationPath() + "/hocus.dat";
+	
+	if (!std::filesystem::exists(path)) {
+		LOGE << "Data file not found at " << this->config.getInstallationPath();
+		return false;
+	}
+	
+	data::Fat fat = pocus::data::FatLoader::loadFromFile(getDatFatFilename());
+	
+	if (fat.getNumberEntries() == 0) {
+		LOGE << "Data FAT file doesn't have any entries";
+		return false;
+	}
+	
+	return this->dataManger.getData().loadFromFile(path, fat);
+}
+
+bool PocusEngine::loadExecutable() {
+	std::string path = this->config.getInstallationPath() + "/hocus.exe";
+	
+	if (!std::filesystem::exists(path)) {
+		LOGE << "Executable file not found at " << this->config.getInstallationPath();
+		return false;
+	}
+	
+	data::Fat fat = pocus::data::FatLoader::loadFromFile(getExeFatFilename());
+	
+	if (fat.getNumberEntries() == 0) {
+		LOGE << "Executable FAT file doesn't have any entries";
+		return false;
+	}
+	
+	return this->dataManger.getExecutable().loadFromFile(path, fat);
 }

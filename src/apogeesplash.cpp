@@ -22,12 +22,12 @@
 #include "engine/data/asset/midi.h"
 #include "definitions.h"
 
-void ApogeeSplash::onCreate(pocus::data::Data& data) {
+void ApogeeSplash::onCreate(pocus::data::DataManager& dataManager) {
 	pocus::data::asset::Pcx apogeeSplashImage;
 	pocus::data::asset::Midi apogeeMusicMidi;
 	
-	pocus::data::DataFile& apogeeSplashFile = data.fetchFile(DATFILE_SPLASH_APOGEE);
-	pocus::data::DataFile& apogeeMusicFile = data.fetchFile(DATFILE_MUSIC_APOGEE);
+	pocus::data::DataFile& apogeeSplashFile = dataManager.getData().fetchFile(DATFILE_SPLASH_APOGEE);
+	pocus::data::DataFile& apogeeMusicFile = dataManager.getData().fetchFile(DATFILE_MUSIC_APOGEE);
 	
 	apogeeSplashImage.loadFromStream(apogeeSplashFile.getContent(), apogeeSplashFile.getLength());
 	apogeeMusicMidi.loadFromStream(apogeeMusicFile.getContent(), apogeeMusicFile.getLength());

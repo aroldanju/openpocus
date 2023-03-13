@@ -68,9 +68,9 @@ bool StateManager::getQuit() const {
 	return this->quitSignal != -1;
 }
 
-void StateManager::createStates(data::Data& data) {
+void StateManager::createStates(data::DataManager& dataManager) {
 	for (auto& state : this->states) {
-		state.second->onCreate(data);
+		state.second->onCreate(dataManager);
 		
 		if (this->currentState == nullptr) {
 			changeState(state.first);

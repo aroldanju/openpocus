@@ -26,6 +26,8 @@
 #include "data/data.h"
 #include "definitions.h"
 #include "audio.h"
+#include "config.h"
+#include "data/datamanager.h"
 
 namespace pocus {
 
@@ -38,11 +40,12 @@ public:
 
 protected:
 	virtual void createStates(StateManager& stateManager) = 0;
-	virtual bool loadData(data::Data& data) = 0;
-
+	virtual std::string getDatFatFilename() const = 0;
+	virtual std::string getExeFatFilename() const = 0;
+	
 	StateManager& getStateManager();
-	data::Data& getData();
-
+	data::DataManager& getDataManager();
+	
 private:
 	bool initialize();
 	void loop();
@@ -50,13 +53,17 @@ private:
 	
 	void processStateMessage(State* state);
 	float processFrameRate(const Tick& startTick, int delay, int fixedFpsDelay);
+	bool loadConfig();
+	bool loadExecutable();
+	bool loadData();
 
 private:
 	StateManager stateManager;
 	std::unique_ptr<Renderer> renderer;
 	std::unique_ptr<EventHandler> eventHandler;
 	std::unique_ptr<Audio> audio;
-	data::Data data;
+	data::DataManager dataManger;
+	Config config;
 
 	bool running { false };
 };

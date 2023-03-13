@@ -15,16 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OPENPOCUS_DEFINITIONS_H
-#define OPENPOCUS_DEFINITIONS_H
+#include "levelbackground.h"
 
-#define GAME_NAME  		"Open Pocus"
-#define SCREEN_WIDTH	320
-#define SCREEN_HEIGHT	200
+using namespace pocus::data::asset;
 
-#define STATE_SPLASH_APOGEE		"splash_apogee"
-#define STATE_SPLASH_INTRO		"splash_intro"
-#define STATE_GAME				"game"
-#define STATE_MENU_MAIN			"main_menu"
+bool LevelBackground::loadFromStream(const char *stream, uint32_t length) {
+	const uint32_t entries = 10 * 4;
+	
+	for (int i = 0; i < entries; i++) {
+		uint16_t id = *(uint16_t*)(stream);
+		this->backgroundIds.push_back(id);
+		stream += sizeof(uint16_t);
+	}
+}
 
-#endif // OPENPOCUS_DEFINITIONS_H
+void LevelBackground::release() {
+	this->backgroundIds.erase(this->backgroundIds.begin(), this->backgroundIds.end());
+}
+
+const std::vector<uint16_t>& LevelBackground::getBackgroundIds() const {
+	return this->backgroundIds;
+}
