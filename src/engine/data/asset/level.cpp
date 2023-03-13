@@ -252,3 +252,7 @@ bool EventLayer::loadFromStream(const char *stream, uint32_t length) {
 void EventLayer::release() {
 
 }
+
+uint16_t* EventLayer::getData() const {
+	return (uint16_t*)this->data;
+}

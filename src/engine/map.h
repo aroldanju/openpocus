@@ -102,6 +102,8 @@ public:
 	
 	[[nodiscard]] uint32_t getLimitTime() const;
 	void setLimitTime(uint32_t limitTime);
+	
+	[[nodiscard]] uint8_t getCrystals() const;
 
 private:
 	std::unique_ptr<Sound> backgroundMusic { nullptr };
@@ -112,6 +114,8 @@ private:
 	uint32_t height;
 	std::vector<Layer> layers;
 	std::vector<Animation> animations;
+	
+	uint8_t crystals;
 	
 	pocus::data::asset::PlayerCoordinates playerCoordinates;
 	pocus::data::asset::TileAnimationSettings tileAnimationSettings;

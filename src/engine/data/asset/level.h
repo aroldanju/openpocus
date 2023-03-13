@@ -227,7 +227,9 @@ public:
 public:
 	bool loadFromStream(const char *stream, uint32_t length) override;
 	void release() override;
-
+	
+	[[nodiscard]] uint16_t* getData() const;
+	
 private:
 	uint16_t data[HEIGHT][WIDTH];
 };

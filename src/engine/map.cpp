@@ -173,6 +173,8 @@ void Map::create(uint32_t width, uint32_t height) {
 	this->width = width;
 	this->height = height;
 	
+	this->crystals = 0;
+	
 	// Create fixed layers: 0 background; 1 tiles
 	this->layers.emplace_back(width, height);
 	this->layers.emplace_back(width, height);
@@ -209,6 +211,12 @@ void Map::create(uint32_t width, uint32_t height) {
 	for (uint32_t i = 0; i < width * height; i++) {
 		const uint32_t x = i % width;
 		const uint32_t y = i / width;
+		
+		// Events
+		const uint16_t eventId = this->eventLayer.getData()[i];
+		if (eventId == 5) {
+			this->crystals++;
+		}
 		
 		// Background layer
 		const uint16_t backgroundId = this->backgroundLayer.getData()[i];
@@ -340,4 +348,8 @@ uint32_t Map::getLimitTime() const {
 
 void Map::setLimitTime(uint32_t limitTime) {
 	Map::limitTime = limitTime;
+}
+
+uint8_t Map::getCrystals() const {
+	return crystals;
 }
