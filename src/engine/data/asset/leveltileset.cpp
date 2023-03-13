@@ -15,16 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OPENPOCUS_DEFINITIONS_H
-#define OPENPOCUS_DEFINITIONS_H
+#include "leveltileset.h"
 
-#define GAME_NAME  		"Open Pocus"
-#define SCREEN_WIDTH	320
-#define SCREEN_HEIGHT	200
+using namespace pocus::data::asset;
 
-#define STATE_SPLASH_APOGEE		"splash_apogee"
-#define STATE_SPLASH_INTRO		"splash_intro"
-#define STATE_GAME				"game"
-#define STATE_MENU_MAIN			"main_menu"
+bool LevelTileSet::loadFromStream(const char *stream, uint32_t length) {
+	const uint32_t entries = 10 * 4;
+	
+	for (int i = 0; i < entries; i++) {
+		uint16_t levelTimeLimit = *(uint16_t*)(stream);
+		this->tileSetId.push_back(levelTimeLimit);
+		stream += sizeof(uint16_t);
+	}
+}
 
-#endif // OPENPOCUS_DEFINITIONS_H
+void LevelTileSet::release() {
+	this->tileSetId.erase(this->tileSetId.begin(), this->tileSetId.end());
+}
+
+const std::vector<uint16_t>& LevelTileSet::getTileSetIds() const {
+	return this->tileSetId;
+}

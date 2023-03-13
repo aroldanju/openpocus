@@ -26,7 +26,7 @@
 
 class MainMenu : public pocus::State {
 public:
-	void onCreate(pocus::data::Data& data) override;
+	void onCreate(pocus::data::DataManager& dataManager) override;
 	void onDetach() override;
 	void onAttach() override;
 	void release() override;

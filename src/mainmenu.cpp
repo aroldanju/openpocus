@@ -22,8 +22,10 @@
 #include "engine/data/asset/image.h"
 #include "definitions.h"
 
-void MainMenu::onCreate(pocus::data::Data& data) {
+void MainMenu::onCreate(pocus::data::DataManager& dataManager) {
 	LOGI << "MainMenu: create";
+	
+	pocus::data::Data& data = dataManager.getData();
 	
 	pocus::data::asset::Font font;
 	pocus::data::asset::Palette palette;

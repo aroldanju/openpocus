@@ -26,8 +26,11 @@
 #include "engine/data/asset/level.h"
 #include "engine/data/asset/pcx.h"
 #include "engine/data/asset/midi.h"
+#include "engine/data/asset/leveltileset.h"
+#include "engine/data/asset/leveltime.h"
+#include "engine/data/asset/levelbackground.h"
 
-void StateGame::loadLevel(pocus::data::Data& data, uint8_t episode, uint8_t stage) {
+void StateGame::loadLevel(pocus::data::Data& data, pocus::data::Data& executable, uint8_t episode, uint8_t stage) {
 	episode--;
 	stage--;
 	
@@ -89,30 +92,42 @@ void StateGame::loadLevel(pocus::data::Data& data, uint8_t episode, uint8_t stag
 	this->map.getAdditionalLayer().loadFromStream(additionalLayerFile.getContent(), additionalLayerFile.getLength());
 	this->map.getEventLayer().loadFromStream(eventLayerFile.getContent(), eventLayerFile.getLength());
 	
+	// Load executable stuff
+	
+	const uint32_t absoluteLevel = (STAGES * episode) + stage;
+	
+	// Time limit
+	pocus::data::DataFile& levelLimitFile = executable.fetchFile(EXEFILE_LIMIT_TIME);
+	pocus::data::asset::LevelTime levelTime;
+	levelTime.loadFromStream(levelLimitFile.getContent(), levelLimitFile.getLength());
+	this->map.setLimitTime(levelTime.getTime()[absoluteLevel]);
+	
+	// Tile set
+	pocus::data::DataFile& levelTileSetFile = executable.fetchFile(EXEFILE_TILESETS);
+	pocus::data::asset::LevelTileSet levelTileSet;
+	levelTileSet.loadFromStream(levelTileSetFile.getContent(), levelTileSetFile.getLength());
+	pocus::data::asset::Pcx tileSet;
+	pocus::data::DataFile& tileSetFile = data.fetchFile(DATFILE_TILESET_01 + levelTileSet.getTileSetIds()[absoluteLevel]);
+	tileSet.loadFromStream(tileSetFile.getContent(), tileSetFile.getLength());
+	this->map.setTileSet(tileSet.createTexture());
+	
+	// Background
+	pocus::data::DataFile& backgroundInfoFile = executable.fetchFile(EXEFILE_BACKGROUNDS);
+	pocus::data::asset::LevelBackground levelBackgroundInfo;
+	levelBackgroundInfo.loadFromStream(backgroundInfoFile.getContent(), backgroundInfoFile.getLength());
+	pocus::data::asset::Pcx background;
+	pocus::data::DataFile& backgroundFile = data.fetchFile(DATFILE_IMAGE_BACKGROUND_01 + levelBackgroundInfo.getBackgroundIds()[absoluteLevel]);
+	background.loadFromStream(backgroundFile.getContent(), backgroundFile.getLength());
+	this->map.setBackground(background.createTexture());
+	
 	this->map.create(MAP_WIDTH, MAP_HEIGHT);
 }
 
-void StateGame::loadLevelStuff(pocus::data::Data& data, uint8_t episode, uint8_t stage) {
-	pocus::data::asset::Pcx backgroundPcx;
-	pocus::data::asset::Midi midi;
-	pocus::data::asset::Pcx tileSet;
+void StateGame::onCreate(pocus::data::DataManager& dataManager) {
+	pocus::data::Data& data = dataManager.getData();
+	pocus::data::Data& executable = dataManager.getExecutable();
 	
-	pocus::data::DataFile& backgroundFile = data.fetchFile(DATFILE_IMAGE_BACKGROUND_01);
-	pocus::data::DataFile& musicFile = data.fetchFile(DATFILE_MUSIC_03);
-	pocus::data::DataFile& tileSetFile = data.fetchFile(DATFILE_TILESET_01);
-	
-	backgroundPcx.loadFromStream(backgroundFile.getContent(), backgroundFile.getLength());
-	midi.loadFromStream(musicFile.getContent(), musicFile.getLength());
-	tileSet.loadFromStream(tileSetFile.getContent(), tileSetFile.getLength());
-	
-	this->map.setMusic(midi.createAsSound());
-	this->map.setBackground(backgroundPcx.createTexture());
-	this->map.setTileSet(tileSet.createTexture());
-}
-
-void StateGame::onCreate(pocus::data::Data& data) {
-	loadLevelStuff(data, 1, 1);
-	loadLevel(data, 1, 1);
+	loadLevel(data, executable, 1, 1);
 	
 	pocus::data::asset::Image image;
 	pocus::data::asset::Palette palette {};

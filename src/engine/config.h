@@ -15,16 +15,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OPENPOCUS_DEFINITIONS_H
-#define OPENPOCUS_DEFINITIONS_H
+#ifndef CONFIG_H
+#define CONFIG_H
 
-#define GAME_NAME  		"Open Pocus"
-#define SCREEN_WIDTH	320
-#define SCREEN_HEIGHT	200
+#include <string>
 
-#define STATE_SPLASH_APOGEE		"splash_apogee"
-#define STATE_SPLASH_INTRO		"splash_intro"
-#define STATE_GAME				"game"
-#define STATE_MENU_MAIN			"main_menu"
+namespace pocus {
 
-#endif // OPENPOCUS_DEFINITIONS_H
+class Config {
+public:
+	bool load(const std::string& filename);
+	
+	const std::string &getInstallationPath() const;
+	
+	void setInstallationPath(const std::string &installationPath);
+	
+private:
+	std::string installationPath;
+};
+
+}
+
+#endif // CONFIG_H

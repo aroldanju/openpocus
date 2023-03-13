@@ -23,10 +23,12 @@
 class OpenPocus : public pocus::PocusEngine {
 public:
 	explicit OpenPocus(const pocus::RendererParameters &rendererParameters);
-
+	
+	std::string getDatFatFilename() const override;
+	std::string getExeFatFilename() const override;
+	
 protected:
 	void createStates(pocus::StateManager& stateManager) override;
-	bool loadData(pocus::data::Data& data) override;
 };
 
 

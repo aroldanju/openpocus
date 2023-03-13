@@ -45,7 +45,10 @@ void OpenPocus::createStates(pocus::StateManager& stateManager) {
 	stateManager.setStartupState(STATE_GAME);
 }
 
-bool OpenPocus::loadData(pocus::data::Data& data) {
-	pocus::data::Fat fat = pocus::data::FatLoader::loadFromFile(FAT_FILE);
-	return data.loadFromFile(DAT_PATH, fat);
+std::string OpenPocus::getDatFatFilename() const {
+	return FAT_FILE;
+}
+
+std::string OpenPocus::getExeFatFilename() const {
+	return EXE_FAT_FILE;
 }

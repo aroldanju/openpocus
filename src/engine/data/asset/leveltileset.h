@@ -15,16 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OPENPOCUS_DEFINITIONS_H
-#define OPENPOCUS_DEFINITIONS_H
+#ifndef LEVELTILESET_H
+#define LEVELTILESET_H
 
-#define GAME_NAME  		"Open Pocus"
-#define SCREEN_WIDTH	320
-#define SCREEN_HEIGHT	200
+#include <vector>
+#include <cstdint>
+#include "asset.h"
 
-#define STATE_SPLASH_APOGEE		"splash_apogee"
-#define STATE_SPLASH_INTRO		"splash_intro"
-#define STATE_GAME				"game"
-#define STATE_MENU_MAIN			"main_menu"
+namespace pocus::data::asset {
 
-#endif // OPENPOCUS_DEFINITIONS_H
+class LevelTileSet : public Asset {
+public:
+	bool loadFromStream(const char* stream, uint32_t length) override;
+	void release() override;
+	
+	[[nodiscard]] const std::vector<uint16_t>& getTileSetIds() const;
+
+private:
+	std::vector<uint16_t> tileSetId;
+};
+
+}
+
+#endif // LEVELTILESET_H

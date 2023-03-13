@@ -21,7 +21,8 @@
 #define VERSION SHAREWARE
 
 #if(VERSION == SHAREWARE)
-#define FAT_FILE			"shareware.fat"
+#define FAT_FILE			"../data/shareware.fat"
+#define EXE_FAT_FILE		"../data/shareware_exe.fat"
 #define EPISODES 			1
 #define STAGES				9
 enum DatFile {
@@ -47,8 +48,17 @@ enum DatFile {
 	DATFILE_MUSIC_05 = 207,
 	DATFILE_VOC_LAUGH = 212
 };
+enum ExeFile {
+	EXEFILE_LIMIT_TIME = 0,
+	EXEFILE_ITEMS = 1,
+	EXEFILE_TILESETS = 2,
+	EXEFILE_BACKGROUNDS = 3,
+	EXEFILE_MUSIC = 4,
+	EXEFILE_ELEVATORS = 5
+};
 #elif(VERSION == REGISTERED)
 #define FAT_FILE			"registered.fat"
+#define EXE_FAT_FILE		"regeistered_exe.fat"
 #define EPISODES 			4
 #define STAGES				9
 enum DatFile {
@@ -73,6 +83,14 @@ enum DatFile {
 	DATFILE_MUSIC_04 = 604,
 	DATFILE_MUSIC_05 = 605,
 	DATFILE_VOC_LAUGH = 611,
+};
+enum ExeFile {
+	EXEFILE_LIMIT_TIME = 0,
+	EXEFILE_ITEMS = 1,
+	EXEFILE_TILESETS = 2,
+	EXEFILE_BACKGROUNDS = 3,
+	EXEFILE_MUSIC = 4,
+	EXEFILE_ELEVATORS = 5
 };
 #endif
 

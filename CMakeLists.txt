@@ -22,6 +22,7 @@ set(sources
         )
 
 set(data_sources
+        src/engine/data/datamanager.cpp
         src/engine/data/data.cpp
         src/engine/data/fat.cpp
         src/engine/data/datafile.cpp
@@ -33,6 +34,9 @@ set(data_sources
         src/engine/data/asset/midi.cpp
         src/engine/data/asset/font.cpp
         src/engine/data/asset/level.cpp
+        src/engine/data/asset/leveltime.cpp
+        src/engine/data/asset/leveltileset.cpp
+        src/engine/data/asset/levelbackground.cpp
         )
 
 set(engine_sources
@@ -51,6 +55,7 @@ set(engine_sources
         src/engine/animation.cpp
         src/engine/map.cpp
         src/engine/point.cpp
+        src/engine/config.cpp
         )
 
 set(sdl_sources
@@ -63,7 +68,7 @@ set(sdl_sources
 
 add_executable(OpenPocus ${sources} ${data_sources} ${engine_sources} ${sdl_sources})
 
-target_link_libraries(OpenPocus ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES})
+target_link_libraries(OpenPocus ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} -ltinyxml2)
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data/shareware.fat
         DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

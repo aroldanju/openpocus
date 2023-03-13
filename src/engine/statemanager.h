@@ -48,7 +48,7 @@ public:
 	const std::string& getStartupState() const;
 	
 protected:
-	void createStates(data::Data& data);
+	void createStates(data::DataManager& dataManager);
 
 private:
 	int quitSignal { -1 };
