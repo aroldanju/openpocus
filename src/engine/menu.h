@@ -44,7 +44,7 @@ public:
 	void render(Renderer& renderer);
 	void handleEvents(EventHandler& eventHandler);
 	void update(float dt);
-	void setPosition(uint32_t x, uint32_t y);
+	void setPosition(const Point& point);
 	void setLineSpacing(uint32_t spacing);
 	void setTextColor(uint8_t color);
 	void setCapitalLetterColor(uint8_t color);
@@ -58,8 +58,7 @@ public:
 private:
 	data::asset::Font font;
 	data::asset::Palette palette;
-	uint32_t x { 0 };
-	uint32_t y { 0 };
+	Point position;
 	uint32_t lineSpacing { 10 };
 	std::vector<std::tuple<std::string, std::function<void()>, std::unique_ptr<Texture>>> options;
 	uint8_t textColor, capitalLetterColor;

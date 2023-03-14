@@ -54,8 +54,10 @@ void Game::render(Renderer &renderer) {
 	
 	if (this->paused) {
 		renderer.drawTexture(*this->labelPaused,
-							 renderer.getWidth() / 2 - this->labelPaused->getWidth() / 2,
-							 (renderer.getHeight() - this->hud.getBackground().getHeight()) / 2 - this->labelPaused->getHeight() / 2);
+							 Point(
+								 renderer.getWidth() / 2 - this->labelPaused->getWidth() / 2,
+								 (renderer.getHeight() - this->hud.getBackground().getHeight()) / 2 - this->labelPaused->getHeight() / 2)
+		 );
 	}
 }
 

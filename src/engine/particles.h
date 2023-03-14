@@ -32,7 +32,7 @@ public:
 	friend class Particles;
 	
 public:
-	Particle(float x, float y, float angle, float speed, const Color& color);
+	Particle(const Point& position, float angle, float speed, const Color& color);
 	
 	[[nodiscard]] float getX() const;
 	void setX(float x);
@@ -40,7 +40,7 @@ public:
 	void setY(float y);
 
 private:
-	float x, y;
+	Point position;
 	Color color;
 	float speed;
 	float angle;

@@ -21,8 +21,8 @@
 
 using namespace pocus;
 
-Particle::Particle(float x, float y, float angle, float speed, const Color& color):
-	x(x), y(y),
+Particle::Particle(const Point& position, float angle, float speed, const Color& color):
+	position(position),
 	angle(angle),
 	speed(speed),
 	color(color),
@@ -31,19 +31,19 @@ Particle::Particle(float x, float y, float angle, float speed, const Color& colo
 }
 
 float Particle::getX() const {
-	return x;
+	return this->position.getX();
 }
 
 void Particle::setX(float x) {
-	Particle::x = x;
+	this->position.setX(x);
 }
 
 float Particle::getY() const {
-	return y;
+	return this->position.getY();
 }
 
 void Particle::setY(float y) {
-	Particle::y = y;
+	this->position.setY(y);
 }
 
 void Particles::createStars(data::asset::Palette& palette, uint32_t width, uint32_t height, uint32_t amount) {
@@ -55,27 +55,26 @@ void Particles::createStars(data::asset::Palette& palette, uint32_t width, uint3
 	const data::asset::PaletteColor& color = this->palette.colors[127];
 	
 	for (uint32_t i = 0; i < amount; i++) {
-		this->particles.emplace_back(x, y, (float)(rand() % 314) / 10.0f, .2f + ((float)(rand() % 100) / 100.f),
+		this->particles.emplace_back(Point(x, y), (float)(rand() % 314) / 10.0f, .2f + ((float)(rand() % 100) / 100.f),
 									 (Color){ color.r, color.g, color.b, 0 });
 	}
 }
 
 void Particles::render(Renderer &renderer) {
 	for (auto& particle : this->particles) {
-		renderer.drawPoint((int)particle.x, (int)particle.y, particle.color);
+		renderer.drawPoint(particle.position, particle.color);
 	}
 }
 
 void Particles::update(float dt) {
 	
 	for (auto& particle : this->particles) {
-		particle.x += std::cos(particle.angle) * (particle.speed * dt);
-		particle.y += std::sin(particle.angle) * (particle.speed * dt);
+		particle.position.setX(particle.position.getX() + std::cos(particle.angle) * (particle.speed * dt));
+		particle.position.setY(particle.position.getY() + std::sin(particle.angle) * (particle.speed * dt));
 		
-		if ((int)particle.x >= this->bounds.first || particle.x < 0 || (int)particle.y >= this->bounds.second || particle.y < 0) {
+		if ((int)particle.getX() >= this->bounds.first || particle.getX() < 0 || (int)particle.getY() >= this->bounds.second || particle.getY() < 0) {
 			particle.color.alpha = 0;
-			particle.x = this->x;
-			particle.y = this->y;
+			particle.position = Point(this->x, this->y);
 			particle.angle = (float)(rand() % 314) / 10.0f;
 			particle.tickCreation = getNow();
 		}

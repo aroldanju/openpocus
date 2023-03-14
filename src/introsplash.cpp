@@ -71,7 +71,7 @@ void IntroSplash::handleEvents(pocus::EventHandler &eventHandler) {
 }
 
 void IntroSplash::render(pocus::Renderer &renderer) {
-	renderer.drawTexture(*this->backgroundImage, 0, 0);
+	renderer.drawTexture(*this->backgroundImage, pocus::Point(0, 0));
 	this->fade.render(renderer);
 }
 

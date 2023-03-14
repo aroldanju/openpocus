@@ -82,7 +82,7 @@ void Fade::update(float dt) {
 }
 
 void Fade::render(Renderer& renderer) {
-	renderer.drawRect(0, 0, -1, -1, this->color);
+	renderer.drawRect(Rect(Point(0, 0), Size(-1, -1)), this->color);
 }
 
 void Fade::setSpeed(float speed) {

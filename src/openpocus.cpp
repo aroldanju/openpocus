@@ -41,8 +41,8 @@ void OpenPocus::createStates(pocus::StateManager& stateManager) {
 	stateManager.addState(STATE_MENU_MAIN, std::make_unique<MainMenu>());
 	
 	//stateManager.setStartupState(STATE_SPLASH_APOGEE);
-	//stateManager.setStartupState(STATE_MENU_MAIN);
-	stateManager.setStartupState(STATE_GAME);
+	stateManager.setStartupState(STATE_MENU_MAIN);
+	//stateManager.setStartupState(STATE_GAME);
 }
 
 std::string OpenPocus::getDatFatFilename() const {

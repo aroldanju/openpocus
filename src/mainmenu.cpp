@@ -46,7 +46,7 @@ void MainMenu::onCreate(pocus::data::DataManager& dataManager) {
 	
 	this->menu.setFont(std::move(font));
 	this->menu.setPalette(palette);
-	this->menu.setPosition(93, 61);
+	this->menu.setPosition(pocus::Point(93, 61));
 	this->menu.setTextColor(72);
 	this->menu.setCapitalLetterColor(88);
 	
@@ -99,8 +99,8 @@ void MainMenu::handleEvents(pocus::EventHandler &eventHandler) {
 
 void MainMenu::render(pocus::Renderer &renderer) {
 	this->particles.render(renderer);
-	renderer.drawTexture(*this->bottomTexture, 0, SCREEN_HEIGHT - this->bottomTexture->getHeight());
-	renderer.drawTexture(*this->topTexture, 0, 0);
+	renderer.drawTexture(*this->bottomTexture, pocus::Point(0, SCREEN_HEIGHT - this->bottomTexture->getHeight()));
+	renderer.drawTexture(*this->topTexture, pocus::Point(0, 0));
 	this->menu.render(renderer);
 	this->fade.render(renderer);
 }

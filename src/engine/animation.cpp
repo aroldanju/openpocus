@@ -51,12 +51,12 @@ void Animation::update(float dt) {
 	}
 }
 
-void Animation::render(Renderer& renderer, int x, int y) {
+void Animation::render(Renderer& renderer, const Point& point) {
 	if (this->frames.empty()) {
 		return;
 	}
 	
-	renderer.drawTexture(*this->frames[this->currentFrame], x, y);
+	renderer.drawTexture(*this->frames[this->currentFrame], point);
 }
 
 uint32_t Animation::getFps() const {

@@ -31,7 +31,7 @@ public:
 	void addFrame(std::unique_ptr<Texture> texture);
 	
 	void update(float dt);
-	void render(Renderer& renderer, int x, int y);
+	void render(Renderer& renderer, const Point& point);
 	
 	[[nodiscard]] uint32_t getFps() const;
 	

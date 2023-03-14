@@ -38,24 +38,24 @@ void Hud::setGoldenKeyTexture(std::unique_ptr<Texture> texture) {
 }
 
 void Hud::render(Renderer &renderer) {
-	renderer.drawTexture(*this->background, 0, renderer.getHeight() - this->background->getHeight());
-	renderer.drawTexture(*this->labelScore, SCORE_X + ((SCORE_WIDTH / 2) - (this->labelScore->getWidth() / 2)), SCORE_Y);
-	renderer.drawTexture(*this->labelHealth, HEALTH_X + ((HEALTH_WIDTH / 2) - (this->labelHealth->getWidth() / 2)), HEALTH_Y);
-	renderer.drawTexture(*this->labelCrystals, CRYSTALS_X + ((CRYSTALS_WIDTH / 2) - (this->labelCrystals->getWidth() / 2)), CRYSTALS_Y);
-	renderer.drawTexture(*this->labelLevel, LEVEL_X, LEVEL_Y);
+	renderer.drawTexture(*this->background, Point(0, renderer.getHeight() - this->background->getHeight()));
+	renderer.drawTexture(*this->labelScore, Point(SCORE_X + ((SCORE_WIDTH / 2) - (this->labelScore->getWidth() / 2)), SCORE_Y));
+	renderer.drawTexture(*this->labelHealth, Point(HEALTH_X + ((HEALTH_WIDTH / 2) - (this->labelHealth->getWidth() / 2)), HEALTH_Y));
+	renderer.drawTexture(*this->labelCrystals, Point(CRYSTALS_X + ((CRYSTALS_WIDTH / 2) - (this->labelCrystals->getWidth() / 2)), CRYSTALS_Y));
+	renderer.drawTexture(*this->labelLevel, Point(LEVEL_X, LEVEL_Y));
 	
 	if (this->goldenKey) {
 		if (this->silverKey) {
-			renderer.drawTexture(*this->textureSilverKey, KEYS_BOTH_X, KEYS_Y);
-			renderer.drawTexture(*this->textureGoldenKey, KEYS_BOTH_X + 8, KEYS_Y);
+			renderer.drawTexture(*this->textureSilverKey, Point(KEYS_BOTH_X, KEYS_Y));
+			renderer.drawTexture(*this->textureGoldenKey, Point(KEYS_BOTH_X + 8, KEYS_Y));
 		}
 		else {
-			renderer.drawTexture(*this->textureGoldenKey, KEYS_X, KEYS_Y);
+			renderer.drawTexture(*this->textureGoldenKey, Point(KEYS_X, KEYS_Y));
 		}
 	}
 	else {
 		if (this->silverKey) {
-			renderer.drawTexture(*this->textureSilverKey, KEYS_X, KEYS_Y);
+			renderer.drawTexture(*this->textureSilverKey, Point(KEYS_X, KEYS_Y));
 		}
 	}
 }

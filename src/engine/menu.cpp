@@ -52,11 +52,11 @@ void Menu::update(float dt) {
 
 void Menu::render(Renderer &renderer) {
 	uint32_t label = 0;
-	uint32_t yOffset = this->y;
+	uint32_t yOffset = this->position.getY();
 	for (int i = 0; i < this->options.size(); i++) {
 		uint32_t offset = this->lineSpacing;
 		if (!std::get<0>(this->options[i]).empty()) {
-			renderer.drawTexture(*std::get<2>(this->options[i]), this->x, (int)yOffset);
+			renderer.drawTexture(*std::get<2>(this->options[i]), pocus::Point(this->position.getX(), yOffset));
 			label++;
 		}
 		else {
@@ -64,9 +64,9 @@ void Menu::render(Renderer &renderer) {
 		}
 		
 		if (this->currentSelection == i) {
-			this->indicatorAnimation.render(renderer,
-											(int)this->x - this->indicatorAnimation.getWidth() * 1.5,
-											(int)yOffset - (this->indicatorAnimation.getHeight() * 0.25));
+			this->indicatorAnimation.render(renderer, Point(
+											this->position.getX() - this->indicatorAnimation.getWidth() * 1.5,
+											yOffset - (this->indicatorAnimation.getHeight() * 0.25)));
 		}
 		
 		yOffset += offset;
@@ -74,7 +74,7 @@ void Menu::render(Renderer &renderer) {
 	
 	// Bottom text
 	if (this->bottomLabel) {
-		renderer.drawTexture(*this->bottomLabel, SCREEN_WIDTH / 2 - this->font.calculateWidth(this->bottomText) / 2, Menu::BOTTOM_TEXT_Y);
+		renderer.drawTexture(*this->bottomLabel, Point(SCREEN_WIDTH / 2 - this->font.calculateWidth(this->bottomText) / 2, Menu::BOTTOM_TEXT_Y));
 	}
 }
 
@@ -92,9 +92,8 @@ void Menu::handleEvents(EventHandler& eventHandler) {
 	}
 }
 
-void Menu::setPosition(uint32_t x, uint32_t y) {
-	this->x = x;
-	this->y = y;
+void Menu::setPosition(const Point& point) {
+	this->position = point;
 }
 
 void Menu::setLineSpacing(uint32_t spacing) {

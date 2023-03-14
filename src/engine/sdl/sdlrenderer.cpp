@@ -90,31 +90,33 @@ bool SdlRenderer::createTexture(Texture &texture) {
 	return true;
 }
 
-void SdlRenderer::drawTexture(Texture& texture, int x, int y) {
+void SdlRenderer::drawTexture(Texture& texture, const Point& point) {
 	if (!texture.isReady()) {
 		createTexture(texture);
 	}
 	
 	auto sdlTexture = reinterpret_cast<SdlTexture*>(&texture);
 	
-	SDL_Rect rect = (SDL_Rect){ x, y, (int)texture.getWidth(), (int)texture.getHeight() };
+	SDL_Rect rect = (SDL_Rect){ (int)point.getX(), (int)point.getY(), (int)texture.getWidth(), (int)texture.getHeight() };
 	SDL_RenderCopy(this->renderer, sdlTexture->texture, nullptr, &rect);
 }
 
-void SdlRenderer::drawRect(int x, int y, int w, int h, const Color &color) {
+void SdlRenderer::drawRect(const Rect& rect, const Color &color) {
+	int w = (int)rect.getSize().getWidth();
+	int h = (int)rect.getSize().getHeight();
 	if (w == -1 || h == -1) {
 		w = (int)this->parameters.width;
 		h = (int)this->parameters.height;
 	}
 	
-	SDL_Rect rect = (SDL_Rect){x, y, w, h};
+	SDL_Rect sdlRect = (SDL_Rect){ (int)rect.getPosition().getX(), (int)rect.getPosition().getY(), w, h };
 	SDL_SetRenderDrawColor(this->renderer, color.red, color.green, color.blue, color.alpha);
-	SDL_RenderFillRect(this->renderer, &rect);
+	SDL_RenderFillRect(this->renderer, &sdlRect);
 }
 
-void SdlRenderer::drawPoint(int x, int y, const Color& color) {
+void SdlRenderer::drawPoint(const Point& point, const Color& color) {
 	SDL_SetRenderDrawColor(this->renderer, color.red, color.green, color.blue, color.alpha);
-	SDL_RenderDrawPoint(this->renderer, x, y);
+	SDL_RenderDrawPoint(this->renderer, (int)point.getX(), (int)point.getY());
 }
 
 uint32_t SdlRenderer::getWidth() {
