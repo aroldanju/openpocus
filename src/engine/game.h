@@ -27,11 +27,17 @@ namespace pocus {
 class Game {
 public:
 	enum { PLAYER_MAX_HEALTH = 100 };
+	enum { DEFAULT_TEXT_COLOR = 104 };
 	
 public:
 	Map& getMap();
 	Player& getPlayer();
 	Hud& getHud();
+	data::asset::Palette& getPalette();
+	data::asset::Font& getFont();
+	Point& getOffset();
+	
+	void setTextColor(uint8_t color);
 	
 	void start();
 	void render(Renderer& renderer);
@@ -46,13 +52,19 @@ public:
 	void removeSilverKey();
 	void addGoldenKey();
 	void removeGoldenKey();
+	void togglePause();
 	
 private:
+	data::asset::Font font;
+	data::asset::Palette palette;
+	uint8_t textColor { DEFAULT_TEXT_COLOR };
 	Point offset;
 	Map map;
 	Player player;
 	Hud hud;
 	Tick tickStart;
+	bool paused { false };
+	std::unique_ptr<Texture> labelPaused;
 };
 
 }

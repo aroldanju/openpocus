@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <iostream>
 #include "game.h"
 
 using namespace pocus;
@@ -31,11 +32,17 @@ Hud& Game::getHud() {
 	return this->hud;
 }
 
+Point& Game::getOffset() {
+	return this->offset;
+}
+
 void Game::start() {
 	this->hud.updateScore(this->player.getScore());
 	this->hud.updateCrystals(this->player.getCrystals(), this->map.getCrystals());
 	this->hud.updateHealth(this->player.getHealth());
 	this->hud.updateLevel(this->player.getLevel());
+	
+	this->labelPaused = this->font.writeShadow("Game Paused", this->palette, this->textColor);
 	
 	this->tickStart = getNow();
 	this->map.start();
@@ -44,9 +51,19 @@ void Game::start() {
 void Game::render(Renderer &renderer) {
 	this->map.render(renderer, this->offset);
 	this->hud.render(renderer);
+	
+	if (this->paused) {
+		renderer.drawTexture(*this->labelPaused,
+							 renderer.getWidth() / 2 - this->labelPaused->getWidth() / 2,
+							 (renderer.getHeight() - this->hud.getBackground().getHeight()) / 2 - this->labelPaused->getHeight() / 2);
+	}
 }
 
 void Game::update(float dt) {
+	if (this->paused) {
+		return;
+	}
+	
 	this->map.update(dt);
 }
 
@@ -99,4 +116,20 @@ void Game::addGoldenKey(){
 void Game::removeGoldenKey(){
 	this->player.setGoldKey(false);
 	this->hud.updateKeys(this->player.hasSilverKey(), this->player.hasGoldenKey());
+}
+
+void Game::togglePause() {
+	this->paused = !this->paused;
+}
+
+data::asset::Palette& Game::getPalette() {
+	return this->palette;
+}
+
+data::asset::Font& Game::getFont() {
+	return this->font;
+}
+
+void Game::setTextColor(uint8_t color) {
+	this->textColor = color;
 }
