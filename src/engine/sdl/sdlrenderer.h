@@ -33,6 +33,8 @@ public:
 	virtual void release() override;
 	virtual void clear() override;
 	virtual void render() override;
+	uint32_t getWidth() override;
+	uint32_t getHeight() override;
 	
 	bool createTexture(Texture& texture) override;
 	

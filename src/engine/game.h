@@ -15,38 +15,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RENDERER_H
-#define RENDERER_H
+#ifndef GAME_H
+#define GAME_H
 
-#include "texture.h"
-#include "color.h"
-#include <cstdint>
-#include <string>
+#include "map.h"
+#include "player.h"
+#include "hud.h"
 
 namespace pocus {
 
-struct RendererParameters {
-	uint32_t width;
-	uint32_t height;
-	std::string title;
-};
-
-class Renderer {
+class Game {
 public:
-	virtual bool initialize() = 0;
-	virtual void release() = 0;
-	virtual void clear() = 0;
-	virtual void render() = 0;
-	virtual uint32_t getWidth() = 0;
-	virtual uint32_t getHeight() = 0;
+	enum { PLAYER_MAX_HEALTH = 100 };
 	
-	virtual bool createTexture(Texture& texture) = 0;
+public:
+	Map& getMap();
+	Player& getPlayer();
+	Hud& getHud();
 	
-	virtual void drawTexture(Texture& texture, int x, int y) = 0;
-	virtual void drawRect(int x, int y, int w, int h, const Color& color) = 0;
-	virtual void drawPoint(int x, int y, const Color& color) = 0;
+	void start();
+	void render(Renderer& renderer);
+	void update(float dt);
+	
+	uint32_t getElapsedTime();
+	
+	void addScore(uint32_t score);
+	void removeHealth(uint8_t health);
+	void addHealth(uint8_t health);
+	void addSilverKey();
+	void removeSilverKey();
+	void addGoldenKey();
+	void removeGoldenKey();
+	
+private:
+	Point offset;
+	Map map;
+	Player player;
+	Hud hud;
+	Tick tickStart;
 };
 
 }
 
-#endif //RENDERER_H
+#endif // GAME_H

@@ -34,9 +34,9 @@ public:
 	void setLevel(uint8_t level);
 	[[nodiscard]] uint8_t getEpisode() const;
 	void setEpisode(uint8_t episode);
-	[[nodiscard]] bool isSilverKey() const;
+	[[nodiscard]] bool hasSilverKey() const;
 	void setSilverKey(bool silverKey);
-	[[nodiscard]] bool isGoldKey() const;
+	[[nodiscard]] bool hasGoldenKey() const;
 	void setGoldKey(bool goldKey);
 
 private:

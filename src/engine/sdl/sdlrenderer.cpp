@@ -116,3 +116,11 @@ void SdlRenderer::drawPoint(int x, int y, const Color& color) {
 	SDL_SetRenderDrawColor(this->renderer, color.red, color.green, color.blue, color.alpha);
 	SDL_RenderDrawPoint(this->renderer, x, y);
 }
+
+uint32_t SdlRenderer::getWidth() {
+	return this->parameters.width;
+}
+
+uint32_t SdlRenderer::getHeight() {
+	return this->parameters.height;
+}

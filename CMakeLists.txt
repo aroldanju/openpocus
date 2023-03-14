@@ -57,6 +57,8 @@ set(engine_sources
         src/engine/point.cpp
         src/engine/config.cpp
         src/engine/player.cpp
+        src/engine/game.cpp
+        src/engine/hud.cpp
         )
 
 set(sdl_sources

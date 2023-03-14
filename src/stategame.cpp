@@ -34,6 +34,8 @@ void StateGame::loadLevel(pocus::data::Data& data, pocus::data::Data& executable
 	episode--;
 	stage--;
 	
+	pocus::Map& map = this->game.getMap();
+	
 	const uint32_t filesPerType = EPISODES * STAGES;
 	const uint32_t playerCoordinatesOffset = 0;
 	const uint32_t tileAnimationSettingsOffset = 1;
@@ -78,19 +80,19 @@ void StateGame::loadLevel(pocus::data::Data& data, pocus::data::Data& executable
 	pocus::data::DataFile& additionalLayerFile = data.fetchFile(offsetAdditionalLayer);
 	pocus::data::DataFile& eventLayerFile = data.fetchFile(offsetEventLayer);
 	
-	this->map.getPlayerCoordinates().loadFromStream(playerCoordinatesFile.getContent(), playerCoordinatesFile.getLength());
-	this->map.getTileAnimationSettings().loadFromStream(tileAnimationSettingsFile.getContent(), tileAnimationSettingsFile.getLength());
-	this->map.getMessages().loadFromStream(messagesFile.getContent(), messagesFile.getLength());
-	this->map.getTeleports().loadFromStream(teleportsFile.getContent(), teleportsFile.getLength());
-	this->map.getSwitchCoordinates().loadFromStream(switchesFile.getContent(), switchesFile.getLength());
-	this->map.getInsertToggles().loadFromStream(insertsFile.getContent(), insertsFile.getLength());
-	this->map.getKeyHoleToggles().loadFromStream(keyHolesFile.getContent(), keyHolesFile.getLength());
-	this->map.getTileProperties().loadFromStream(tilePropertiesFile.getContent(), tilePropertiesFile.getLength());
-	this->map.getEnemyTrigger().loadFromStream(enemyTriggersFile.getContent(), enemyTriggersFile.getLength());
-	this->map.getBackgroundLayer().loadFromStream(backgroundLayerFile.getContent(), backgroundLayerFile.getLength());
-	this->map.getMapLayer().loadFromStream(mapLayerFile.getContent(), mapLayerFile.getLength());
-	this->map.getAdditionalLayer().loadFromStream(additionalLayerFile.getContent(), additionalLayerFile.getLength());
-	this->map.getEventLayer().loadFromStream(eventLayerFile.getContent(), eventLayerFile.getLength());
+	map.getPlayerCoordinates().loadFromStream(playerCoordinatesFile.getContent(), playerCoordinatesFile.getLength());
+	map.getTileAnimationSettings().loadFromStream(tileAnimationSettingsFile.getContent(), tileAnimationSettingsFile.getLength());
+	map.getMessages().loadFromStream(messagesFile.getContent(), messagesFile.getLength());
+	map.getTeleports().loadFromStream(teleportsFile.getContent(), teleportsFile.getLength());
+	map.getSwitchCoordinates().loadFromStream(switchesFile.getContent(), switchesFile.getLength());
+	map.getInsertToggles().loadFromStream(insertsFile.getContent(), insertsFile.getLength());
+	map.getKeyHoleToggles().loadFromStream(keyHolesFile.getContent(), keyHolesFile.getLength());
+	map.getTileProperties().loadFromStream(tilePropertiesFile.getContent(), tilePropertiesFile.getLength());
+	map.getEnemyTrigger().loadFromStream(enemyTriggersFile.getContent(), enemyTriggersFile.getLength());
+	map.getBackgroundLayer().loadFromStream(backgroundLayerFile.getContent(), backgroundLayerFile.getLength());
+	map.getMapLayer().loadFromStream(mapLayerFile.getContent(), mapLayerFile.getLength());
+	map.getAdditionalLayer().loadFromStream(additionalLayerFile.getContent(), additionalLayerFile.getLength());
+	map.getEventLayer().loadFromStream(eventLayerFile.getContent(), eventLayerFile.getLength());
 	
 	// Load executable stuff
 	
@@ -100,7 +102,7 @@ void StateGame::loadLevel(pocus::data::Data& data, pocus::data::Data& executable
 	pocus::data::DataFile& levelLimitFile = executable.fetchFile(EXEFILE_LIMIT_TIME);
 	pocus::data::asset::LevelTime levelTime;
 	levelTime.loadFromStream(levelLimitFile.getContent(), levelLimitFile.getLength());
-	this->map.setLimitTime(levelTime.getTime()[absoluteLevel]);
+	map.setLimitTime(levelTime.getTime()[absoluteLevel]);
 	
 	// Tile set
 	pocus::data::DataFile& levelTileSetFile = executable.fetchFile(EXEFILE_TILESETS);
@@ -109,7 +111,7 @@ void StateGame::loadLevel(pocus::data::Data& data, pocus::data::Data& executable
 	pocus::data::asset::Pcx tileSet;
 	pocus::data::DataFile& tileSetFile = data.fetchFile(DATFILE_TILESET_01 + levelTileSet.getTileSetIds()[absoluteLevel]);
 	tileSet.loadFromStream(tileSetFile.getContent(), tileSetFile.getLength());
-	this->map.setTileSet(tileSet.createTexture());
+	map.setTileSet(tileSet.createTexture());
 	
 	// Background
 	pocus::data::DataFile& backgroundInfoFile = executable.fetchFile(EXEFILE_BACKGROUNDS);
@@ -118,9 +120,29 @@ void StateGame::loadLevel(pocus::data::Data& data, pocus::data::Data& executable
 	pocus::data::asset::Pcx background;
 	pocus::data::DataFile& backgroundFile = data.fetchFile(DATFILE_IMAGE_BACKGROUND_01 + levelBackgroundInfo.getBackgroundIds()[absoluteLevel]);
 	background.loadFromStream(backgroundFile.getContent(), backgroundFile.getLength());
-	this->map.setBackground(background.createTexture());
+	map.setBackground(background.createTexture());
 	
-	this->map.create(MAP_WIDTH, MAP_HEIGHT);
+	map.create(MAP_WIDTH, MAP_HEIGHT);
+}
+
+void StateGame::createHud(pocus::data::Data& data) {
+	pocus::data::asset::Palette paletteGame;
+	pocus::data::DataFile& paletteGameFile = data.fetchFile(DATFILE_PALETTE_GAME);
+	paletteGame.loadFromStream(paletteGameFile.getContent(), paletteGameFile.getLength());
+	
+	pocus::data::asset::Font font;
+	pocus::data::DataFile& fontFile = data.fetchFile(DATFILE_FONT_MAIN);
+	font.loadFromStream(fontFile.getContent(), fontFile.getLength());
+	
+	pocus::data::asset::Image imageStuff;
+	pocus::data::DataFile& imageStuffFile = data.fetchFile(DATFILE_IMAGE_STUFF);
+	imageStuff.loadFromStream(imageStuffFile.getContent(), imageStuffFile.getLength());
+	auto stuffTexture = imageStuff.createTexture(paletteGame);
+	
+	this->game.getHud().setBackground(loadTexture(data, paletteGame, DATFILE_IMAGE_HUD));
+	this->game.getHud().setSilverKeyTexture(stuffTexture->extract(88, 0, 7, 11));
+	this->game.getHud().setGoldenKeyTexture(stuffTexture->extract(96, 0, 7, 11));
+	this->game.getHud().setFont(std::move(paletteGame), std::move(font), pocus::Hud::DEFAULT_FONT_COLOR);
 }
 
 void StateGame::onCreate(pocus::data::DataManager& dataManager) {
@@ -128,20 +150,27 @@ void StateGame::onCreate(pocus::data::DataManager& dataManager) {
 	pocus::data::Data& executable = dataManager.getExecutable();
 	
 	loadLevel(data, executable, 1, 1);
-	
+	createHud(data);
+}
+
+std::unique_ptr<pocus::Texture> StateGame::loadTexture(pocus::data::Data& data, uint32_t paletteFileIndex, uint32_t imageFileIndex) {
 	pocus::data::asset::Image image;
 	pocus::data::asset::Palette palette {};
-	pocus::data::asset::Font font;
 	
-	pocus::data::DataFile& paletteFile = data.fetchFile(DATFILE_PALETTE_GAME);
-	pocus::data::DataFile& hudFile = data.fetchFile(DATFILE_IMAGE_HUD);
-	pocus::data::DataFile& fontFile = data.fetchFile(DATFILE_FONT_MAIN);
-	
+	pocus::data::DataFile& paletteFile = data.fetchFile(paletteFileIndex);
 	palette.loadFromStream(paletteFile.getContent(), paletteFile.getLength());
-	image.loadFromStream(hudFile.getContent(), hudFile.getLength());
-	font.loadFromStream(fontFile.getContent(), fontFile.getLength());
 	
-	this->textureHud = image.createTexture(palette);
+	pocus::data::DataFile& imageFile = data.fetchFile(imageFileIndex);
+	image.loadFromStream(imageFile.getContent(), imageFile.getLength());
+	
+	return image.createTexture(palette);
+}
+
+std::unique_ptr<pocus::Texture> StateGame::loadTexture(pocus::data::Data& data, const pocus::data::asset::Palette& palette, uint32_t imageFileIndex) {
+	pocus::data::asset::Image image;
+	pocus::data::DataFile& imageFile = data.fetchFile(imageFileIndex);
+	image.loadFromStream(imageFile.getContent(), imageFile.getLength());
+	return image.createTexture(palette);
 }
 
 void StateGame::onDetach() {
@@ -151,7 +180,7 @@ void StateGame::onDetach() {
 void StateGame::onAttach() {
 	LOGI << "StateGame: onAttach";
 	
-	this->map.start();
+	this->game.start();
 }
 
 void StateGame::release() {
@@ -159,6 +188,16 @@ void StateGame::release() {
 }
 
 void StateGame::handleEvents(pocus::EventHandler &eventHandler) {
+	if (eventHandler.isButtonDown(pocus::BUTTON_SELECTION)) {
+		this->game.addScore(150);
+		this->game.addGoldenKey();
+	}
+	else if (eventHandler.isButtonDown(pocus::BUTTON_LEFT)) {
+		this->game.addScore(150);
+		this->game.addSilverKey();
+	}
+	
+	/*
 	if (eventHandler.isButtonDown(pocus::BUTTON_LEFT)) {
 		this->offset.setX(this->offset.getX() + 16.0f);
 	}
@@ -171,13 +210,13 @@ void StateGame::handleEvents(pocus::EventHandler &eventHandler) {
 	else if (eventHandler.isButtonDown(pocus::BUTTON_DOWN)) {
 		this->offset.setY(this->offset.getY() - 16.0f);
 	}
+	*/
 }
 
 void StateGame::render(pocus::Renderer &renderer) {
-	this->map.render(renderer, this->offset);
-	renderer.drawTexture(*this->textureHud, 0, SCREEN_HEIGHT - this->textureHud->getHeight());
+	this->game.render(renderer);
 }
 
 void StateGame::update(float dt) {
-	this->map.update(dt);
+	this->game.update(dt);
 }

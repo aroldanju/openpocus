@@ -59,7 +59,7 @@ void Player::setEpisode(uint8_t episode) {
 	Player::episode = episode;
 }
 
-bool Player::isSilverKey() const {
+bool Player::hasSilverKey() const {
 	return silverKey;
 }
 
@@ -67,7 +67,7 @@ void Player::setSilverKey(bool silverKey) {
 	Player::silverKey = silverKey;
 }
 
-bool Player::isGoldKey() const {
+bool Player::hasGoldenKey() const {
 	return goldKey;
 }
 

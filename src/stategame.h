@@ -19,6 +19,7 @@
 #define STATEGAME_H
 
 #include <memory>
+#include "engine/game.h"
 #include "engine/texture.h"
 #include "engine/state.h"
 #include "engine/map.h"
@@ -35,12 +36,13 @@ public:
 	void update(float dt) override;
 	
 private:
-	std::unique_ptr<pocus::Texture> textureHud;
-	pocus::Map map;
-	pocus::Point offset;
+	pocus::Game game;
 	
 	void loadLevel(pocus::data::Data& data, pocus::data::Data& executable, uint8_t episode, uint8_t stage);
-	void loadLevelStuff(pocus::data::Data& data, uint8_t episode, uint8_t stage);
+	void createHud(pocus::data::Data& data);
+	
+	std::unique_ptr<pocus::Texture> loadTexture(pocus::data::Data& data, uint32_t paletteFileIndex, uint32_t imageFileIndex);
+	std::unique_ptr<pocus::Texture> loadTexture(pocus::data::Data& data, const pocus::data::asset::Palette& palette, uint32_t imageFileIndex);
 };
 
 #endif //STATEGAME_H
