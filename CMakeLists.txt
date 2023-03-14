@@ -60,6 +60,9 @@ set(engine_sources
         src/engine/player.cpp
         src/engine/game.cpp
         src/engine/hud.cpp
+        src/engine/entity.cpp
+        src/engine/size.cpp
+        src/engine/rect.cpp
         )
 
 set(sdl_sources
