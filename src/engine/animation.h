@@ -38,6 +38,7 @@ public:
 	void setFps(uint32_t fps);
 	
 	static Animation createFromTexture(Texture& texture, uint32_t columns, uint32_t rows);
+	static Animation createFromFrame(std::unique_ptr<Texture> frame);
 	void createFrom(const Animation& animation);
 	
 	[[nodiscard]] uint32_t getWidth() const;

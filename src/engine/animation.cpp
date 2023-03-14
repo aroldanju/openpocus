@@ -84,6 +84,12 @@ Animation Animation::createFromTexture(Texture& texture, uint32_t columns, uint3
 	return std::move(animation);
 }
 
+Animation Animation::createFromFrame(std::unique_ptr<Texture> frame) {
+	Animation animation;
+	animation.addFrame(std::move(frame));
+	return std::move(animation);
+}
+
 uint32_t Animation::getWidth() const {
 	if (this->frames.empty()) {
 		return 0;

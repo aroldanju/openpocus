@@ -44,31 +44,16 @@ void Hocus::setSprite(const data::asset::Sprite& sprite, Texture& sheet) {
 	};
 	
 	// Stand frames
-	Animation standLeft;
-	standLeft.addFrame(extract(sprite.header.standFrame, LEFT));
-	addState("stand_left", std::move(standLeft));
-	
-	Animation standRight;
-	standRight.addFrame(extract(sprite.header.standFrame, RIGHT));
-	addState("stand_right", std::move(standRight));
+	addState("stand_left", Animation::createFromFrame(extract(sprite.header.standFrame, LEFT)));
+	addState("stand_right", Animation::createFromFrame(extract(sprite.header.standFrame, RIGHT)));
 	
 	// Jump frames
-	Animation jumpLeft;
-	jumpLeft.addFrame(extract(sprite.header.jumpFrame, LEFT));
-	addState("jump_left", std::move(jumpLeft));
-	
-	Animation jumpRight;
-	jumpRight.addFrame(extract(sprite.header.jumpFrame, RIGHT));
-	addState("jump_right", std::move(jumpRight));
+	addState("jump_left", Animation::createFromFrame(extract(sprite.header.jumpFrame, LEFT)));
+	addState("jump_right", Animation::createFromFrame(extract(sprite.header.jumpFrame, RIGHT)));
 	
 	// Fall frames
-	Animation fallLeft;
-	fallLeft.addFrame(extract(sprite.header.fallFrame, LEFT));
-	addState("fall_left", std::move(fallLeft));
-	
-	Animation fallRight;
-	fallRight.addFrame(extract(sprite.header.fallFrame, RIGHT));
-	addState("fall_right", std::move(fallRight));
+	addState("fall_left", Animation::createFromFrame(extract(sprite.header.fallFrame, LEFT)));
+	addState("fall_right", Animation::createFromFrame(extract(sprite.header.fallFrame, RIGHT)));
 	
 	// Walking frames
 	Animation walkLeft, walkRight;
@@ -80,16 +65,10 @@ void Hocus::setSprite(const data::asset::Sprite& sprite, Texture& sheet) {
 	addState("walk_right", std::move(walkRight));
 	
 	// Shooting frames
-	Animation shootLeft, shootRight, shootUpLeft, shootUpRight;
-	shootLeft.addFrame(extract(sprite.header.shootDashFrameBegin, LEFT));
-	shootRight.addFrame(extract(sprite.header.shootDashFrameBegin, RIGHT));
-	shootUpLeft.addFrame(extract(sprite.header.shootDashFrameEnd, LEFT));
-	shootUpRight.addFrame(extract(sprite.header.shootDashFrameEnd, RIGHT));
-	
-	addState("shoot_left", std::move(shootLeft));
-	addState("shoot_right", std::move(shootRight));
-	addState("shoot_up_left", std::move(shootUpLeft));
-	addState("shoot_up_right", std::move(shootUpRight));
+	addState("shoot_left", Animation::createFromFrame(extract(sprite.header.shootDashFrameBegin, LEFT)));
+	addState("shoot_right", Animation::createFromFrame(extract(sprite.header.shootDashFrameBegin, RIGHT)));
+	addState("shoot_up_left", Animation::createFromFrame(extract(sprite.header.shootDashFrameEnd, LEFT)));
+	addState("shoot_up_right", Animation::createFromFrame(extract(sprite.header.shootDashFrameEnd, RIGHT)));
 	
 	setCurrentState("stand_right");
 }
