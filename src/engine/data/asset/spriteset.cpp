@@ -129,6 +129,10 @@ Sprite& SpriteSet::getSprite(uint32_t index) {
 	return this->sprites[index];
 }
 
+uint32_t SpriteSet::getSpriteCount() const {
+	return this->sprites.size();
+}
+
 std::unique_ptr<pocus::Texture> Sprite::createAsTexture(const Palette &palette) {
 	const uint32_t spriteSetWidth = 320;
 	
@@ -203,7 +207,7 @@ std::unique_ptr<pocus::Texture> Sprite::createAsTexture(const Palette &palette) 
 		}
 	}
 	
-	texture->setColorKey(255, 0, 255);
+	//texture->setColorKey(255, 0, 255);
 	
 	return std::move(texture);
 }

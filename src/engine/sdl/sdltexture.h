@@ -42,7 +42,7 @@ public:
 	void fill(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) override;
 	void paste(const Texture& texture, uint32_t fx, uint32_t fy, uint32_t tx, uint32_t ty) override;
 	void setColorKey(uint8_t red, uint8_t green, uint8_t blue) override;
-	std::unique_ptr<Texture> extract(uint32_t x, uint32_t y, uint32_t w, uint32_t h) override;
+	std::unique_ptr<Texture> extract(uint32_t x, uint32_t y, uint32_t w, uint32_t h, const Color* colorKey) override;
 	bool saveToFile(const std::string& filename) override;
 	
 private:

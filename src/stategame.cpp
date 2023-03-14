@@ -163,6 +163,9 @@ void StateGame::loadSprites(pocus::data::Data& data) {
 	pocus::data::asset::SpriteSet spriteSet;
 	pocus::data::DataFile& spriteSetFile = data.fetchFile(DATFILE_SPRITE_SET);
 	spriteSet.loadFromStream(spriteSetFile.getContent(), spriteSetFile.getLength());
+	
+	this->game.getHocus().setSprite(spriteSet.getSprite(SPRITE_HOCUS),
+									*spriteSet.getSprite(SPRITE_HOCUS).createAsTexture(paletteGame));
 }
 
 void StateGame::onCreate(pocus::data::DataManager& dataManager) {
@@ -170,9 +173,9 @@ void StateGame::onCreate(pocus::data::DataManager& dataManager) {
 	pocus::data::Data& executable = dataManager.getExecutable();
 	
 	loadLevel(data, executable, 1, 1);
+	loadSprites(data);
 	createHud(data);
 	createGame(data);
-	loadSprites(data);
 }
 
 std::unique_ptr<pocus::Texture> StateGame::loadTexture(pocus::data::Data& data, uint32_t paletteFileIndex, uint32_t imageFileIndex) {

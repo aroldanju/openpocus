@@ -63,6 +63,7 @@ set(engine_sources
         src/engine/entity.cpp
         src/engine/size.cpp
         src/engine/rect.cpp
+        src/engine/hocus.cpp
         )
 
 set(sdl_sources

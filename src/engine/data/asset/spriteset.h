@@ -71,6 +71,7 @@ public:
 	void release() override;
 	
 	[[nodiscard]] Sprite& getSprite(uint32_t index);
+	[[nodiscard]] uint32_t getSpriteCount() const;
 	
 private:
 	std::vector<Sprite> sprites;

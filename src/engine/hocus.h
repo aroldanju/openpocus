@@ -15,39 +15,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ENTITY_H
-#define ENTITY_H
+#ifndef _HOCUS_H
+#define _HOCUS_H
 
 #include <unordered_map>
 #include <string>
-#include "rect.h"
+#include "entity.h"
 #include "animation.h"
+#include "data/asset/spriteset.h"
 
 namespace pocus {
 
-class Entity {
+class Hocus : public Entity {
 public:
-	enum Direction_t { LEFT, RIGHT };
+	enum State_t { STAND, WALK, JUMP, FALL, SHOOT };
 	
 public:
-	[[nodiscard]] const Rect& getRect() const;
-	void setRect(const Rect& rect);
-	void addState(const std::string& state, Animation animation);
-	void setCurrentState(const std::string& state);
-	[[nodiscard]] const Direction_t& getDirection() const;
-	void setDirection(Direction_t direction);
-	
-	void render(Renderer& renderer);
-	void update(float dt);
-	
+	State_t getState() const;
+	void setState(State_t state);
+	void setSprite(const data::asset::Sprite& sprite, Texture& sheet);
+
 private:
-	Rect rect {};
-	std::unordered_map<std::string, Animation> states;
-	std::string currentStateId;
-	Animation* currentState { nullptr };
-	Direction_t direction { RIGHT };
+	State_t state { STAND };
+	
 };
 
 }
 
-#endif // ENTITY_H
+#endif //_HOCUS_H

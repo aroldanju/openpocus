@@ -36,6 +36,10 @@ Point& Game::getOffset() {
 	return this->offset;
 }
 
+Hocus& Game::getHocus() {
+	return this->hocus;
+}
+
 void Game::start() {
 	this->hud.updateScore(this->player.getScore());
 	this->hud.updateCrystals(this->player.getCrystals(), this->map.getCrystals());
@@ -50,6 +54,9 @@ void Game::start() {
 
 void Game::render(Renderer &renderer) {
 	this->map.render(renderer, this->offset);
+	
+	this->hocus.render(renderer);
+	
 	this->hud.render(renderer);
 	
 	if (this->paused) {
@@ -67,6 +74,7 @@ void Game::update(float dt) {
 	}
 	
 	this->map.update(dt);
+	this->hocus.update(dt);
 }
 
 uint32_t Game::getElapsedTime() {

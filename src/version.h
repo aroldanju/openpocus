@@ -58,6 +58,9 @@ enum ExeFile {
 	EXEFILE_MUSIC = 4,
 	EXEFILE_ELEVATORS = 5
 };
+enum Sprite_t {
+	SPRITE_HOCUS = 0,
+};
 #elif(VERSION == REGISTERED)
 #define FAT_FILE			"registered.fat"
 #define EXE_FAT_FILE		"regeistered_exe.fat"
@@ -95,6 +98,9 @@ enum ExeFile {
 	EXEFILE_BACKGROUNDS = 3,
 	EXEFILE_MUSIC = 4,
 	EXEFILE_ELEVATORS = 5
+};
+enum Sprite_t {
+	SPRITE_HOCUS = 0,
 };
 #endif
 

@@ -21,6 +21,7 @@
 #include "map.h"
 #include "player.h"
 #include "hud.h"
+#include "hocus.h"
 
 namespace pocus {
 
@@ -36,6 +37,7 @@ public:
 	data::asset::Palette& getPalette();
 	data::asset::Font& getFont();
 	Point& getOffset();
+	Hocus& getHocus();
 	
 	void setTextColor(uint8_t color);
 	
@@ -65,6 +67,7 @@ private:
 	Tick tickStart;
 	bool paused { false };
 	std::unique_ptr<Texture> labelPaused;
+	Hocus hocus;
 };
 
 }

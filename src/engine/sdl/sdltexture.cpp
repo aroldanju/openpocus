@@ -113,13 +113,17 @@ void SdlTexture::setColorKey(uint8_t red, uint8_t green, uint8_t blue) {
 	SDL_SetColorKey(this->surface, SDL_TRUE, SDL_MapRGB(this->surface->format, red, green, blue));
 }
 
-std::unique_ptr<Texture> SdlTexture::extract(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
+std::unique_ptr<Texture> SdlTexture::extract(uint32_t x, uint32_t y, uint32_t w, uint32_t h, const Color* colorKey) {
 	auto sdlTexture = std::make_unique<SdlTexture>();
 	
 	SDL_Rect rect = (SDL_Rect){(int)x, (int)y, (int)w, (int)h};
 	
 	sdlTexture->createBlank(w, h);
 	SDL_BlitSurface(this->surface, &rect, sdlTexture->surface, nullptr);
+	
+	if (colorKey) {
+		sdlTexture->setColorKey(colorKey->red, colorKey->green, colorKey->blue);
+	}
 	
 	return std::move(sdlTexture);
 }

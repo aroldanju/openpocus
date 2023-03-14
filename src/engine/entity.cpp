@@ -26,3 +26,32 @@ const Rect& Entity::getRect() const {
 void Entity::setRect(const Rect& rect) {
 	this->rect = rect;
 }
+
+void Entity::addState(const std::string& state, Animation animation) {
+	this->states.insert(std::make_pair(state, std::move(animation)));
+}
+
+void Entity::setCurrentState(const std::string& state) {
+	this->currentStateId = state;
+	this->currentState = &this->states.find(state)->second;
+}
+
+void Entity::render(Renderer &renderer) {
+	if (this->currentState) {
+		this->currentState->render(renderer, this->rect.getPosition());
+	}
+}
+
+void Entity::update(float dt) {
+	if (this->currentState) {
+		this->currentState->update(dt);
+	}
+}
+
+const Entity::Direction_t& Entity::getDirection() const {
+	return direction;
+}
+
+void Entity::setDirection(Entity::Direction_t direction) {
+	Entity::direction = direction;
+}
