@@ -29,6 +29,7 @@
 #include "engine/data/asset/leveltileset.h"
 #include "engine/data/asset/leveltime.h"
 #include "engine/data/asset/levelbackground.h"
+#include "engine/data/asset/spriteset.h"
 
 void StateGame::loadLevel(pocus::data::Data& data, pocus::data::Data& executable, uint8_t episode, uint8_t stage) {
 	episode--;
@@ -154,6 +155,16 @@ void StateGame::createGame(pocus::data::Data &data) {
 	this->game.setTextColor(pocus::Game::DEFAULT_TEXT_COLOR);
 }
 
+void StateGame::loadSprites(pocus::data::Data& data) {
+	pocus::data::asset::Palette paletteGame;
+	pocus::data::DataFile& paletteGameFile = data.fetchFile(DATFILE_PALETTE_GAME);
+	paletteGame.loadFromStream(paletteGameFile.getContent(), paletteGameFile.getLength());
+	
+	pocus::data::asset::SpriteSet spriteSet;
+	pocus::data::DataFile& spriteSetFile = data.fetchFile(DATFILE_SPRITE_SET);
+	spriteSet.loadFromStream(spriteSetFile.getContent(), spriteSetFile.getLength());
+}
+
 void StateGame::onCreate(pocus::data::DataManager& dataManager) {
 	pocus::data::Data& data = dataManager.getData();
 	pocus::data::Data& executable = dataManager.getExecutable();
@@ -161,6 +172,7 @@ void StateGame::onCreate(pocus::data::DataManager& dataManager) {
 	loadLevel(data, executable, 1, 1);
 	createHud(data);
 	createGame(data);
+	loadSprites(data);
 }
 
 std::unique_ptr<pocus::Texture> StateGame::loadTexture(pocus::data::Data& data, uint32_t paletteFileIndex, uint32_t imageFileIndex) {

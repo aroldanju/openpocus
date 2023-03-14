@@ -38,6 +38,7 @@ public:
 private:
 	pocus::Game game;
 	
+	void loadSprites(pocus::data::Data& data);
 	void loadLevel(pocus::data::Data& data, pocus::data::Data& executable, uint8_t episode, uint8_t stage);
 	void createHud(pocus::data::Data& data);
 	void createGame(pocus::data::Data& data);

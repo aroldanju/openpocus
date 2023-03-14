@@ -37,6 +37,7 @@ set(data_sources
         src/engine/data/asset/leveltime.cpp
         src/engine/data/asset/leveltileset.cpp
         src/engine/data/asset/levelbackground.cpp
+        src/engine/data/asset/spriteset.cpp
         )
 
 set(engine_sources
