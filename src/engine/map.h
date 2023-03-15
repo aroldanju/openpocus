@@ -63,6 +63,20 @@ private:
 
 class Map {
 public:
+	class Chunk {
+	public:
+		Chunk(const Size& size);
+		
+		std::vector<uint32_t>& getTiles();
+		[[nodiscard]] const Size& getSize() const;
+		void addTile(uint32_t id);
+		
+	private:
+		Size size;
+		std::vector<uint32_t> tiles;
+	};
+	
+public:
 	void setMusic(std::unique_ptr<Sound> music);
 	void setTileSet(const std::unique_ptr<Texture>& tileSet);
 	void setBackground(std::unique_ptr<Texture> texture);
@@ -72,6 +86,7 @@ public:
 	void create(uint32_t width, uint32_t height);
 	
 	Layer& getLayer(uint8_t layer);
+	Chunk getChunk(const Point& position, const Size& size);
 	
 	[[nodiscard]] data::asset::PlayerCoordinates &getPlayerCoordinates();
 	void setPlayerCoordinates(const data::asset::PlayerCoordinates &playerCoordinates);
@@ -104,7 +119,7 @@ public:
 	void setLimitTime(uint32_t limitTime);
 	
 	[[nodiscard]] uint8_t getCrystals() const;
-
+	
 private:
 	std::unique_ptr<Sound> backgroundMusic { nullptr };
 	std::unique_ptr<Texture> backgroundImage { nullptr };

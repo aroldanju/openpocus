@@ -186,12 +186,26 @@ void Game::centerCamera(const Hocus& hocus, const Size& viewportSize) {
 }
 
 void Game::move(float dt) {
-	if (this->hocus.getVelocity().getX() != .0f || this->hocus.getVelocity().getY() != .0f) {
-		this->hocus.move(dt);
-		centerCamera(this->hocus,
-					 Size(
-						 this->viewportSize.getWidth(),
-						 this->viewportSize.getHeight() - this->hud.getBackground().getHeight()
-					 ));
+	if (this->hocus.getVelocity().getX() == .0f && this->hocus.getVelocity().getY() == .0f) {
+		return;
 	}
+	
+	const Point lastPosition = this->hocus.getRect().getPosition();
+	
+	this->hocus.move(dt);
+	
+	if (this->hocus.getRect().getPosition().getX() < .0f) {
+		this->hocus.setPosition(lastPosition);
+		return;
+	}
+	
+	const Point tilePosition = this->hocus.getTilePosition();
+	
+	const Tile& tile = this->map.getLayer(1).getTile(tilePosition.getX(), tilePosition.getY());
+	
+	centerCamera(this->hocus,
+				 Size(
+					 this->viewportSize.getWidth(),
+					 this->viewportSize.getHeight() - this->hud.getBackground().getHeight()
+				 ));
 }

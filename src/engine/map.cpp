@@ -93,6 +93,45 @@ void Layer::setVisible(bool visible) {
 
 // Map -------------------------------------------------------------------------------------------------
 
+Map::Chunk Map::getChunk(const Point& position, const Size& size) {
+	Map::Chunk chunk(size);
+	
+	int fx = position.getX() - size.getWidth() / 2;
+	int tx = position.getX() + size.getWidth() / 2;
+	int fy = position.getY() - size.getHeight() / 2;
+	int ty = position.getY() + size.getHeight() / 2;
+	
+	if (fx < 0) {
+		fx = 0;
+		tx = size.getWidth();
+	}
+	if (tx >= MAP_WIDTH) {
+		fx = MAP_WIDTH - size.getWidth();
+		tx = MAP_WIDTH;
+	}
+	
+	if (fy < 0) {
+		fy = 0;
+		ty = size.getHeight();
+	}
+	if (ty >= MAP_HEIGHT) {
+		fy = MAP_HEIGHT - size.getHeight();
+		ty = MAP_HEIGHT;
+	}
+	
+	std::cout << "Position = {" << position.getX() << ", " << position.getY() << "}" << std::endl;
+	std::cout << "Size = {" << size.getWidth() << ", " << size.getHeight() << "}" << std::endl;
+	std::cout << "Chunk = {" << fx << ", " << fy << "; " << tx << ", " << ty << "}" << std::endl;
+	
+	for (int i = fy; i < ty; i++) {
+		for (int j = fx; j < tx; j++) {
+			chunk.addTile(this->layers[1].getTile(j, i).getId());
+		}
+	}
+	
+	return chunk;
+}
+
 Layer& Map::getLayer(uint8_t layer) {
 	return this->layers[layer];
 }
@@ -352,4 +391,21 @@ void Map::setLimitTime(uint32_t limitTime) {
 
 uint8_t Map::getCrystals() const {
 	return crystals;
+}
+
+Map::Chunk::Chunk(const Size &size):
+	size(size)
+{}
+
+
+std::vector<uint32_t>& Map::Chunk::getTiles() {
+	return this->tiles;
+}
+
+const Size& Map::Chunk::getSize() const {
+	return this->size;
+}
+
+void Map::Chunk::addTile(uint32_t id) {
+	this->tiles.push_back(id);
 }
