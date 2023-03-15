@@ -48,7 +48,7 @@ void Entity::render(Renderer &renderer, const Point& offset) {
 		this->currentState->render(renderer, position);
 	}
 	
-	renderer.drawRect(Rect(position, this->rect.getSize()), color::blue);
+	renderer.drawRect(Rect(position, this->rect.getSize()), color::redAlpha);
 }
 
 void Entity::update() {
