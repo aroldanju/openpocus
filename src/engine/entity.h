@@ -37,15 +37,30 @@ public:
 	[[nodiscard]] const Direction_t& getDirection() const;
 	void setDirection(Direction_t direction);
 	
-	void render(Renderer& renderer);
-	void update(float dt);
+	void render(Renderer& renderer, const Point& offset);
+	void update();
+	void move(float dt);
 	
+	Point getTilePosition();
+	
+	const Point &getVelocity() const;
+	
+	void setVelocity(const Point &velocity);
+	
+	float getSpeed() const;
+	
+	void setSpeed(float speed);
+	
+	void setPosition(const Point& point);
+
 private:
 	Rect rect {};
 	std::unordered_map<std::string, Animation> states;
 	std::string currentStateId;
 	Animation* currentState { nullptr };
 	Direction_t direction { RIGHT };
+	Point velocity { .0f, .0f };
+	float speed { 3.0f };
 };
 
 }

@@ -35,6 +35,9 @@ public:
 	void setState(State_t state);
 	void setSprite(const data::asset::Sprite& sprite, Texture& sheet);
 
+	void startMovement(const Direction_t& direction);
+	void stopMovement(const Direction_t& direction);
+	
 private:
 	State_t state { STAND };
 	

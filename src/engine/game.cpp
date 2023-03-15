@@ -40,6 +40,10 @@ Hocus& Game::getHocus() {
 	return this->hocus;
 }
 
+Size& Game::getViewportSize() {
+	return this->viewportSize;
+}
+
 void Game::start() {
 	this->hud.updateScore(this->player.getScore());
 	this->hud.updateCrystals(this->player.getCrystals(), this->map.getCrystals());
@@ -55,7 +59,7 @@ void Game::start() {
 void Game::render(Renderer &renderer) {
 	this->map.render(renderer, this->offset);
 	
-	this->hocus.render(renderer);
+	this->hocus.render(renderer, this->offset);
 	
 	this->hud.render(renderer);
 	
@@ -74,7 +78,10 @@ void Game::update(float dt) {
 	}
 	
 	this->map.update(dt);
-	this->hocus.update(dt);
+	
+	this->hocus.update();
+	
+	move(dt);
 }
 
 uint32_t Game::getElapsedTime() {
@@ -142,4 +149,49 @@ data::asset::Font& Game::getFont() {
 
 void Game::setTextColor(uint8_t color) {
 	this->textColor = color;
+}
+
+void Game::startMovement(const Entity::Direction_t& direction) {
+	this->hocus.startMovement(direction);
+}
+
+void Game::stopMovement(const Entity::Direction_t& direction) {
+	this->hocus.stopMovement(direction);
+}
+
+void Game::centerCamera(const Hocus& hocus, const Size& viewportSize) {
+	this->offset.set(
+		(hocus.getRect().getPosition().getX() + TILE_SIZE - viewportSize.getWidth() / 2 - (hocus.getRect().getSize().getWidth() / 2)),
+		(hocus.getRect().getPosition().getY() - viewportSize.getHeight() / 2)
+	);
+	
+	const Point limitOffset = Point(
+		MAP_WIDTH * TILE_SIZE - viewportSize.getWidth(),
+		MAP_HEIGHT * TILE_SIZE - viewportSize.getHeight()
+	);
+	
+	if (this->offset.getX() < 0.0f) {
+		this->offset.setX(.0f);
+	}
+	else if (this->offset.getX() >= limitOffset.getX()) {
+		this->offset.setX(limitOffset.getX());
+	}
+	
+	if (this->offset.getY() < 0.0f) {
+		this->offset.setY(.0f);
+	}
+	else if (this->offset.getY() >= limitOffset.getY()) {
+		this->offset.setY(limitOffset.getY());
+	}
+}
+
+void Game::move(float dt) {
+	if (this->hocus.getVelocity().getX() != .0f || this->hocus.getVelocity().getY() != .0f) {
+		this->hocus.move(dt);
+		centerCamera(this->hocus,
+					 Size(
+						 this->viewportSize.getWidth(),
+						 this->viewportSize.getHeight() - this->hud.getBackground().getHeight()
+					 ));
+	}
 }

@@ -153,6 +153,15 @@ void StateGame::createGame(pocus::data::Data &data) {
 	this->game.getPalette().loadFromStream(paletteGameFile.getContent(), paletteGameFile.getLength());
 	this->game.getFont().loadFromStream(fontFile.getContent(), fontFile.getLength());
 	this->game.setTextColor(pocus::Game::DEFAULT_TEXT_COLOR);
+	
+	this->game.getHocus().setPosition(
+		pocus::Point(
+			this->game.getMap().getPlayerCoordinates().getX() * TILE_SIZE,
+			this->game.getMap().getPlayerCoordinates().getY() * TILE_SIZE
+		)
+	);
+	
+	this->game.getViewportSize().set(SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 
 void StateGame::loadSprites(pocus::data::Data& data) {
@@ -216,18 +225,39 @@ void StateGame::handleEvents(pocus::EventHandler &eventHandler) {
 	if (eventHandler.isButtonDown(pocus::BUTTON_PAUSE)) {
 		this->game.togglePause();
 	}
+	
+	if (eventHandler.isButtonDown(pocus::BUTTON_LEFT)) {
+		this->game.startMovement(pocus::Entity::LEFT);
+	}
+	else if (eventHandler.isButtonUp(pocus::BUTTON_LEFT)) {
+		this->game.stopMovement(pocus::Entity::LEFT);
+	}
+	
+	if (eventHandler.isButtonDown(pocus::BUTTON_RIGHT)) {
+		this->game.startMovement(pocus::Entity::RIGHT);
+	}
+	else if (eventHandler.isButtonUp(pocus::BUTTON_RIGHT)) {
+		this->game.stopMovement(pocus::Entity::RIGHT);
+	}
+	
+	/*
 	else if (eventHandler.isButtonDown(pocus::BUTTON_LEFT)) {
 		this->game.getOffset().setX(this->game.getOffset().getX() + 16.0f);
+		std::cout << "OFFSET: " << this->game.getOffset().getX() << ", " << this->game.getOffset().getY() << std::endl;
 	}
 	else if (eventHandler.isButtonDown(pocus::BUTTON_RIGHT)) {
 		this->game.getOffset().setX(this->game.getOffset().getX() - 16.0f);
+		std::cout << "OFFSET: " << this->game.getOffset().getX() << ", " << this->game.getOffset().getY() << std::endl;
 	}
 	if (eventHandler.isButtonDown(pocus::BUTTON_UP)) {
 		this->game.getOffset().setY(this->game.getOffset().getY() + 16.0f);
+		std::cout << "OFFSET: " << this->game.getOffset().getX() << ", " << this->game.getOffset().getY() << std::endl;
 	}
 	else if (eventHandler.isButtonDown(pocus::BUTTON_DOWN)) {
 		this->game.getOffset().setY(this->game.getOffset().getY() - 16.0f);
+		std::cout << "OFFSET: " << this->game.getOffset().getX() << ", " << this->game.getOffset().getY() << std::endl;
 	}
+	*/
 }
 
 void StateGame::render(pocus::Renderer &renderer) {

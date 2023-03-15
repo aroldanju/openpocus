@@ -29,6 +29,13 @@ public:
 	void setX(float x);
 	[[nodiscard]] float getY() const;
 	void setY(float y);
+	
+	void set(float x, float y);
+	
+	Point& operator+=(const Point& point);
+	Point& operator+(const Point& point);
+	Point& operator-(const Point& point);
+	Point& operator-=(const Point& point);
 
 private:
 	float x { .0f };

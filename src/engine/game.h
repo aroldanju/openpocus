@@ -38,6 +38,7 @@ public:
 	data::asset::Font& getFont();
 	Point& getOffset();
 	Hocus& getHocus();
+	Size& getViewportSize();
 	
 	void setTextColor(uint8_t color);
 	
@@ -55,8 +56,11 @@ public:
 	void addGoldenKey();
 	void removeGoldenKey();
 	void togglePause();
+	void startMovement(const Entity::Direction_t& direction);
+	void stopMovement(const Entity::Direction_t& direction);
 	
 private:
+	Size viewportSize { 320.0f, 200.0f };
 	data::asset::Font font;
 	data::asset::Palette palette;
 	uint8_t textColor { DEFAULT_TEXT_COLOR };
@@ -68,6 +72,9 @@ private:
 	bool paused { false };
 	std::unique_ptr<Texture> labelPaused;
 	Hocus hocus;
+	
+	void move(float dt);
+	void centerCamera(const Hocus& hocus, const Size& viewportSize);
 };
 
 }

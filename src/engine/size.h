@@ -29,6 +29,8 @@ public:
 	void setWidth(float x);
 	[[nodiscard]] float getHeight() const;
 	void setHeight(float y);
+	
+	void set(float width, float height);
 
 private:
 	float width{.0f};

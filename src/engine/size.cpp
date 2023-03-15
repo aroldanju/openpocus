@@ -40,3 +40,7 @@ void Size::setHeight(float height) {
 	this->height = height;
 }
 
+void Size::set(float width, float height) {
+	this->width = width;
+	this->height = height;
+}

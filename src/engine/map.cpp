@@ -121,7 +121,7 @@ void Map::setBackground(std::unique_ptr<Texture> texture) {
 
 void Map::render(Renderer &renderer, const Point& offset) {
 	if (this->backgroundImage) {
-		const auto backgroundOffset = (float)((int)(offset.getX() / 2.0f) % (int)this->backgroundImage->getWidth());
+		const auto backgroundOffset = (float)((int)((offset.getX() * -1.0f) / 2.0f) % (int)this->backgroundImage->getWidth());
 		if (backgroundOffset < 0.0f) {
 			renderer.drawTexture(*this->backgroundImage, Point(backgroundOffset, 0));
 			renderer.drawTexture(*this->backgroundImage, Point(this->backgroundImage->getWidth() + backgroundOffset, 0));
@@ -146,8 +146,8 @@ void Map::render(Renderer &renderer, const Point& offset) {
 				if (tileId != 0xff && layer.getTile(x, y).isVisible()) {
 					layer.getTile(x, y).getAnimation().render(
 						renderer, Point(
-				  		x * 16 + offset.getX(),
-						y * 16 + offset.getY()
+				  		x * 16 - offset.getX(),
+						y * 16 - offset.getY()
 					));
 				}
 			}

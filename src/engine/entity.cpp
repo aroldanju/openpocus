@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <complex>
+#include <iostream>
 #include "entity.h"
 
 using namespace pocus;
@@ -36,16 +38,32 @@ void Entity::setCurrentState(const std::string& state) {
 	this->currentState = &this->states.find(state)->second;
 }
 
-void Entity::render(Renderer &renderer) {
+void Entity::render(Renderer &renderer, const Point& offset) {
+	Point position = Point(
+		this->rect.getPosition().getX() - offset.getX(),
+		this->rect.getPosition().getY() - offset.getY()
+	);
+	
 	if (this->currentState) {
-		this->currentState->render(renderer, this->rect.getPosition());
+		this->currentState->render(renderer, position);
+	}
+	
+	renderer.drawRect(Rect(position, this->rect.getSize()), color::blue);
+}
+
+void Entity::update() {
+	if (this->currentState) {
+		this->currentState->update(0.f);
 	}
 }
 
-void Entity::update(float dt) {
-	if (this->currentState) {
-		this->currentState->update(dt);
-	}
+void Entity::move(float dt) {
+	this->rect.setPosition(
+		Point(
+			this->rect.getPosition().getX() + (this->velocity.getX() * (float)this->speed * dt),
+			this->rect.getPosition().getY() + (this->velocity.getY() * (float)this->speed * dt)
+		)
+	);
 }
 
 const Entity::Direction_t& Entity::getDirection() const {
@@ -54,4 +72,31 @@ const Entity::Direction_t& Entity::getDirection() const {
 
 void Entity::setDirection(Entity::Direction_t direction) {
 	Entity::direction = direction;
+}
+
+Point Entity::getTilePosition() {
+	return {
+		this->rect.getPosition().getX() / TILE_SIZE,
+		this->rect.getPosition().getY() / TILE_SIZE
+	};
+}
+
+const Point &Entity::getVelocity() const {
+	return velocity;
+}
+
+void Entity::setVelocity(const Point &velocity) {
+	Entity::velocity = velocity;
+}
+
+float Entity::getSpeed() const {
+	return speed;
+}
+
+void Entity::setSpeed(float speed) {
+	Entity::speed = speed;
+}
+
+void Entity::setPosition(const Point& point) {
+	this->rect.setPosition(point);
 }

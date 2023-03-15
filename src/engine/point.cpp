@@ -39,3 +39,36 @@ float Point::getY() const {
 void Point::setY(float y) {
 	Point::y = y;
 }
+
+void Point::set(float x, float y) {
+	this->x = x;
+	this->y = y;
+}
+
+Point& Point::operator+=(const Point& point) {
+	this->x += point.x;
+	this->y += point.y;
+	
+	return *this;
+}
+
+Point& Point::operator+(const Point &point) {
+	this->x += point.x;
+	this->y += point.y;
+	
+	return *this;
+}
+
+Point& Point::operator-=(const Point& point) {
+	this->x -= point.x;
+	this->y -= point.y;
+	
+	return *this;
+}
+
+Point& Point::operator-(const Point &point) {
+	this->x -= point.x;
+	this->y -= point.y;
+	
+	return *this;
+}

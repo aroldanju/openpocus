@@ -57,6 +57,8 @@ void Hocus::setSprite(const data::asset::Sprite& sprite, Texture& sheet) {
 	
 	// Walking frames
 	Animation walkLeft, walkRight;
+	walkLeft.setFps(15);
+	walkRight.setFps(15);
 	for (uint32_t i = sprite.header.walkFrameBegin; i < sprite.header.walkFrameEnd; i++) {
 		walkLeft.addFrame(extract(i, LEFT));
 		walkRight.addFrame(extract(i, RIGHT));
@@ -71,4 +73,57 @@ void Hocus::setSprite(const data::asset::Sprite& sprite, Texture& sheet) {
 	addState("shoot_up_right", Animation::createFromFrame(extract(sprite.header.shootDashFrameEnd, RIGHT)));
 	
 	setCurrentState("stand_right");
+	
+	this->setRect(Rect(getRect().getPosition(), Size(sprite.header.width4, sprite.header.height)));
+}
+
+void Hocus::startMovement(const Direction_t& direction) {
+	this->setDirection(direction);
+	
+	auto getDirectionName = [](const Direction_t& direction) -> std::string {
+		switch (direction) {
+			case Entity::LEFT: return "left";
+			case Entity::RIGHT: return "right";
+		}
+	};
+	
+	auto getVelocityByDirection = [](const Direction_t& direction) -> Point {
+		if (direction == LEFT) { return Point(-1.0f, .0f); }
+		else if (direction == RIGHT) { return Point(1.0f, .0f); }
+		
+		return { .0f, .0f };
+	};
+	
+	this->setVelocity(getVelocityByDirection(direction));
+	
+	switch (this->getState()) {
+		case FALL:
+			this->setCurrentState("fall_" + getDirectionName(direction));
+			break;
+			
+		case JUMP:
+			this->setCurrentState("jump_" + getDirectionName(direction));
+			break;
+			
+		default:
+			this->setCurrentState("walk_" + getDirectionName(direction));
+			break;
+	}
+}
+
+void Hocus::stopMovement(const Direction_t& direction) {
+	this->setDirection(direction);
+	
+	auto getDirectionName = [](const Direction_t& direction) -> std::string {
+		switch (direction) {
+			case Entity::LEFT: return "left";
+			case Entity::RIGHT: return "right";
+		}
+	};
+	
+	if (this->getState() != FALL && this->getState() != JUMP) {
+		setCurrentState("stand_" + getDirectionName(direction));
+	}
+	
+	this->setVelocity(Point(.0f, .0f));
 }
