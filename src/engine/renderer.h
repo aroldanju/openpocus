@@ -30,6 +30,7 @@ struct RendererParameters {
 	uint32_t width;
 	uint32_t height;
 	std::string title;
+	float scaleFactor;
 };
 
 class Renderer {

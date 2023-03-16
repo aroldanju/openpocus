@@ -152,10 +152,18 @@ void Game::setTextColor(uint8_t color) {
 }
 
 void Game::startMovement(const Entity::Direction_t& direction) {
+	if (this->paused) {
+		return;
+	}
+	
 	this->hocus.startMovement(direction);
 }
 
 void Game::stopMovement(const Entity::Direction_t& direction) {
+	if (this->paused) {
+		return;
+	}
+	
 	this->hocus.stopMovement(direction);
 }
 

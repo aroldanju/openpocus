@@ -34,7 +34,7 @@ bool SdlRenderer::initialize() {
 	this->window = SDL_CreateWindow(
 			this->parameters.title.c_str(),
 			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-			this->parameters.width * 4, this->parameters.height * 4,
+			this->parameters.width * this->parameters.scaleFactor, this->parameters.height * this->parameters.scaleFactor,
 			SDL_WINDOW_RESIZABLE);
 	if (!this->window) {
 		return false;
@@ -50,7 +50,6 @@ bool SdlRenderer::initialize() {
 
 	SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
-	SDL_RenderSetScale(this->renderer, 2.0f, 2.0f);
 	SDL_RenderSetLogicalSize(this->renderer, this->parameters.width, this->parameters.height);
 
 	return true;
