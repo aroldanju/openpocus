@@ -87,7 +87,7 @@ public:
 	struct Entry {
 		uint16_t x;
 		uint16_t y;
-		uint8_t lines[LINES][MESSAGE_LENGTH];
+		char lines[LINES][MESSAGE_LENGTH];
 	};
 	
 public:

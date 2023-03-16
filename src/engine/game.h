@@ -44,7 +44,8 @@ public:
 	Size& getViewportSize();
 	data::asset::ItemInfo& getItemInfo();
 	std::map<uint32_t, std::unique_ptr<Texture>>& getScoreTextures();
-	std::vector<Entity> scoreTexts;
+	std::vector<std::unique_ptr<Texture>>& getHintTextures();
+	std::unique_ptr<Sound>& getSoundHint();
 	
 	void addScoreText(Texture& texture, const Point& point);
 	
@@ -68,6 +69,9 @@ public:
 	void stopMovement(const Entity::Direction_t& direction);
 	void addCrystal(uint32_t amount);
 	void jump();
+	void showHint(uint32_t id);
+	void hideHint();
+	void activate();
 	
 private:
 	Size viewportSize { 320.0f, 200.0f };
@@ -84,10 +88,15 @@ private:
 	Hocus hocus;
 	data::asset::ItemInfo itemInfo;
 	std::map<uint32_t, std::unique_ptr<Texture>> scoreTextures;
+	std::vector<Entity> scoreTexts;
+	std::vector<std::unique_ptr<Texture>> hintTextures;
+	int currentHint { -1 };
+	std::unique_ptr<Sound> soundHint;
 	
 	void move(float dt);
 	void checkItems();
 	void centerCamera(const Hocus& hocus, const Size& viewportSize);
+	bool isShowingHint() const;
 };
 
 }

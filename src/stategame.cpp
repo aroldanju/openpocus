@@ -31,6 +31,8 @@
 #include "engine/data/asset/levelbackground.h"
 #include "engine/data/asset/spriteset.h"
 #include "engine/data/asset/iteminfo.h"
+#include "engine/provider/provider.h"
+#include "engine/data/asset/voc.h"
 
 void StateGame::loadLevel(pocus::data::Data& data, pocus::data::Data& executable, uint8_t episode, uint8_t stage) {
 	episode--;
@@ -155,12 +157,50 @@ void StateGame::createGame(pocus::data::Data &data) {
 	this->game.getFont().loadFromStream(fontFile.getContent(), fontFile.getLength());
 	this->game.setTextColor(pocus::Game::DEFAULT_TEXT_COLOR);
 	
+	pocus::data::DataFile& soundHintFile = data.fetchFile(DATFILE_VOC_HINT);
+	pocus::data::asset::Voc vocHint;
+	vocHint.loadFromStream(soundHintFile.getContent(), soundHintFile.getLength());
+	this->game.getSoundHint() = vocHint.createAsSound();
+	
 	this->game.getHocus().setPosition(
 		pocus::Point(
 			this->game.getMap().getPlayerCoordinates().getX() * TILE_SIZE,
 			this->game.getMap().getPlayerCoordinates().getY() * TILE_SIZE
 		)
 	);
+	
+	for (int i = 0; i < pocus::data::asset::Messages::MESSAGES; i++) {
+		const auto& message = this->game.getMap().getMessages().getMessages()[i];
+		
+		if (message.x == 0xffff) {
+			continue;
+		}
+		
+		uint32_t lineIndex = 0;
+		uint32_t maxWidth = 0;
+		std::vector<std::unique_ptr<pocus::Texture>> textures;
+		
+		do {
+			textures.push_back(this->game.getFont().writeShadow(std::string(message.lines[lineIndex]), this->game.getPalette(), pocus::Game::DEFAULT_TEXT_COLOR));
+			if (textures[textures.size() - 1]->getWidth() > maxWidth) {
+				maxWidth = textures[textures.size() - 1]->getWidth();
+			}
+		} while(message.lines[++lineIndex][0] != '\0');
+		
+		auto hintTexture = pocus::Provider::provideTexture(maxWidth, lineIndex * 8 + lineIndex * 3);
+		hintTexture->fill(255, 0, 255);
+		
+		lineIndex = 0;
+		
+		for (auto& texture : textures) {
+			hintTexture->paste(*texture, 0, 0, maxWidth / 2 - texture->getWidth() / 2, lineIndex * 12);
+			lineIndex++;
+		}
+		
+		hintTexture->setColorKey(255, 0, 255);
+		
+		this->game.getHintTextures().push_back(std::move(hintTexture));
+	}
 	
 	this->game.getViewportSize().set(SCREEN_WIDTH, SCREEN_HEIGHT);
 }
@@ -264,6 +304,10 @@ void StateGame::handleEvents(pocus::EventHandler &eventHandler) {
 	
 	if (eventHandler.isButtonDown(pocus::BUTTON_JUMP)) {
 		this->game.jump();
+	}
+	
+	if (eventHandler.isButtonDown(pocus::BUTTON_UP)) {
+		this->game.activate();
 	}
 	
 	/*

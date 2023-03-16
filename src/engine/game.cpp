@@ -53,6 +53,14 @@ std::map<uint32_t, std::unique_ptr<Texture>>& Game::getScoreTextures() {
 	return this->scoreTextures;
 }
 
+std::vector<std::unique_ptr<Texture>>& Game::getHintTextures() {
+	return this->hintTextures;
+}
+
+std::unique_ptr<Sound>& Game::getSoundHint() {
+	return this->soundHint;
+}
+
 void Game::start() {
 	this->hud.updateScore(this->player.getScore());
 	this->hud.updateCrystals(this->player.getCrystals(), this->map.getCrystals());
@@ -91,11 +99,24 @@ void Game::render(Renderer &renderer) {
 #endif
 	
 	if (this->paused) {
-		renderer.drawTexture(*this->labelPaused,
-							 Point(
-								 renderer.getWidth() / 2 - this->labelPaused->getWidth() / 2,
-								 (renderer.getHeight() - this->hud.getBackground().getHeight()) / 2 - this->labelPaused->getHeight() / 2)
-		 );
+		if (isShowingHint()) {
+			Texture& hintTexture = *this->hintTextures[this->currentHint];
+			renderer.drawTexture(hintTexture,
+								 Point(
+									 this->viewportSize.getWidth() / 2 - hintTexture.getWidth() / 2,
+									 (this->viewportSize.getHeight() - this->hud.getBackground().getHeight()) / 2 -
+										 hintTexture.getHeight() / 2
+								 )
+			);
+		}
+		else {
+			renderer.drawTexture(*this->labelPaused,
+								 Point(
+									 renderer.getWidth() / 2 - this->labelPaused->getWidth() / 2,
+									 (renderer.getHeight() - this->hud.getBackground().getHeight()) / 2 -
+									 this->labelPaused->getHeight() / 2)
+			);
+		}
 	}
 }
 
@@ -222,6 +243,10 @@ void Game::setTextColor(uint8_t color) {
 
 void Game::startMovement(const Entity::Direction_t& direction) {
 	if (this->paused) {
+		if (isShowingHint()) {
+			hideHint();
+		}
+		
 		return;
 	}
 	
@@ -230,6 +255,10 @@ void Game::startMovement(const Entity::Direction_t& direction) {
 
 void Game::stopMovement(const Entity::Direction_t& direction) {
 	if (this->paused) {
+		if (isShowingHint()) {
+			hideHint();
+		}
+		
 		return;
 	}
 	
@@ -264,6 +293,10 @@ void Game::centerCamera(const Hocus& hocus, const Size& viewportSize) {
 
 void Game::jump() {
 	if (this->paused) {
+		if (isShowingHint()) {
+			hideHint();
+		}
+		
 		return;
 	}
 	
@@ -277,6 +310,34 @@ void Game::jump() {
 	}
 	
 	this->hocus.jump();
+}
+
+void Game::showHint(uint32_t id) {
+	this->currentHint = (int)id;
+	this->paused = true;
+	
+	if (this->soundHint) {
+		this->soundHint->play();
+	}
+}
+
+void Game::hideHint() {
+	this->currentHint = -1;
+	this->paused = false;
+}
+
+void Game::activate() {
+	const Point& tilePosition = this->hocus.getTilePosition();
+
+	// Check for hint wizard messages
+	for (int i = 0; i < data::asset::Messages::MESSAGES; i++) {
+		const data::asset::Messages::Entry& message = this->map.getMessages().getMessages()[i];
+		if (message.y == (int)tilePosition.getY() && message.x == (int)tilePosition.getX() &&
+				this->map.getEvent(tilePosition) == data::asset::EventLayer::WIZARD) {
+			showHint(i);
+			return;
+		}
+	}
 }
 
 void Game::move(float dt) {
@@ -364,16 +425,16 @@ void Game::checkItems() {
 		
 		const data::asset::ItemInfo::Entry& item = this->itemInfo.getItems()[event];
 
-//#ifdef __POCUS_DEBUG__
-//#ifdef __DEBUG_ITEM__
+#ifdef __DEBUG_POCUS__
+#ifdef __DEBUG_ITEM__
 		std::cout << "Item -> " << std::string(item.name) << std::endl;
 		std::cout << "   Score: " << item.score << std::endl;
 		std::cout << "   Heal: " << (int)item.heal << std::endl;
 		std::cout << "   Fire power: " << (int)item.firePower << std::endl;
 		std::cout << "   Type: " << (int)item.type << std::endl;
 		std::cout << "   Padding: " << (int)item.padding << std::endl;
-//#endif // __DEBUG_ITEM__
-//#endif // __POCUS_DEBUG__
+#endif // __DEBUG_ITEM__
+#endif // __POCUS_DEBUG__
 		
 		namespace asset = data::asset;
 		
@@ -407,4 +468,8 @@ void Game::checkItems() {
 	
 	checkItemAt(tilePosition);
 	checkItemAt({tilePosition.getX(), tilePosition.getY() + 1});
+}
+
+bool Game::isShowingHint() const {
+	return this->currentHint != -1;
 }
