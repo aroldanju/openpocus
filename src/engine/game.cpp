@@ -364,16 +364,16 @@ void Game::checkItems() {
 		
 		const data::asset::ItemInfo::Entry& item = this->itemInfo.getItems()[event];
 
-#ifdef __POCUS_DEBUG__
-#ifdef __DEBUG_ITEM__
-		std::cout << "Item -> " << std::string(itemInfo.name) << std::endl;
-		std::cout << "   Score: " << itemInfo.score << std::endl;
-		std::cout << "   Heal: " << (int)itemInfo.heal << std::endl;
-		std::cout << "   Fire power: " << (int)itemInfo.firePower << std::endl;
-		std::cout << "   Type: " << (int)itemInfo.type << std::endl;
-		std::cout << "   Padding: " << (int)itemInfo.padding << std::endl;
-#endif // __DEBUG_ITEM__
-#endif // __POCUS_DEBUG__
+//#ifdef __POCUS_DEBUG__
+//#ifdef __DEBUG_ITEM__
+		std::cout << "Item -> " << std::string(item.name) << std::endl;
+		std::cout << "   Score: " << item.score << std::endl;
+		std::cout << "   Heal: " << (int)item.heal << std::endl;
+		std::cout << "   Fire power: " << (int)item.firePower << std::endl;
+		std::cout << "   Type: " << (int)item.type << std::endl;
+		std::cout << "   Padding: " << (int)item.padding << std::endl;
+//#endif // __DEBUG_ITEM__
+//#endif // __POCUS_DEBUG__
 		
 		namespace asset = data::asset;
 		
@@ -392,6 +392,14 @@ void Game::checkItems() {
 			this->map.removeTile(0, position);
 			this->map.disableEvent(position);
 			addHealth(item.heal);
+		}
+		else if (event == asset::EventLayer::GOLD_KEY || event == asset::EventLayer::SILVER_KEY) {
+			this->map.removeTile(0, position);
+			this->map.disableEvent(position);
+			switch (event) {
+				case asset::EventLayer::GOLD_KEY: addGoldenKey(); break;
+				case asset::EventLayer::SILVER_KEY: addSilverKey(); break;
+			}
 		}
 	};
 	
