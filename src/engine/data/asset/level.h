@@ -62,6 +62,15 @@ public:
 	
 	[[nodiscard]] const Entry *getEntries() const;
 	
+	uint8_t getBackgroundTile() const;
+	void setBackgroundTile(uint8_t backgroundTile);
+	uint8_t getSwitchDownTile() const;
+	void setSwitchDownTile(uint8_t switchDownTile);
+	uint8_t getSwitchUpTile() const;
+	void setSwitchUpTile(uint8_t switchUpTile);
+	uint8_t getShootableTile() const;
+	void setShootableTile(uint8_t shootableTile);
+
 private:
 	uint8_t backgroundTile { 0 };
 	uint8_t switchDownTile { 0 };
@@ -223,7 +232,28 @@ private:
 class EventLayer : public Asset {
 public:
 	enum { WIDTH = 240, HEIGHT = 60 };
-
+	
+	enum Event_t {
+		RUBY = 0x00,
+		DIAMOND = 0x01,
+		GLOBET = 0x02,
+		CROWN = 0x03,
+		HEAL_POTION = 0x04,
+		CRYSTAL = 0x05,
+		SPIKES = 0x06,
+		ZAPPER = 0x07,
+		INVISIBILITY = 0x08,
+		GOLDEN_POTION = 0x09,
+		WHITE_POTION = 0x0a,
+		UNUSED1 = 0x0b,
+		SILVER_KEY = 0x0c,
+		GOLD_KEY = 0x0d,
+		LAVA = 0x0e,
+		WIZARD = 0x0f,
+		GREY_POTION = 0x10,
+		EMPTY = 30000
+	};
+	
 public:
 	bool loadFromStream(const char *stream, uint32_t length) override;
 	void release() override;

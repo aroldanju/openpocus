@@ -45,6 +45,10 @@ Size& Game::getViewportSize() {
 	return this->viewportSize;
 }
 
+data::asset::ItemInfo& Game::getItemInfo() {
+	return this->itemInfo;
+}
+
 void Game::start() {
 	this->hud.updateScore(this->player.getScore());
 	this->hud.updateCrystals(this->player.getCrystals(), this->map.getCrystals());
@@ -102,6 +106,11 @@ void Game::addScore(uint32_t score) {
 	this->hud.updateScore(this->player.getScore());
 }
 
+void Game::addCrystal(uint32_t amount) {
+	this->player.setCrystals(this->player.getCrystals() + amount);
+	this->hud.updateCrystals(this->player.getCrystals(), this->map.getCrystals());
+}
+
 void Game::removeHealth(uint8_t health) {
 	if (this->player.getHealth() - health < 0) {
 		this->player.setHealth(0);
@@ -121,7 +130,7 @@ void Game::addHealth(uint8_t health) {
 		this->player.setHealth(this->player.getHealth() + health);
 	}
 	
-	this->hud.updateHealth(health);
+	this->hud.updateHealth(this->player.getHealth());
 }
 
 void Game::addSilverKey() {
@@ -264,4 +273,54 @@ void Game::move(float dt) {
 					 this->viewportSize.getWidth(),
 					 this->viewportSize.getHeight() - this->hud.getBackground().getHeight()
 				 ));
+	
+	checkItems();
+}
+
+void Game::checkItems() {
+	
+	const auto checkItemAt = [this](const Point& position) -> void {
+		data::asset::EventLayer::Event_t event = this->map.getEvent(position);
+		
+		if (event == data::asset::EventLayer::EMPTY) {
+			return;
+		}
+		
+		const data::asset::ItemInfo::Entry& itemInfo = this->itemInfo.getItems()[event];
+
+#ifdef __POCUS_DEBUG__
+#ifdef __DEBUG_ITEM__
+		std::cout << "Item -> " << std::string(itemInfo.name) << std::endl;
+		std::cout << "   Score: " << itemInfo.score << std::endl;
+		std::cout << "   Heal: " << (int)itemInfo.heal << std::endl;
+		std::cout << "   Fire power: " << (int)itemInfo.firePower << std::endl;
+		std::cout << "   Type: " << (int)itemInfo.type << std::endl;
+		std::cout << "   Padding: " << (int)itemInfo.padding << std::endl;
+#endif // __DEBUG_ITEM__
+#endif // __POCUS_DEBUG__
+		
+		namespace asset = data::asset;
+		
+		if (event == asset::EventLayer::RUBY || event == asset::EventLayer::DIAMOND || event == asset::EventLayer::GLOBET ||
+				event == asset::EventLayer::CROWN) {
+			this->map.removeTile(0, position);
+			this->map.disableEvent(position);
+			addScore(itemInfo.score);
+		}
+		else if (event == asset::EventLayer::CRYSTAL) {
+			this->map.removeTile(0, position);
+			this->map.disableEvent(position);
+			addCrystal(1);
+		}
+		else if (event == asset::EventLayer::HEAL_POTION) {
+			this->map.removeTile(0, position);
+			this->map.disableEvent(position);
+			addHealth(itemInfo.heal);
+		}
+	};
+	
+	const Point tilePosition = this->hocus.getTilePosition();
+	
+	checkItemAt(tilePosition);
+	checkItemAt({tilePosition.getX(), tilePosition.getY() + 1});
 }

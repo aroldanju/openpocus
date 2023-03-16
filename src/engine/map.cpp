@@ -393,6 +393,23 @@ uint8_t Map::getCrystals() const {
 	return crystals;
 }
 
+data::asset::EventLayer::Event_t Map::getEvent(const Point& tile) const {
+	return (data::asset::EventLayer::Event_t)(this->eventLayer.getData()[(int)tile.getY() * MAP_WIDTH + (int)tile.getX()]);
+}
+
+void Map::disableEvent(const Point& tile) {
+	this->eventLayer.getData()[(int)tile.getY() * MAP_WIDTH + (int)tile.getX()] = data::asset::EventLayer::EMPTY;
+}
+
+void Map::removeTile(uint8_t layer, const Point& tilePosition) {
+	Tile& tile = this->layers[layer].getTile((int)tilePosition.getX(), (int)tilePosition.getY());
+	const auto backgroundId = (uint16_t)this->tileAnimationSettings.getBackgroundTile();
+	
+	// Replace tile with background tile
+	tile.getAnimation().createFrom(this->animatedTileSet[backgroundId]);
+	tile.setId(backgroundId);
+}
+
 Map::Chunk::Chunk(const Size &size):
 	size(size)
 {}

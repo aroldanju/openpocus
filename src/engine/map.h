@@ -120,6 +120,11 @@ public:
 	
 	[[nodiscard]] uint8_t getCrystals() const;
 	
+	[[nodiscard]] data::asset::EventLayer::Event_t getEvent(const Point& tile) const;
+	void disableEvent(const Point& point);
+	
+	void removeTile(uint8_t layer, const Point& tile);
+	
 private:
 	std::unique_ptr<Sound> backgroundMusic { nullptr };
 	std::unique_ptr<Texture> backgroundImage { nullptr };

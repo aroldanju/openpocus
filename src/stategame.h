@@ -42,6 +42,7 @@ private:
 	void loadLevel(pocus::data::Data& data, pocus::data::Data& executable, uint8_t episode, uint8_t stage);
 	void createHud(pocus::data::Data& data);
 	void createGame(pocus::data::Data& data);
+	void loadItems(pocus::data::Data& executable);
 	
 	std::unique_ptr<pocus::Texture> loadTexture(pocus::data::Data& data, uint32_t paletteFileIndex, uint32_t imageFileIndex);
 	std::unique_ptr<pocus::Texture> loadTexture(pocus::data::Data& data, const pocus::data::asset::Palette& palette, uint32_t imageFileIndex);

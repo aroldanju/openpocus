@@ -30,6 +30,7 @@
 #include "engine/data/asset/leveltime.h"
 #include "engine/data/asset/levelbackground.h"
 #include "engine/data/asset/spriteset.h"
+#include "engine/data/asset/iteminfo.h"
 
 void StateGame::loadLevel(pocus::data::Data& data, pocus::data::Data& executable, uint8_t episode, uint8_t stage) {
 	episode--;
@@ -177,6 +178,12 @@ void StateGame::loadSprites(pocus::data::Data& data) {
 									*spriteSet.getSprite(SPRITE_HOCUS).createAsTexture(paletteGame));
 }
 
+void StateGame::loadItems(pocus::data::Data& executable) {
+	pocus::data::DataFile& itemsFile = executable.fetchFile(EXEFILE_ITEMS);
+	
+	this->game.getItemInfo().loadFromStream(itemsFile.getContent(), itemsFile.getLength());
+}
+
 void StateGame::onCreate(pocus::data::DataManager& dataManager) {
 	pocus::data::Data& data = dataManager.getData();
 	pocus::data::Data& executable = dataManager.getExecutable();
@@ -185,6 +192,7 @@ void StateGame::onCreate(pocus::data::DataManager& dataManager) {
 	loadSprites(data);
 	createHud(data);
 	createGame(data);
+	loadItems(executable);
 }
 
 std::unique_ptr<pocus::Texture> StateGame::loadTexture(pocus::data::Data& data, uint32_t paletteFileIndex, uint32_t imageFileIndex) {

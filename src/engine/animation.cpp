@@ -107,6 +107,8 @@ uint32_t Animation::getHeight() const {
 }
 
 void Animation::createFrom(const Animation& animation) {
+	this->frames.erase(this->frames.begin(), this->frames.end());
+	
 	this->fps = animation.fps;
 	this->currentFrame = animation.currentFrame;
 	this->lastUpdateTick = animation.lastUpdateTick;

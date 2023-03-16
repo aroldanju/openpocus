@@ -90,6 +90,38 @@ const TileAnimationSettings::Entry *TileAnimationSettings::getEntries() const {
 	return entries;
 }
 
+uint8_t TileAnimationSettings::getBackgroundTile() const {
+	return backgroundTile;
+}
+
+void TileAnimationSettings::setBackgroundTile(uint8_t backgroundTile) {
+	TileAnimationSettings::backgroundTile = backgroundTile;
+}
+
+uint8_t TileAnimationSettings::getSwitchDownTile() const {
+	return switchDownTile;
+}
+
+void TileAnimationSettings::setSwitchDownTile(uint8_t switchDownTile) {
+	TileAnimationSettings::switchDownTile = switchDownTile;
+}
+
+uint8_t TileAnimationSettings::getSwitchUpTile() const {
+	return switchUpTile;
+}
+
+void TileAnimationSettings::setSwitchUpTile(uint8_t switchUpTile) {
+	TileAnimationSettings::switchUpTile = switchUpTile;
+}
+
+uint8_t TileAnimationSettings::getShootableTile() const {
+	return shootableTile;
+}
+
+void TileAnimationSettings::setShootableTile(uint8_t shootableTile) {
+	TileAnimationSettings::shootableTile = shootableTile;
+}
+
 // Enemy trigger ---------------------------------------------------------------------
 
 bool EnemyTrigger::loadFromStream(const char *stream, uint32_t length) {

@@ -22,6 +22,7 @@
 #include "player.h"
 #include "hud.h"
 #include "hocus.h"
+#include "data/asset/iteminfo.h"
 
 namespace pocus {
 
@@ -39,6 +40,7 @@ public:
 	Point& getOffset();
 	Hocus& getHocus();
 	Size& getViewportSize();
+	data::asset::ItemInfo& getItemInfo();
 	
 	void setTextColor(uint8_t color);
 	
@@ -58,6 +60,7 @@ public:
 	void togglePause();
 	void startMovement(const Entity::Direction_t& direction);
 	void stopMovement(const Entity::Direction_t& direction);
+	void addCrystal(uint32_t amount);
 	
 private:
 	Size viewportSize { 320.0f, 200.0f };
@@ -72,8 +75,10 @@ private:
 	bool paused { false };
 	std::unique_ptr<Texture> labelPaused;
 	Hocus hocus;
+	data::asset::ItemInfo itemInfo;
 	
 	void move(float dt);
+	void checkItems();
 	void centerCamera(const Hocus& hocus, const Size& viewportSize);
 };
 
