@@ -48,7 +48,7 @@ void Entity::render(Renderer &renderer, const Point& offset) {
 		this->currentState->render(renderer, position);
 	}
 	
-	renderer.drawRect(Rect(position, this->rect.getSize()), color::redAlpha);
+	//renderer.drawRect(Rect(position, this->rect.getSize()), color::redAlpha);
 }
 
 void Entity::update() {
@@ -75,9 +75,14 @@ void Entity::setDirection(Entity::Direction_t direction) {
 }
 
 Point Entity::getTilePosition() {
+	float width = 0.0f;
+	if (this->direction == RIGHT) {
+		width = TILE_SIZE / 2;
+	}
+	
 	return {
-		this->rect.getPosition().getX() / TILE_SIZE,
-		this->rect.getPosition().getY() / TILE_SIZE
+		std::round((this->rect.getPosition().getX() + width) / TILE_SIZE),
+		std::ceil(this->rect.getPosition().getY() / TILE_SIZE)
 	};
 }
 
@@ -99,4 +104,27 @@ void Entity::setSpeed(float speed) {
 
 void Entity::setPosition(const Point& point) {
 	this->rect.setPosition(point);
+}
+
+void Entity::setX(float x) {
+	this->rect.setPosition(Point(x, this->rect.getPosition().getY()));
+}
+
+void Entity::setY(float y) {
+	this->rect.setPosition(Point(this->rect.getPosition().getX(), y));
+}
+
+void Entity::setVelocityX(float x) {
+	this->velocity.setX(x);
+}
+
+void Entity::setVelocityY(float y) {
+	this->velocity.setY(y);
+}
+
+std::string Entity::getDirectionName(const Direction_t& direction) {
+	switch (direction) {
+		case Entity::LEFT: return "left";
+		case Entity::RIGHT: return "right";
+	}
 }

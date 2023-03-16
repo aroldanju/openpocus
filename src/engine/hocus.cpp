@@ -80,33 +80,26 @@ void Hocus::setSprite(const data::asset::Sprite& sprite, Texture& sheet) {
 void Hocus::startMovement(const Direction_t& direction) {
 	this->setDirection(direction);
 	
-	auto getDirectionName = [](const Direction_t& direction) -> std::string {
-		switch (direction) {
-			case Entity::LEFT: return "left";
-			case Entity::RIGHT: return "right";
-		}
-	};
-	
-	auto getVelocityByDirection = [](const Direction_t& direction) -> Point {
-		if (direction == LEFT) { return Point(-1.0f, .0f); }
-		else if (direction == RIGHT) { return Point(1.0f, .0f); }
+	auto getVelocityByDirection = [](const Direction_t& direction) -> float {
+		if (direction == LEFT) { return -1.0f; }
+		else if (direction == RIGHT) { return 1.0f; }
 		
-		return { .0f, .0f };
+		return .0f;
 	};
 	
-	this->setVelocity(getVelocityByDirection(direction));
+	this->setVelocityX(getVelocityByDirection(direction));
 	
 	switch (this->getState()) {
 		case FALL:
-			this->setCurrentState("fall_" + getDirectionName(direction));
+			this->setCurrentState("fall_" + Entity::getDirectionName(direction));
 			break;
 			
 		case JUMP:
-			this->setCurrentState("jump_" + getDirectionName(direction));
+			this->setCurrentState("jump_" + Entity::getDirectionName(direction));
 			break;
 			
 		default:
-			this->setCurrentState("walk_" + getDirectionName(direction));
+			this->setCurrentState("walk_" + Entity::getDirectionName(direction));
 			break;
 	}
 }
@@ -114,16 +107,28 @@ void Hocus::startMovement(const Direction_t& direction) {
 void Hocus::stopMovement(const Direction_t& direction) {
 	this->setDirection(direction);
 	
-	auto getDirectionName = [](const Direction_t& direction) -> std::string {
-		switch (direction) {
-			case Entity::LEFT: return "left";
-			case Entity::RIGHT: return "right";
-		}
-	};
-	
 	if (this->getState() != FALL && this->getState() != JUMP) {
-		setCurrentState("stand_" + getDirectionName(direction));
+		setCurrentState("stand_" + Entity::getDirectionName(direction));
 	}
 	
-	this->setVelocity(Point(.0f, .0f));
+	this->setVelocityX(0.0f);
+}
+
+void Hocus::startFalling() {
+	this->state = FALL;
+	this->setVelocityY( 1.f);
+	setCurrentState("fall_" + Entity::getDirectionName(this->getDirection()));
+}
+
+void Hocus::grounded() {
+	this->setVelocityY( 0.f);
+	
+	if (this->getVelocity().getX() != 0.f) {
+		this->state = WALK;
+		setCurrentState("walk_" + Entity::getDirectionName(this->getDirection()));
+	}
+	else {
+		this->state = STAND;
+		setCurrentState("stand_" + Entity::getDirectionName(this->getDirection()));
+	}
 }

@@ -16,6 +16,7 @@
  */
 
 #include <iostream>
+#include <cmath>
 #include "game.h"
 
 using namespace pocus;
@@ -62,6 +63,14 @@ void Game::render(Renderer &renderer) {
 	this->hocus.render(renderer, this->offset);
 	
 	this->hud.render(renderer);
+	
+	const Point tilePosition = this->hocus.getTilePosition();
+	renderer.drawRect(Rect(
+		Point(
+		tilePosition.getX() * TILE_SIZE - this->offset.getX(),
+		tilePosition.getY() * TILE_SIZE - this->offset.getY()
+		),
+		Size(TILE_SIZE, TILE_SIZE * 2)), color::blueAlpha);
 	
 	if (this->paused) {
 		renderer.drawTexture(*this->labelPaused,
@@ -210,6 +219,45 @@ void Game::move(float dt) {
 	const Point tilePosition = this->hocus.getTilePosition();
 	
 	const Tile& tile = this->map.getLayer(1).getTile(tilePosition.getX(), tilePosition.getY());
+	const Tile& tileAbove = this->map.getLayer(1).getTile(tilePosition.getX(), tilePosition.getY() - 1);
+	const Tile& tileFeet = this->map.getLayer(1).getTile(tilePosition.getX(), tilePosition.getY() + 1);
+	const Tile& tileBelow = this->map.getLayer(1).getTile(tilePosition.getX(), tilePosition.getY() + 2);
+	
+	if (this->hocus.getState() == Hocus::FALL) {
+		if (tileFeet.isVisible()) {
+			this->hocus.grounded();
+			this->hocus.setPosition(Point(lastPosition.getX(), std::ceil(lastPosition.getY())));
+			return;
+		}
+	}
+	
+	// Tile ahead blocked
+	if (tile.isVisible() || (!tile.isVisible() && tileFeet.isVisible() && tileAbove.isVisible())) {
+		this->hocus.setPosition(lastPosition);
+		return;
+	}
+	
+	// Step down or falling
+	if (!tileBelow.isVisible() && !tileFeet.isVisible()) {
+		// Check falling
+		if (tilePosition.getY() < MAP_HEIGHT - 3) {
+			const Tile& tileFall = this->map.getLayer(1).getTile(tilePosition.getX(), tilePosition.getY() + 3);
+			if (!tileFall.isVisible()) {
+				this->hocus.startFalling();
+			}
+			else {
+				this->hocus.setY(this->hocus.getRect().getPosition().getY() + TILE_SIZE);
+			}
+		}
+		else {
+			this->hocus.setY(this->hocus.getRect().getPosition().getY() + TILE_SIZE);
+		}
+	}
+	
+	// Step up
+	if (tileFeet.isVisible() && !tile.isVisible() && !tileAbove.isVisible()) {
+		this->hocus.setY(this->hocus.getRect().getPosition().getY() - TILE_SIZE);
+	}
 	
 	centerCamera(this->hocus,
 				 Size(

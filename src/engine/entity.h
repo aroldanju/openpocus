@@ -52,6 +52,14 @@ public:
 	void setSpeed(float speed);
 	
 	void setPosition(const Point& point);
+	
+	void setX(float x);
+	void setY(float y);
+	
+	void setVelocityX(float x);
+	void setVelocityY(float y);
+	
+	static std::string getDirectionName(const Direction_t& direction);
 
 private:
 	Rect rect {};
@@ -60,7 +68,7 @@ private:
 	Animation* currentState { nullptr };
 	Direction_t direction { RIGHT };
 	Point velocity { .0f, .0f };
-	float speed { 3.0f };
+	float speed { 2.0f };
 };
 
 }

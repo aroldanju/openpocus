@@ -37,6 +37,8 @@ public:
 
 	void startMovement(const Direction_t& direction);
 	void stopMovement(const Direction_t& direction);
+	void startFalling();
+	void grounded();
 	
 private:
 	State_t state { STAND };
