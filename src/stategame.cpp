@@ -176,6 +176,20 @@ void StateGame::loadSprites(pocus::data::Data& data) {
 	
 	this->game.getHocus().setSprite(spriteSet.getSprite(SPRITE_HOCUS),
 									*spriteSet.getSprite(SPRITE_HOCUS).createAsTexture(paletteGame));
+	
+	// Score texts
+	pocus::data::asset::Sprite& spriteScores = spriteSet.getSprite(SPRITE_SCORE);
+	
+	auto spriteScoresTexture = spriteScores.createAsTexture(paletteGame);
+	auto texture100 = spriteScoresTexture->extract(0, 0, spriteScores.header.width4, spriteScores.header.height);
+	auto texture250 = spriteScoresTexture->extract(spriteScores.header.width4, 0, spriteScores.header.width4, spriteScores.header.height);
+	auto texture500 = spriteScoresTexture->extract(spriteScores.header.width4 * 2, 0, spriteScores.header.width4, spriteScores.header.height);
+	auto texture1000 = spriteScoresTexture->extract(spriteScores.header.width4 * 3, 0, spriteScores.header.width4, spriteScores.header.height);
+	
+	this->game.getScoreTextures().insert(std::make_pair(100, std::move(texture100)));
+	this->game.getScoreTextures().insert(std::make_pair(250, std::move(texture250)));
+	this->game.getScoreTextures().insert(std::make_pair(500, std::move(texture500)));
+	this->game.getScoreTextures().insert(std::make_pair(1000, std::move(texture1000)));
 }
 
 void StateGame::loadItems(pocus::data::Data& executable) {

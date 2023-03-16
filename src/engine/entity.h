@@ -60,6 +60,12 @@ public:
 	void setVelocityY(float y);
 	
 	static std::string getDirectionName(const Direction_t& direction);
+	
+	const Tick &getTickCreation() const;
+	
+	void setTickCreation(const Tick &tickCreation);
+	
+	void resetStates();
 
 private:
 	Rect rect {};
@@ -69,6 +75,7 @@ private:
 	Direction_t direction { RIGHT };
 	Point velocity { .0f, .0f };
 	float speed { 2.0f };
+	Tick tickCreation;
 };
 
 }

@@ -90,6 +90,12 @@ Animation Animation::createFromFrame(std::unique_ptr<Texture> frame) {
 	return std::move(animation);
 }
 
+Animation Animation::createFromFrame(Texture& frame, const Color* colorKey) {
+	Animation animation;
+	animation.addFrame(frame.extract(0, 0, frame.getWidth(), frame.getHeight(), colorKey));
+	return std::move(animation);
+}
+
 uint32_t Animation::getWidth() const {
 	if (this->frames.empty()) {
 		return 0;

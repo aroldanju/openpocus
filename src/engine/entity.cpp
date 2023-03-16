@@ -128,3 +128,17 @@ std::string Entity::getDirectionName(const Direction_t& direction) {
 		case Entity::RIGHT: return "right";
 	}
 }
+
+const Tick &Entity::getTickCreation() const {
+	return tickCreation;
+}
+
+void Entity::setTickCreation(const Tick &tickCreation) {
+	Entity::tickCreation = tickCreation;
+}
+
+void Entity::resetStates() {
+	this->states.erase(this->states.begin(), this->states.end());
+	this->currentState = nullptr;
+	this->currentStateId = "";
+}

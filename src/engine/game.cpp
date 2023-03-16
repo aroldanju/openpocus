@@ -49,6 +49,10 @@ data::asset::ItemInfo& Game::getItemInfo() {
 	return this->itemInfo;
 }
 
+std::map<uint32_t, std::unique_ptr<Texture>>& Game::getScoreTextures() {
+	return this->scoreTextures;
+}
+
 void Game::start() {
 	this->hud.updateScore(this->player.getScore());
 	this->hud.updateCrystals(this->player.getCrystals(), this->map.getCrystals());
@@ -68,6 +72,14 @@ void Game::render(Renderer &renderer) {
 	
 	this->hud.render(renderer);
 	
+	for (auto& scoreText : this->scoreTexts) {
+		if (getElapsedTime(scoreText.getTickCreation()) < SCORE_TEXT_LIFETIME) {
+			scoreText.render(renderer, this->offset);
+		}
+	}
+
+#ifdef __DEBUG_POCUS__
+#ifdef __DEBUG_COLLISION__
 	const Point tilePosition = this->hocus.getTilePosition();
 	renderer.drawRect(Rect(
 		Point(
@@ -75,6 +87,8 @@ void Game::render(Renderer &renderer) {
 		tilePosition.getY() * TILE_SIZE - this->offset.getY()
 		),
 		Size(TILE_SIZE, TILE_SIZE * 2)), color::blueAlpha);
+#endif
+#endif
 	
 	if (this->paused) {
 		renderer.drawTexture(*this->labelPaused,
@@ -94,16 +108,53 @@ void Game::update(float dt) {
 	
 	this->hocus.update();
 	
+	for (auto& scoreText : this->scoreTexts) {
+		if (getElapsedTime(scoreText.getTickCreation()) < SCORE_TEXT_LIFETIME) {
+			scoreText.move(dt);
+		}
+	}
+	
 	move(dt);
 }
 
+/*
 uint32_t Game::getElapsedTime() {
 	return ::getElapsedTime(this->tickStart) / 1000;
 }
+*/
 
 void Game::addScore(uint32_t score) {
 	this->player.setScore(this->player.getScore() + score);
 	this->hud.updateScore(this->player.getScore());
+	
+	auto iterator = this->scoreTextures.find(score);
+	if (iterator != this->scoreTextures.end()) {
+		addScoreText(*iterator->second, this->hocus.getRect().getPosition());
+	}
+}
+
+void Game::addScoreText(Texture& texture, const Point& point) {
+	
+	const auto createScoreText = [&texture, point](Entity& scoreText) -> void {
+		scoreText.resetStates();
+		scoreText.setVelocity({ 0.f, -1.f });
+		scoreText.setSpeed(.5f);
+		scoreText.setPosition(point);
+		scoreText.addState("show", Animation::createFromFrame(texture, &color::pink));
+		scoreText.setCurrentState("show");
+		scoreText.setTickCreation(getNow());
+	};
+	
+	for (auto& scoreText : this->scoreTexts) {
+		if (getElapsedTime(scoreText.getTickCreation()) >= SCORE_TEXT_LIFETIME) {
+			createScoreText(scoreText);
+			return;
+		}
+	}
+	
+	Entity scoreText;
+	createScoreText(scoreText);
+	this->scoreTexts.push_back(std::move(scoreText));
 }
 
 void Game::addCrystal(uint32_t amount) {
@@ -286,7 +337,7 @@ void Game::checkItems() {
 			return;
 		}
 		
-		const data::asset::ItemInfo::Entry& itemInfo = this->itemInfo.getItems()[event];
+		const data::asset::ItemInfo::Entry& item = this->itemInfo.getItems()[event];
 
 #ifdef __POCUS_DEBUG__
 #ifdef __DEBUG_ITEM__
@@ -305,7 +356,7 @@ void Game::checkItems() {
 				event == asset::EventLayer::CROWN) {
 			this->map.removeTile(0, position);
 			this->map.disableEvent(position);
-			addScore(itemInfo.score);
+			addScore(item.score);
 		}
 		else if (event == asset::EventLayer::CRYSTAL) {
 			this->map.removeTile(0, position);
@@ -315,7 +366,7 @@ void Game::checkItems() {
 		else if (event == asset::EventLayer::HEAL_POTION) {
 			this->map.removeTile(0, position);
 			this->map.disableEvent(position);
-			addHealth(itemInfo.heal);
+			addHealth(item.heal);
 		}
 	};
 	

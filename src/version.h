@@ -60,6 +60,7 @@ enum ExeFile {
 };
 enum Sprite_t {
 	SPRITE_HOCUS = 0,
+	SPRITE_SCORE = 1
 };
 #elif(VERSION == REGISTERED)
 #define FAT_FILE			"registered.fat"
@@ -101,6 +102,7 @@ enum ExeFile {
 };
 enum Sprite_t {
 	SPRITE_HOCUS = 0,
+	SPRITE_SCORE = 1
 };
 #endif
 

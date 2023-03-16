@@ -18,6 +18,7 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <map>
 #include "map.h"
 #include "player.h"
 #include "hud.h"
@@ -30,6 +31,7 @@ class Game {
 public:
 	enum { PLAYER_MAX_HEALTH = 100 };
 	enum { DEFAULT_TEXT_COLOR = 104 };
+	enum { SCORE_TEXT_LIFETIME = 1000 };
 	
 public:
 	Map& getMap();
@@ -41,6 +43,10 @@ public:
 	Hocus& getHocus();
 	Size& getViewportSize();
 	data::asset::ItemInfo& getItemInfo();
+	std::map<uint32_t, std::unique_ptr<Texture>>& getScoreTextures();
+	std::vector<Entity> scoreTexts;
+	
+	void addScoreText(Texture& texture, const Point& point);
 	
 	void setTextColor(uint8_t color);
 	
@@ -48,7 +54,7 @@ public:
 	void render(Renderer& renderer);
 	void update(float dt);
 	
-	uint32_t getElapsedTime();
+	//uint32_t getElapsedTime();
 	
 	void addScore(uint32_t score);
 	void removeHealth(uint8_t health);
@@ -76,6 +82,7 @@ private:
 	std::unique_ptr<Texture> labelPaused;
 	Hocus hocus;
 	data::asset::ItemInfo itemInfo;
+	std::map<uint32_t, std::unique_ptr<Texture>> scoreTextures;
 	
 	void move(float dt);
 	void checkItems();
