@@ -45,6 +45,8 @@ public:
 	
 private:
 	State_t state { STAND };
+	Tick tickHit;
+	bool hitBlinking;
 	
 };
 

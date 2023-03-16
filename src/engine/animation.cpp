@@ -145,3 +145,15 @@ void Animation::setCurrentFrame(uint32_t frame) {
 uint32_t Animation::getFrameCount() const {
 	return this->frames.size();
 }
+
+void Animation::setOverlayColor(const Color& color) {
+	for (auto& frame : this->frames) {
+		frame->setOverlayColor(color);
+	}
+}
+
+void Animation::restoreColor() {
+	for (auto& frame : this->frames) {
+		frame->restoreColor();
+	}
+}

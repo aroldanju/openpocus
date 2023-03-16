@@ -55,6 +55,22 @@ void Entity::update() {
 	if (this->currentState) {
 		this->currentState->update(0.f);
 	}
+	
+	if (this->onHit) {
+		if (getElapsedTime(this->tickHit) >= this->hitInvulnerableTime) {
+			this->onHit = false;
+			restoreColor();
+		}
+		else {
+			if (this->blink.update(.0f)) {
+				if (this->blink.getIsBlinking()) {
+					setOverlayColor(color::red);
+				} else {
+					restoreColor();
+				}
+			}
+		}
+	}
 }
 
 void Entity::move(float dt) {
@@ -141,4 +157,49 @@ void Entity::resetStates() {
 	this->states.erase(this->states.begin(), this->states.end());
 	this->currentState = nullptr;
 	this->currentStateId = "";
+}
+
+void Entity::setOverlayColor(const Color& color) {
+	// ¯\_(ツ)_/¯
+	for (auto& state : this->states) {
+		state.second.setOverlayColor(color);
+	}
+}
+
+void Entity::restoreColor() {
+	// ¯\_(ツ)_/¯
+	for (auto& state : this->states) {
+		state.second.restoreColor();
+	}
+}
+
+void Entity::hit(uint32_t invulnerableTime) {
+	this->hitInvulnerableTime = invulnerableTime;
+	this->onHit = true;
+	this->tickHit = getNow();
+	this->blink.blink(Blink::DEFAULT_DELAY);
+}
+
+void Entity::Blink::blink(uint32_t delay) {
+	this->delay = delay;
+	this->tick = getNow();
+	this->isBlinking = true;
+}
+
+bool Entity::Blink::update(float dt) {
+	if (getElapsedTime(this->tick) >= this->delay) {
+		this->tick = getNow();
+		this->isBlinking = !this->isBlinking;
+		return true;
+	}
+	
+	return false;
+}
+
+bool Entity::Blink::getIsBlinking() const {
+	return this->isBlinking;
+}
+
+bool Entity::isInvulnerable() const {
+	return this->onHit;
 }

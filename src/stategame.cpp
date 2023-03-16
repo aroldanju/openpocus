@@ -177,6 +177,11 @@ void StateGame::createGame(pocus::data::Data &data) {
 	vocPotion.loadFromStream(soundPotionFile.getContent(), soundPotionFile.getLength());
 	this->game.getSoundPotion() = vocPotion.createAsSound();
 	
+	pocus::data::DataFile& soundHitFile = data.fetchFile(DATFILE_VOC_HIT);
+	pocus::data::asset::Voc vocHit;
+	vocHit.loadFromStream(soundHitFile.getContent(), soundHitFile.getLength());
+	this->game.getSoundHit() = vocHit.createAsSound();
+	
 	this->game.getHocus().setPosition(
 		pocus::Point(
 			this->game.getMap().getPlayerCoordinates().getX() * TILE_SIZE,
@@ -323,6 +328,10 @@ void StateGame::handleEvents(pocus::EventHandler &eventHandler) {
 	
 	if (eventHandler.isButtonDown(pocus::BUTTON_UP)) {
 		this->game.activate();
+	}
+	
+	if (eventHandler.isButtonDown(pocus::BUTTON_SELECTION)) {
+		this->game.hurt(5);
 	}
 	
 	/*

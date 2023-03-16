@@ -52,6 +52,9 @@ public:
 	[[nodiscard]] uint32_t getFrameCount() const;
 	
 	//Animation& operator=(const Animation& src);
+	
+	void setOverlayColor(const Color& color);
+	void restoreColor();
 
 private:
 	uint32_t fps { 5 };

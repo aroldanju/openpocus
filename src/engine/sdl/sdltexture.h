@@ -44,6 +44,8 @@ public:
 	void setColorKey(uint8_t red, uint8_t green, uint8_t blue) override;
 	std::unique_ptr<Texture> extract(uint32_t x, uint32_t y, uint32_t w, uint32_t h, const Color* colorKey) override;
 	bool saveToFile(const std::string& filename) override;
+	void setOverlayColor(const Color& color) override;
+	void restoreColor() override;
 	
 private:
 	SDL_Surface* surface;

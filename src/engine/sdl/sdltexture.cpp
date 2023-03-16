@@ -131,3 +131,15 @@ std::unique_ptr<Texture> SdlTexture::extract(uint32_t x, uint32_t y, uint32_t w,
 bool SdlTexture::saveToFile(const std::string& filename) {
 	SDL_SaveBMP(this->surface, filename.c_str());
 }
+
+void SdlTexture::setOverlayColor(const Color& color) {
+	if (this->texture) {
+		SDL_SetTextureColorMod(this->texture, color.red, color.green, color.blue);
+	}
+}
+
+void SdlTexture::restoreColor() {
+	if (this->texture) {
+		SDL_SetTextureColorMod(this->texture, 255, 255, 255);
+	}
+}

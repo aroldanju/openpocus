@@ -49,6 +49,7 @@ public:
 	std::unique_ptr<Sound>& getSoundItem();
 	std::unique_ptr<Sound>& getSoundCrystal();
 	std::unique_ptr<Sound>& getSoundPotion();
+	std::unique_ptr<Sound>& getSoundHit();
 	
 	void addScoreText(Texture& texture, const Point& point);
 	
@@ -75,6 +76,7 @@ public:
 	void showHint(uint32_t id);
 	void hideHint();
 	void activate();
+	void hurt(uint8_t health);
 	
 private:
 	Size viewportSize { 320.0f, 200.0f };
@@ -94,10 +96,11 @@ private:
 	std::vector<Entity> scoreTexts;
 	std::vector<std::unique_ptr<Texture>> hintTextures;
 	int currentHint { -1 };
-	std::unique_ptr<Sound> soundHint, soundItem, soundCrystal, soundPotion;
+	std::unique_ptr<Sound> soundHint, soundItem, soundCrystal, soundPotion, soundHit;
 	
 	void move(float dt);
 	void checkItems();
+	void checkHazards();
 	void centerCamera(const Hocus& hocus, const Size& viewportSize);
 	bool isShowingHint() const;
 };

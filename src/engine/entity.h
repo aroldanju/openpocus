@@ -27,7 +27,24 @@ namespace pocus {
 
 class Entity {
 public:
+	class Blink {
+	public:
+		enum { DEFAULT_DELAY = 50 };
+		
+	public:
+		void blink(uint32_t delay);
+		bool update(float dt);
+		[[nodiscard]] bool getIsBlinking() const;
+	
+	private:
+		bool isBlinking { true };
+		Tick tick;
+		uint32_t delay { DEFAULT_DELAY };
+	};
+	
+public:
 	enum Direction_t { LEFT, RIGHT };
+	enum { DEFAULT_HIT_TIME = 800 };
 	
 public:
 	[[nodiscard]] const Rect& getRect() const;
@@ -66,7 +83,14 @@ public:
 	void setTickCreation(const Tick &tickCreation);
 	
 	void resetStates();
-
+	
+	void setOverlayColor(const Color& color);
+	void restoreColor();
+	
+	void hit(uint32_t invulnerableTime = DEFAULT_HIT_TIME);
+	
+	[[nodiscard]] bool isInvulnerable() const;
+	
 private:
 	Rect rect {};
 	std::unordered_map<std::string, Animation> states;
@@ -76,6 +100,10 @@ private:
 	Point velocity { .0f, .0f };
 	float speed { 2.0f };
 	Tick tickCreation;
+	bool onHit { false };
+	Tick tickHit;
+	uint32_t hitInvulnerableTime;
+	Blink blink;
 };
 
 }

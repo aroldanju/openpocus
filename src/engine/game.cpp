@@ -73,6 +73,10 @@ std::unique_ptr<Sound>& Game::getSoundPotion() {
 	return this->soundPotion;
 }
 
+std::unique_ptr<Sound>& Game::getSoundHit() {
+	return this->soundHit;
+}
+
 void Game::start() {
 	this->hud.updateScore(this->player.getScore());
 	this->hud.updateCrystals(this->player.getCrystals(), this->map.getCrystals());
@@ -148,6 +152,9 @@ void Game::update(float dt) {
 	}
 	
 	move(dt);
+	
+	checkItems();
+	checkHazards();
 }
 
 /*
@@ -352,6 +359,20 @@ void Game::activate() {
 	}
 }
 
+void Game::hurt(uint8_t health) {
+	if (this->hocus.isInvulnerable()) {
+		return;
+	}
+	
+	removeHealth(health);
+	
+	this->hocus.hit(Entity::DEFAULT_HIT_TIME);
+	
+	if (this->soundHit) {
+		this->soundHit->play();
+	}
+}
+
 void Game::move(float dt) {
 	if (this->hocus.getVelocity().getX() == .0f && this->hocus.getVelocity().getY() == .0f) {
 		return;
@@ -422,8 +443,6 @@ void Game::move(float dt) {
 					 this->viewportSize.getWidth(),
 					 this->viewportSize.getHeight() - this->hud.getBackground().getHeight()
 				 ));
-	
-	checkItems();
 }
 
 void Game::checkItems() {
@@ -492,6 +511,17 @@ void Game::checkItems() {
 	
 	checkItemAt(tilePosition);
 	checkItemAt({tilePosition.getX(), tilePosition.getY() + 1});
+}
+
+void Game::checkHazards() {
+	Point position = this->hocus.getTilePosition();
+	position.setY(position.getY() + 1);
+	
+	data::asset::EventLayer::Event_t event = this->map.getEvent(position);
+	if (event == data::asset::EventLayer::LAVA || event == data::asset::EventLayer::SPIKES) {
+		// TODO move to constant
+		hurt(4);
+	}
 }
 
 bool Game::isShowingHint() const {
