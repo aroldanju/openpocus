@@ -15,11 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DEFINITIONS_H
-#define DEFINITIONS_H
+#ifndef OPENPOCUS_DEFINITIONS_H
+#define OPENPOCUS_DEFINITIONS_H
 
 #define GAME_NAME  		"Open Pocus"
 #define SCREEN_WIDTH	320
 #define SCREEN_HEIGHT	200
 
-#endif //DEFINITIONS_H
+#define STATE_SPLASH_APOGEE		"splash_apogee"
+#define STATE_SPLASH_INTRO		"splash_intro"
+#define STATE_GAME				"game"
+#define STATE_MENU_MAIN			"main_menu"
+
+#endif // OPENPOCUS_DEFINITIONS_H

@@ -18,6 +18,9 @@
 #include "provider.h"
 #include "../sdl/sdlrenderer.h"
 #include "../sdl/sdleventhandler.h"
+#include "../sdl/sdltexture.h"
+#include "../sdl/sdlsound.h"
+#include "../sdl/sdlaudio.h"
 
 using namespace pocus;
 
@@ -27,4 +30,23 @@ std::unique_ptr<Renderer> Provider::provideRenderer(const RendererParameters &pa
 
 std::unique_ptr<EventHandler> Provider::provideEventHandler() {
 	return std::make_unique<SdlEventHandler>();
+}
+
+std::unique_ptr<Audio> Provider::provideAudio() {
+	return std::make_unique<SdlAudio>();
+}
+
+std::unique_ptr<Texture> Provider::provideTexture(uint32_t width, uint32_t height) {
+	auto texture = std::make_unique<SdlTexture>();
+	
+	if (width != 0 && height != 0) {
+		texture->createBlank(width, height);
+	}
+	
+	return std::move(texture);
+}
+
+std::unique_ptr<Sound> Provider::provideSound() {
+	auto sound = std::make_unique<SdlSound>();
+	return std::move(sound);
 }

@@ -18,8 +18,12 @@
 #ifndef PROVIDER_H
 #define PROVIDER_H
 
+#include <memory>
 #include "../renderer.h"
 #include "../eventhandler.h"
+#include "../texture.h"
+#include "../sound.h"
+#include "../audio.h"
 
 namespace pocus {
 
@@ -27,6 +31,9 @@ class Provider {
 public:
 	static std::unique_ptr<Renderer> provideRenderer(const RendererParameters &parameters);
 	static std::unique_ptr<EventHandler> provideEventHandler();
+	static std::unique_ptr<Audio> provideAudio();
+	static std::unique_ptr<Texture> provideTexture(uint32_t width = 0, uint32_t height = 0);
+	static std::unique_ptr<Sound> provideSound();
 };
 
 }

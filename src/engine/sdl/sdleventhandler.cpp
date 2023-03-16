@@ -28,6 +28,7 @@ SdlEventHandler::SdlEventHandler() {
     this->buttonMapping[BUTTON_UP] = SDLK_UP;
     this->buttonMapping[BUTTON_DOWN] = SDLK_DOWN;
     this->buttonMapping[BUTTON_PAUSE] = SDLK_p;
+    this->buttonMapping[BUTTON_SELECTION] = SDLK_RETURN;
 }
 
 bool SdlEventHandler::isButtonDown(const Button_t &button) {

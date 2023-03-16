@@ -28,6 +28,9 @@ namespace pocus {
 
 class StateManager {
 public:
+	friend class PocusEngine;
+	
+public:
 	StateManager() = default;
 
 	void quit(int signal);
@@ -39,6 +42,13 @@ public:
 	void addState(const std::string &name, std::unique_ptr<State> state);
 	void changeState(const std::string &name);
 	State* getCurrentState();
+	
+	void setStartupState(const std::string& name);
+	
+	const std::string& getStartupState() const;
+	
+protected:
+	void createStates(data::DataManager& dataManager);
 
 private:
 	int quitSignal { -1 };

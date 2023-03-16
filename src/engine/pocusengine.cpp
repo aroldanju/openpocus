@@ -16,15 +16,20 @@
  */
 
 #include <iostream>
+#include <filesystem>
 #include "pocusengine.h"
 #include "log.h"
 #include "definitions.h"
+#include "data/asset/leveltime.h"
+#include "data/fatloader.h"
+#include "data/asset/leveltileset.h"
 
 using namespace pocus;
 
-PocusEngine::PocusEngine(std::unique_ptr<Renderer> renderer, std::unique_ptr<EventHandler> eventHandler):
+PocusEngine::PocusEngine(std::unique_ptr<Renderer> renderer, std::unique_ptr<EventHandler> eventHandler, std::unique_ptr<Audio> audio):
 	renderer(std::move(renderer)),
-	eventHandler(std::move(eventHandler))
+	eventHandler(std::move(eventHandler)),
+	audio(std::move(audio))
 {
 }
 
@@ -46,16 +51,38 @@ bool PocusEngine::initialize() {
 
 	LOGI << "Initializing OpenPocus...";
 
+	if (!loadConfig()) {
+		LOGE << "Engine: error loading config.xml file.";
+		return false;
+	}
+	
 	if (!this->renderer || !this->renderer->initialize()) {
 		LOGE << "Engine: error initializing renderer.";
 		return false;
 	}
+	
+	if (!this->audio || !this->audio->initialize()) {
+		LOGE << "Engine: error initializing audio system.";
+		return false;
+	}
 
+	if (!loadData()) {
+		LOGE << "Engine: error loading data.";
+		return false;
+	}
+	
+	if (!loadExecutable()) {
+		LOGE << "Engine: error loading executable.";
+		return false;
+	}
+	
 	createStates(this->stateManager);
+	this->stateManager.createStates(getDataManager());
 	if (!this->stateManager.getCurrentState()) {
 		LOGE << "Engine: no state was selected.";
 		return false;
 	}
+	this->stateManager.changeState(this->stateManager.getStartupState());
 
 	this->running = true;
 
@@ -88,6 +115,7 @@ void PocusEngine::loop() {
 
 		if (state) {
 			state->update(dt);
+			processStateMessage(state);
 		}
 
 		this->renderer->clear();
@@ -100,19 +128,43 @@ void PocusEngine::loop() {
 			this->running = false;
 		}
 
-		wait(1);
+		dt = processFrameRate(startTick, delay, fixedFpsDelay);
+	}
+}
 
-		uint32_t elapsed = getElapsedTime(startTick);
-		if (elapsed < delay) {
-			wait(delay - elapsed);
-		}
+float PocusEngine::processFrameRate(const Tick& startTick, int delay, int fixedFpsDelay) {
+	wait(1);
+	
+	uint32_t elapsed = getElapsedTime(startTick);
+	if (elapsed < delay) {
+		wait(delay - elapsed);
+	}
+	
+	elapsed = getElapsedTime(startTick);
+	if (elapsed < fixedFpsDelay) {
+		elapsed = fixedFpsDelay - elapsed;
+	}
+	
+	return (float)elapsed / (float)fixedFpsDelay;
+}
 
-		elapsed = getElapsedTime(startTick);
-		if (elapsed < fixedFpsDelay) {
-			elapsed = fixedFpsDelay - elapsed;
-		}
+void PocusEngine::processStateMessage(State* state) {
+	if (!state) {
+		return;
+	}
 
-		dt = (float)elapsed / (float)fixedFpsDelay;
+	const State::Message_t& message = state->message.first;
+	switch (message) {
+		case State::MESSAGE_QUIT:
+			this->stateManager.quit(0);
+			break;
+
+		case State::MESSAGE_CHANGE:
+			this->stateManager.changeState(reinterpret_cast<char*>(state->message.second));
+			break;
+
+		default:
+			break;
 	}
 }
 
@@ -122,6 +174,11 @@ void PocusEngine::release() {
 	if (auto state = this->stateManager.getCurrentState()) {
 		state->onDetach();
 	}
+	
+	if (this->audio) {
+		this->audio->release();
+		this->audio = nullptr;
+	}
 
 	if (this->renderer) {
 		this->renderer->release();
@@ -130,4 +187,48 @@ void PocusEngine::release() {
 
 StateManager& PocusEngine::getStateManager() {
 	return this->stateManager;
+}
+
+data::DataManager& PocusEngine::getDataManager() {
+	return this->dataManger;
+}
+
+bool PocusEngine::loadConfig() {
+	return this->config.load("../data/config.xml");
+}
+
+bool PocusEngine::loadData() {
+	std::string path = this->config.getInstallationPath() + "/hocus.dat";
+	
+	if (!std::filesystem::exists(path)) {
+		LOGE << "Data file not found at " << this->config.getInstallationPath();
+		return false;
+	}
+	
+	data::Fat fat = pocus::data::FatLoader::loadFromFile(getDatFatFilename());
+	
+	if (fat.getNumberEntries() == 0) {
+		LOGE << "Data FAT file doesn't have any entries";
+		return false;
+	}
+	
+	return this->dataManger.getData().loadFromFile(path, fat);
+}
+
+bool PocusEngine::loadExecutable() {
+	std::string path = this->config.getInstallationPath() + "/hocus.exe";
+	
+	if (!std::filesystem::exists(path)) {
+		LOGE << "Executable file not found at " << this->config.getInstallationPath();
+		return false;
+	}
+	
+	data::Fat fat = pocus::data::FatLoader::loadFromFile(getExeFatFilename());
+	
+	if (fat.getNumberEntries() == 0) {
+		LOGE << "Executable FAT file doesn't have any entries";
+		return false;
+	}
+	
+	return this->dataManger.getExecutable().loadFromFile(path, fat);
 }

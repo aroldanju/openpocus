@@ -40,10 +40,6 @@ void StateManager::addState(const std::string &name, std::unique_ptr<State> stat
 	LOGD << "StateManager: state name '" << name << "' inserted.";
 
 	this->states.insert(std::make_pair(name, std::move(state)));
-
-	if (this->currentState == nullptr) {
-		changeState(name);
-	}
 }
 
 void StateManager::changeState(const std::string &name) {
@@ -70,4 +66,29 @@ State* StateManager::getCurrentState() {
 
 bool StateManager::getQuit() const {
 	return this->quitSignal != -1;
+}
+
+void StateManager::createStates(data::DataManager& dataManager) {
+	for (auto& state : this->states) {
+		state.second->onCreate(dataManager);
+		
+		if (this->currentState == nullptr) {
+			changeState(state.first);
+		}
+	}
+}
+
+void StateManager::setStartupState(const std::string& name) {
+	this->currentStateName = name;
+	auto iterator = this->states.find(this->currentStateName);
+	if (iterator != this->states.end()) {
+		this->currentState = iterator->second.get();
+	}
+	else {
+		LOGE << "StateManager error: state name '" << name << "' not found.";
+	}
+}
+
+const std::string& StateManager::getStartupState() const {
+	return this->currentStateName;
 }

@@ -23,6 +23,17 @@
 
 namespace pocus {
 
+#define TILE_SIZE		16
+#define MAP_WIDTH		240
+#define MAP_HEIGHT		60
+
+#define __DEBUG_POCUS__
+#ifdef __DEBUG_POCUS__
+//#	define __DEBUG_ITEM__
+#endif __DEBUG_POCUS__
+
+#define getBit(n,b) ((n >> b) & 1)
+
 typedef std::chrono::time_point<std::chrono::system_clock> Tick;
 
 static uint32_t getElapsedTime(const Tick& tick) {

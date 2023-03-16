@@ -18,13 +18,26 @@
 #ifndef STATE_H
 #define STATE_H
 
+#include <vector>
 #include "renderer.h"
 #include "eventhandler.h"
+#include "data/datamanager.h"
 
 namespace pocus {
 
 class State {
 public:
+	friend class PocusEngine;
+
+public:
+	enum Message_t {
+		MESSAGE_NONE,
+		MESSAGE_QUIT,
+		MESSAGE_CHANGE
+	};
+	
+public:
+	virtual void onCreate(data::DataManager& dataManager) = 0;
 	virtual void onDetach() = 0;
 	virtual void onAttach() = 0;
 	virtual void release() = 0;
@@ -32,6 +45,12 @@ public:
 	virtual void render(Renderer &renderer) = 0;
 	virtual void update(float dt) = 0;
 
+protected:
+	void setMessage(const Message_t& type, void* parameter = nullptr) {
+		this->message = std::make_pair(type, parameter);
+	}
+
+	std::pair<Message_t, void*> message { std::make_pair(MESSAGE_NONE, nullptr) };
 };
 
 }

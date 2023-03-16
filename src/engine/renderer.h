@@ -18,6 +18,9 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+#include "texture.h"
+#include "color.h"
+#include "rect.h"
 #include <cstdint>
 #include <string>
 
@@ -27,6 +30,7 @@ struct RendererParameters {
 	uint32_t width;
 	uint32_t height;
 	std::string title;
+	float scaleFactor;
 };
 
 class Renderer {
@@ -35,6 +39,14 @@ public:
 	virtual void release() = 0;
 	virtual void clear() = 0;
 	virtual void render() = 0;
+	virtual uint32_t getWidth() = 0;
+	virtual uint32_t getHeight() = 0;
+	
+	virtual bool createTexture(Texture& texture) = 0;
+	
+	virtual void drawTexture(Texture& texture, const Point& point) = 0;
+	virtual void drawRect(const Rect& rect, const Color& color) = 0;
+	virtual void drawPoint(const Point& point, const Color& color) = 0;
 };
 
 }

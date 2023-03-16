@@ -19,7 +19,7 @@
 #include "openpocus.h"
 
 int main(int argc, char* argv[]) {
-	pocus::RendererParameters rendererParameters { SCREEN_WIDTH, SCREEN_HEIGHT, std::string(GAME_NAME) };
+	pocus::RendererParameters rendererParameters { SCREEN_WIDTH, SCREEN_HEIGHT, std::string(GAME_NAME), 4.0f };
 	OpenPocus openPocus(rendererParameters);
 	return openPocus.run(argc, argv);
 }

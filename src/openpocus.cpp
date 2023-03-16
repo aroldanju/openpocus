@@ -18,14 +18,37 @@
 #include "openpocus.h"
 #include "engine/provider/provider.h"
 #include "stategame.h"
+#include "engine/data/fatloader.h"
+#include "version.h"
+#include "apogeesplash.h"
+#include "definitions.h"
+#include "introsplash.h"
+#include "mainmenu.h"
 
 OpenPocus::OpenPocus(const pocus::RendererParameters &rendererParameters):
 	PocusEngine(
 			pocus::Provider::provideRenderer(rendererParameters),
-			pocus::Provider::provideEventHandler())
+			pocus::Provider::provideEventHandler(),
+			pocus::Provider::provideAudio()
+			)
 {
 }
 
 void OpenPocus::createStates(pocus::StateManager& stateManager) {
-	stateManager.addState("my_state", std::make_unique<StateGame>());
+	stateManager.addState(STATE_SPLASH_APOGEE, std::make_unique<ApogeeSplash>());
+	stateManager.addState(STATE_SPLASH_INTRO, std::make_unique<IntroSplash>());
+	stateManager.addState(STATE_GAME, std::make_unique<StateGame>());
+	stateManager.addState(STATE_MENU_MAIN, std::make_unique<MainMenu>());
+	
+	//stateManager.setStartupState(STATE_SPLASH_APOGEE);
+	//stateManager.setStartupState(STATE_MENU_MAIN);
+	stateManager.setStartupState(STATE_GAME);
+}
+
+std::string OpenPocus::getDatFatFilename() const {
+	return FAT_FILE;
+}
+
+std::string OpenPocus::getExeFatFilename() const {
+	return EXE_FAT_FILE;
 }

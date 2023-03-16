@@ -21,6 +21,7 @@
 #include <SDL2/SDL.h>
 
 #include "../renderer.h"
+#include "../texture.h"
 
 namespace pocus {
 
@@ -32,7 +33,15 @@ public:
 	virtual void release() override;
 	virtual void clear() override;
 	virtual void render() override;
-
+	uint32_t getWidth() override;
+	uint32_t getHeight() override;
+	
+	bool createTexture(Texture& texture) override;
+	
+	void drawTexture(Texture& texture, const Point& point) override;
+	void drawRect(const Rect& rect, const Color& color) override;
+	void drawPoint(const Point& point, const Color& color) override;
+	
 private:
 	RendererParameters parameters;
 	SDL_Window *window;
