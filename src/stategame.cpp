@@ -162,6 +162,21 @@ void StateGame::createGame(pocus::data::Data &data) {
 	vocHint.loadFromStream(soundHintFile.getContent(), soundHintFile.getLength());
 	this->game.getSoundHint() = vocHint.createAsSound();
 	
+	pocus::data::DataFile& soundItemFile = data.fetchFile(DATFILE_VOC_ITEM_1);
+	pocus::data::asset::Voc vocItem;
+	vocItem.loadFromStream(soundItemFile.getContent(), soundItemFile.getLength());
+	this->game.getSoundItem() = vocItem.createAsSound();
+	
+	pocus::data::DataFile& soundCrystalFile = data.fetchFile(DATFILE_VOC_WIN);
+	pocus::data::asset::Voc vocCrystal;
+	vocCrystal.loadFromStream(soundCrystalFile.getContent(), soundCrystalFile.getLength());
+	this->game.getSoundCrystal() = vocCrystal.createAsSound();
+	
+	pocus::data::DataFile& soundPotionFile = data.fetchFile(DATFILE_VOC_POTION);
+	pocus::data::asset::Voc vocPotion;
+	vocPotion.loadFromStream(soundPotionFile.getContent(), soundPotionFile.getLength());
+	this->game.getSoundPotion() = vocPotion.createAsSound();
+	
 	this->game.getHocus().setPosition(
 		pocus::Point(
 			this->game.getMap().getPlayerCoordinates().getX() * TILE_SIZE,

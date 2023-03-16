@@ -46,6 +46,9 @@ public:
 	std::map<uint32_t, std::unique_ptr<Texture>>& getScoreTextures();
 	std::vector<std::unique_ptr<Texture>>& getHintTextures();
 	std::unique_ptr<Sound>& getSoundHint();
+	std::unique_ptr<Sound>& getSoundItem();
+	std::unique_ptr<Sound>& getSoundCrystal();
+	std::unique_ptr<Sound>& getSoundPotion();
 	
 	void addScoreText(Texture& texture, const Point& point);
 	
@@ -91,7 +94,7 @@ private:
 	std::vector<Entity> scoreTexts;
 	std::vector<std::unique_ptr<Texture>> hintTextures;
 	int currentHint { -1 };
-	std::unique_ptr<Sound> soundHint;
+	std::unique_ptr<Sound> soundHint, soundItem, soundCrystal, soundPotion;
 	
 	void move(float dt);
 	void checkItems();

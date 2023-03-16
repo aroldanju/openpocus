@@ -29,7 +29,7 @@ namespace pocus {
 
 #define __DEBUG_POCUS__
 #ifdef __DEBUG_POCUS__
-#	define __DEBUG_ITEM__
+//#	define __DEBUG_ITEM__
 #endif __DEBUG_POCUS__
 
 #define getBit(n,b) ((n >> b) & 1)

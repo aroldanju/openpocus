@@ -61,6 +61,18 @@ std::unique_ptr<Sound>& Game::getSoundHint() {
 	return this->soundHint;
 }
 
+std::unique_ptr<Sound>& Game::getSoundItem() {
+	return this->soundItem;
+}
+
+std::unique_ptr<Sound>& Game::getSoundCrystal() {
+	return this->soundCrystal;
+}
+
+std::unique_ptr<Sound>& Game::getSoundPotion() {
+	return this->soundPotion;
+}
+
 void Game::start() {
 	this->hud.updateScore(this->player.getScore());
 	this->hud.updateCrystals(this->player.getCrystals(), this->map.getCrystals());
@@ -434,7 +446,7 @@ void Game::checkItems() {
 		std::cout << "   Type: " << (int)item.type << std::endl;
 		std::cout << "   Padding: " << (int)item.padding << std::endl;
 #endif // __DEBUG_ITEM__
-#endif // __POCUS_DEBUG__
+#endif // __DEBUG_POCUS__
 		
 		namespace asset = data::asset;
 		
@@ -443,16 +455,25 @@ void Game::checkItems() {
 			this->map.removeTile(0, position);
 			this->map.disableEvent(position);
 			addScore(item.score);
+			if (this->soundItem) {
+				this->soundItem->play();
+			}
 		}
 		else if (event == asset::EventLayer::CRYSTAL) {
 			this->map.removeTile(0, position);
 			this->map.disableEvent(position);
 			addCrystal(1);
+			if (this->soundCrystal) {
+				this->soundCrystal->play();
+			}
 		}
 		else if (event == asset::EventLayer::HEAL_POTION) {
 			this->map.removeTile(0, position);
 			this->map.disableEvent(position);
 			addHealth(item.heal);
+			if (this->soundPotion) {
+				this->soundPotion->play();
+			}
 		}
 		else if (event == asset::EventLayer::GOLD_KEY || event == asset::EventLayer::SILVER_KEY) {
 			this->map.removeTile(0, position);
@@ -460,6 +481,9 @@ void Game::checkItems() {
 			switch (event) {
 				case asset::EventLayer::GOLD_KEY: addGoldenKey(); break;
 				case asset::EventLayer::SILVER_KEY: addSilverKey(); break;
+			}
+			if (this->soundCrystal) {
+				this->soundCrystal->play();
 			}
 		}
 	};
