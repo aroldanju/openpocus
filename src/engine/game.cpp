@@ -262,6 +262,23 @@ void Game::centerCamera(const Hocus& hocus, const Size& viewportSize) {
 	}
 }
 
+void Game::jump() {
+	if (this->paused) {
+		return;
+	}
+	
+	if (this->hocus.getState() == Hocus::JUMP || this->hocus.getState() == Hocus::FALL) {
+		return;
+	}
+	
+	const bool aboveTile = this->map.getLayer(1).getTile(this->hocus.getTilePosition().getX(), this->hocus.getTilePosition().getY() - 1).isVisible();
+	if (aboveTile) {
+		return;
+	}
+	
+	this->hocus.jump();
+}
+
 void Game::move(float dt) {
 	if (this->hocus.getVelocity().getX() == .0f && this->hocus.getVelocity().getY() == .0f) {
 		return;
@@ -286,8 +303,16 @@ void Game::move(float dt) {
 	if (this->hocus.getState() == Hocus::FALL) {
 		if (tileFeet.isVisible()) {
 			this->hocus.grounded();
-			this->hocus.setPosition(Point(lastPosition.getX(), std::ceil(lastPosition.getY())));
+			this->hocus.setPosition(Point(lastPosition.getX(), tileAbove.getTilePosition().getY() * TILE_SIZE));
+			centerCamera(this->hocus,Size(this->viewportSize.getWidth(),this->viewportSize.getHeight() - this->hud.getBackground().getHeight()));
 			return;
+		}
+	}
+	else if (this->hocus.getState() == Hocus::JUMP) {
+		const bool above = tileAbove.isVisible();
+		if (above) {
+			this->hocus.startFalling();
+			this->hocus.setPosition(lastPosition);
 		}
 	}
 	
@@ -297,26 +322,26 @@ void Game::move(float dt) {
 		return;
 	}
 	
-	// Step down or falling
-	if (!tileBelow.isVisible() && !tileFeet.isVisible()) {
-		// Check falling
-		if (tilePosition.getY() < MAP_HEIGHT - 3) {
-			const Tile& tileFall = this->map.getLayer(1).getTile(tilePosition.getX(), tilePosition.getY() + 3);
-			if (!tileFall.isVisible()) {
-				this->hocus.startFalling();
+	if (this->hocus.getState() == Hocus::WALK) {
+		if (!tileBelow.isVisible() && !tileFeet.isVisible()) {
+			// Step down or falling
+			if (tilePosition.getY() < MAP_HEIGHT - 3) {
+				const Tile &tileFall = this->map.getLayer(1).getTile(tilePosition.getX(), tilePosition.getY() + 3);
+				if (!tileFall.isVisible()) {
+					this->hocus.startFalling();
+				}
+				else {
+					this->hocus.setY(this->hocus.getRect().getPosition().getY() + TILE_SIZE);
+				}
 			}
 			else {
 				this->hocus.setY(this->hocus.getRect().getPosition().getY() + TILE_SIZE);
 			}
 		}
-		else {
-			this->hocus.setY(this->hocus.getRect().getPosition().getY() + TILE_SIZE);
+		else if (tileFeet.isVisible() && !tile.isVisible() && !tileAbove.isVisible()) {
+			// Step up
+			this->hocus.setY(this->hocus.getRect().getPosition().getY() - TILE_SIZE);
 		}
-	}
-	
-	// Step up
-	if (tileFeet.isVisible() && !tile.isVisible() && !tileAbove.isVisible()) {
-		this->hocus.setY(this->hocus.getRect().getPosition().getY() - TILE_SIZE);
 	}
 	
 	centerCamera(this->hocus,

@@ -262,6 +262,10 @@ void StateGame::handleEvents(pocus::EventHandler &eventHandler) {
 		this->game.stopMovement(pocus::Entity::RIGHT);
 	}
 	
+	if (eventHandler.isButtonDown(pocus::BUTTON_JUMP)) {
+		this->game.jump();
+	}
+	
 	/*
 	else if (eventHandler.isButtonDown(pocus::BUTTON_LEFT)) {
 		this->game.getOffset().setX(this->game.getOffset().getX() + 16.0f);

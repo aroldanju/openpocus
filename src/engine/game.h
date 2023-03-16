@@ -67,6 +67,7 @@ public:
 	void startMovement(const Entity::Direction_t& direction);
 	void stopMovement(const Entity::Direction_t& direction);
 	void addCrystal(uint32_t amount);
+	void jump();
 	
 private:
 	Size viewportSize { 320.0f, 200.0f };

@@ -39,6 +39,9 @@ public:
 	void stopMovement(const Direction_t& direction);
 	void startFalling();
 	void grounded();
+	void jump();
+	
+	virtual void move(float dt) override;
 	
 private:
 	State_t state { STAND };

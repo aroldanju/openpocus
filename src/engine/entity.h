@@ -39,7 +39,7 @@ public:
 	
 	void render(Renderer& renderer, const Point& offset);
 	void update();
-	void move(float dt);
+	virtual void move(float dt);
 	
 	Point getTilePosition();
 	
