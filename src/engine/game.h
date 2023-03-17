@@ -24,6 +24,7 @@
 #include "hud.h"
 #include "hocus.h"
 #include "data/asset/iteminfo.h"
+#include "fade.h"
 
 namespace pocus {
 
@@ -34,6 +35,8 @@ public:
 	enum { SCORE_TEXT_LIFETIME = 1000 };
 	
 public:
+	Game();
+	
 	Map& getMap();
 	Player& getPlayer();
 	Hud& getHud();
@@ -97,6 +100,7 @@ private:
 	std::vector<std::unique_ptr<Texture>> hintTextures;
 	int currentHint { -1 };
 	std::unique_ptr<Sound> soundHint, soundItem, soundCrystal, soundPotion, soundHit;
+	Fade fadeCrystal;
 	
 	void move(float dt);
 	void checkItems();

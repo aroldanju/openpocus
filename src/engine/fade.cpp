@@ -100,3 +100,7 @@ float Fade::getSpeed() const {
 void Fade::setOnFinished(std::function<void()> onFinished) {
 	this->onFinished = std::move(onFinished);
 }
+
+void Fade::setColor(const Color& color) {
+	this->color = color;
+}

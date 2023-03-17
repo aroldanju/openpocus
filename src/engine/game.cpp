@@ -21,6 +21,15 @@
 
 using namespace pocus;
 
+Game::Game()
+{
+	this->fadeCrystal.setSpeed(12.0f);
+	this->fadeCrystal.setColor(color::red);
+	this->fadeCrystal.setOnFinished([this]() -> void {
+		this->fadeCrystal.stop();
+	});
+}
+
 Map& Game::getMap() {
 	return this->map;
 }
@@ -92,6 +101,10 @@ void Game::start() {
 void Game::render(Renderer &renderer) {
 	this->map.render(renderer, this->offset);
 	
+	if (this->fadeCrystal.isRunning()) {
+		this->fadeCrystal.render(renderer);
+	}
+	
 	this->hocus.render(renderer, this->offset);
 	
 	this->hud.render(renderer);
@@ -142,6 +155,10 @@ void Game::update(float dt) {
 	}
 	
 	this->map.update(dt);
+	
+	if (this->fadeCrystal.isRunning()) {
+		this->fadeCrystal.update(dt);
+	}
 	
 	this->hocus.update();
 	
@@ -200,6 +217,7 @@ void Game::addScoreText(Texture& texture, const Point& point) {
 void Game::addCrystal(uint32_t amount) {
 	this->player.setCrystals(this->player.getCrystals() + amount);
 	this->hud.updateCrystals(this->player.getCrystals(), this->map.getCrystals());
+	this->fadeCrystal.start(Fade::FADE_IN);
 }
 
 void Game::removeHealth(uint8_t health) {

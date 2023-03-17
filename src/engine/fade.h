@@ -52,6 +52,8 @@ public:
 	
 	bool isRunning() const;
 	
+	void setColor(const Color& color);
+	
 private:
 	Tick tickStart;
 	Color color { color::black };
@@ -59,9 +61,7 @@ private:
 	float speed { 3.0f };
 	bool running { false };
 	Fade_t type { FADE_IN };
-	
 	std::function<void()> onFinished { nullptr };
-	
 };
 
 }
