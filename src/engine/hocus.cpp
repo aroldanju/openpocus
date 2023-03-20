@@ -117,7 +117,7 @@ void Hocus::stopMovement(const Direction_t& direction) {
 
 void Hocus::startFalling() {
 	this->state = FALL;
-	this->setVelocityY( 1.f);
+	this->setVelocityY( 0.1f);
 	setCurrentState("fall_" + Entity::getDirectionName(this->getDirection()));
 }
 
@@ -136,7 +136,7 @@ void Hocus::grounded() {
 
 void Hocus::jump() {
 	this->state = JUMP;
-	this->setVelocityY(-2.5f);
+	this->setVelocityY(-2.f);
 	setCurrentState("jump_" + Entity::getDirectionName(this->getDirection()));
 }
 
@@ -144,17 +144,17 @@ void Hocus::move(float dt) {
 	Entity::move(dt);
 	
 	if (this->getState() == JUMP) {
-		this->setVelocityY(this->getVelocity().getY() + .33f);
+		this->setVelocityY(this->getVelocity().getY() + .2f);
 		
 		if (this->getVelocity().getY() >= .0f) {
 			this->setVelocityY(.0f);
 			startFalling();
 		}
 	}
-	else if (getState() == FALL && this->getVelocity().getY() < 2.5f) {
+	else if (getState() == FALL && this->getVelocity().getY() < 2.f) {
 		this->setVelocityY(this->getVelocity().getY() + 0.33f);
-		if (this->getVelocity().getY() > 2.5f) {
-			this->setVelocityY(2.5f);
+		if (this->getVelocity().getY() > 2.f) {
+			this->setVelocityY(2.f);
 		}
 	}
 }
