@@ -15,46 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _HOCUS_H
-#define _HOCUS_H
+#ifndef PROJECTILE_H
+#define PROJECTILE_H
 
-#include <unordered_map>
-#include <string>
 #include "entity.h"
-#include "animation.h"
 #include "data/asset/spriteset.h"
-#include "projectile.h"
 
 namespace pocus {
 
-class Hocus : public Entity {
+class Projectile : public Entity {
 public:
-	enum State_t { STAND, WALK, JUMP, FALL, SHOOT };
-	
-public:
-	State_t getState() const;
-	void setState(State_t state);
 	void setSprite(const data::asset::Sprite& sprite, Texture& sheet);
-
-	void startMovement(const Direction_t& direction);
-	void stopMovement(const Direction_t& direction);
-	void startFalling();
-	void grounded();
-	void jump();
-	void startShooting();
-	void stopShooting();
-	
-	virtual void move(float dt) override;
 	
 private:
-	State_t state { STAND };
-	Tick tickHit;
-	bool shooting;
-	
-	Projectile projectilePrototype;
-	
+
 };
 
 }
 
-#endif //_HOCUS_H
+#endif // PROJECTILE_H

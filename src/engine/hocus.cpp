@@ -75,6 +75,9 @@ void Hocus::setSprite(const data::asset::Sprite& sprite, Texture& sheet) {
 	setCurrentState("stand_right");
 	
 	this->setRect(Rect(getRect().getPosition(), Size(sprite.header.width4, sprite.header.height)));
+	
+	// Create projectile prototype
+	this->projectilePrototype.setSprite(sprite, sheet);
 }
 
 void Hocus::startMovement(const Direction_t& direction) {
@@ -157,4 +160,13 @@ void Hocus::move(float dt) {
 			this->setVelocityY(2.f);
 		}
 	}
+}
+
+void Hocus::startShooting() {
+	this->state = SHOOT;
+	this->shooting = true;
+}
+
+void Hocus::stopShooting() {
+	this->shooting = false;
 }
