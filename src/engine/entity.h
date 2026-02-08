@@ -98,7 +98,7 @@ private:
 	Animation* currentState { nullptr };
 	Direction_t direction { RIGHT };
 	Point velocity { .0f, .0f };
-	float speed { 2.0f };
+	float speed { 3.0f };
 	Tick tickCreation;
 	bool onHit { false };
 	Tick tickHit;

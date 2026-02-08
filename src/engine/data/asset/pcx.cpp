@@ -26,6 +26,8 @@ bool Pcx::loadFromStream(const char *stream, uint32_t length) {
 	for (uint32_t i = 0; i < length; i++) {
 		this->data[i] = stream[i];
 	}
+
+	return true;
 }
 
 void Pcx::release() {
