@@ -75,6 +75,9 @@ void Hocus::setSprite(const data::asset::Sprite& sprite, Texture& sheet) {
 	setCurrentState("stand_right");
 	
 	this->setRect(Rect(getRect().getPosition(), Size(sprite.header.width4, sprite.header.height)));
+	
+	// Create projectile prototype
+	this->projectilePrototype.setSprite(sprite, sheet);
 }
 
 void Hocus::startMovement(const Direction_t& direction) {
@@ -117,7 +120,7 @@ void Hocus::stopMovement(const Direction_t& direction) {
 
 void Hocus::startFalling() {
 	this->state = FALL;
-	this->setVelocityY( 0.1f);
+	this->setVelocityY(0.1f);
 	setCurrentState("fall_" + Entity::getDirectionName(this->getDirection()));
 }
 
@@ -136,7 +139,7 @@ void Hocus::grounded() {
 
 void Hocus::jump() {
 	this->state = JUMP;
-	this->setVelocityY(-2.f);
+	this->setVelocityY(-1.5f);
 	setCurrentState("jump_" + Entity::getDirectionName(this->getDirection()));
 }
 
@@ -144,7 +147,7 @@ void Hocus::move(float dt) {
 	Entity::move(dt);
 	
 	if (this->getState() == JUMP) {
-		this->setVelocityY(this->getVelocity().getY() + .2f);
+		this->setVelocityY(this->getVelocity().getY() + .15f);
 		
 		if (this->getVelocity().getY() >= .0f) {
 			this->setVelocityY(.0f);
@@ -157,4 +160,39 @@ void Hocus::move(float dt) {
 			this->setVelocityY(2.f);
 		}
 	}
+}
+
+void Hocus::startShooting() {
+	this->shooting = true;
+	setCurrentState("shoot_" + Entity::getDirectionName(this->getDirection()));
+}
+
+void Hocus::stopShooting() {
+	this->shooting = false;
+	setCurrentState("stand_" + Entity::getDirectionName(this->getDirection()));
+}
+
+void Hocus::update() {
+	Entity::update();
+}
+
+bool Hocus::isShooting() const {
+	return this->shooting;
+}
+
+Projectile Hocus::shoot() {
+	Projectile projectile = this->projectilePrototype.clone(this);
+
+	projectile.setPosition(Point(
+		this->getRect().getPosition().getX() + (this->getDirection() == Hocus::LEFT ? + 4 : 4),
+		this->getRect().getPosition().getY() + 8
+	));
+
+	projectile.setVelocityX(this->getDirection() == Hocus::LEFT ? -2.f : 2.f);
+	projectile.setDirection(this->getDirection());
+
+	this->tickShot = getNow();
+	this->shooting = false;
+
+	return std::move(projectile);
 }

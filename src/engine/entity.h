@@ -55,7 +55,7 @@ public:
 	void setDirection(Direction_t direction);
 	
 	void render(Renderer& renderer, const Point& offset);
-	void update();
+	virtual void update();
 	virtual void move(float dt);
 	
 	Point getTilePosition();
@@ -91,14 +91,14 @@ public:
 	
 	[[nodiscard]] bool isInvulnerable() const;
 	
-private:
+protected:
 	Rect rect {};
 	std::unordered_map<std::string, Animation> states;
 	std::string currentStateId;
 	Animation* currentState { nullptr };
 	Direction_t direction { RIGHT };
 	Point velocity { .0f, .0f };
-	float speed { 2.0f };
+	float speed { 2.5f };
 	Tick tickCreation;
 	bool onHit { false };
 	Tick tickHit;

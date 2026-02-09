@@ -33,6 +33,8 @@
 #include "engine/data/asset/iteminfo.h"
 #include "engine/provider/provider.h"
 #include "engine/data/asset/voc.h"
+#include "engine/projectile.h"
+#include <fstream>
 
 void StateGame::loadLevel(pocus::data::Data& data, pocus::data::Data& executable, uint8_t episode, uint8_t stage) {
 	episode--;
@@ -162,12 +164,16 @@ void StateGame::createGame(pocus::data::Data &data) {
 	vocHint.loadFromStream(soundHintFile.getContent(), soundHintFile.getLength());
 	this->game.getSoundHint() = vocHint.createAsSound();
 	
-	pocus::data::DataFile& soundItemFile = data.fetchFile(DATFILE_VOC_ITEM_1);
-	pocus::data::asset::Voc vocItem;
-	vocItem.loadFromStream(soundItemFile.getContent(), soundItemFile.getLength());
-	this->game.getSoundItem() = vocItem.createAsSound();
+	pocus::data::DataFile& soundItemFile1 = data.fetchFile(DATFILE_VOC_ITEM_1);
+	pocus::data::asset::Voc vocItem1;
+	vocItem1.loadFromStream(soundItemFile1.getContent(), soundItemFile1.getLength());
+	pocus::data::DataFile& soundItemFile2 = data.fetchFile(DATFILE_VOC_ITEM_2);
+	pocus::data::asset::Voc vocItem2;
+	vocItem2.loadFromStream(soundItemFile2.getContent(), soundItemFile2.getLength());
+	this->game.getSoundsItem().push_back(vocItem1.createAsSound());
+	this->game.getSoundsItem().push_back(vocItem2.createAsSound());
 	
-	pocus::data::DataFile& soundCrystalFile = data.fetchFile(DATFILE_VOC_WIN);
+	pocus::data::DataFile& soundCrystalFile = data.fetchFile(DATFILE_VOC_CRYSTAL);
 	pocus::data::asset::Voc vocCrystal;
 	vocCrystal.loadFromStream(soundCrystalFile.getContent(), soundCrystalFile.getLength());
 	this->game.getSoundCrystal() = vocCrystal.createAsSound();
@@ -181,6 +187,16 @@ void StateGame::createGame(pocus::data::Data &data) {
 	pocus::data::asset::Voc vocHit;
 	vocHit.loadFromStream(soundHitFile.getContent(), soundHitFile.getLength());
 	this->game.getSoundHit() = vocHit.createAsSound();
+	
+	pocus::data::DataFile& soundSpecialItemFile = data.fetchFile(DATFILE_VOC_WIN);
+	pocus::data::asset::Voc vocSpecialItem;
+	vocSpecialItem.loadFromStream(soundSpecialItemFile.getContent(), soundSpecialItemFile.getLength());
+	this->game.getSoundSpecialItem() = vocSpecialItem.createAsSound();
+
+	pocus::data::DataFile& soundShot = data.fetchFile(DATFILE_VOC_SHOT);
+	pocus::data::asset::Voc vocShot;
+	vocShot.loadFromStream(soundShot.getContent(), soundShot.getLength());
+	this->game.getSoundShot() = vocShot.createAsSound();
 	
 	this->game.getHocus().setPosition(
 		pocus::Point(
@@ -223,6 +239,20 @@ void StateGame::createGame(pocus::data::Data &data) {
 	}
 	
 	this->game.getViewportSize().set(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+	/*
+	for (int i = 0; i < 50; i++) {
+		std::stringstream ss;
+		ss << "sound" << 200 + i << ".voc";
+		pocus::data::DataFile& soundFile = data.fetchFile(200 + i);
+		pocus::data::asset::Voc voc;
+		voc.loadFromStream(soundFile.getContent(), soundFile.getLength());
+		std::ofstream f(ss.str(), std::ios::binary);
+		f.write((char*)soundFile.getContent(), soundFile.getLength());
+		f.close();
+	}
+	*/
+	
 }
 
 void StateGame::loadSprites(pocus::data::Data& data) {
@@ -250,6 +280,11 @@ void StateGame::loadSprites(pocus::data::Data& data) {
 	this->game.getScoreTextures().insert(std::make_pair(250, std::move(texture250)));
 	this->game.getScoreTextures().insert(std::make_pair(500, std::move(texture500)));
 	this->game.getScoreTextures().insert(std::make_pair(1000, std::move(texture1000)));
+	
+	//this->game.getProjectileTextures().push_back(std::move(spriteScoresTexture));
+	
+	//pocus::Projectile projectile;
+	//projectile.setSprite(spriteSet.getSprite(SPRITE_HOCUS), *spriteSet.getSprite(SPRITE_HOCUS).createAsTexture(paletteGame));
 }
 
 void StateGame::loadItems(pocus::data::Data& executable) {
@@ -334,6 +369,12 @@ void StateGame::handleEvents(pocus::EventHandler &eventHandler) {
 		this->game.hurt(5);
 	}
 	
+	if (eventHandler.isButtonDown(pocus::BUTTON_FIRE)) {
+		this->game.startShooting();
+	} else if (eventHandler.isButtonUp(pocus::BUTTON_FIRE)) {
+		this->game.stopShooting();
+	}
+
 	/*
 	else if (eventHandler.isButtonDown(pocus::BUTTON_LEFT)) {
 		this->game.getOffset().setX(this->game.getOffset().getX() + 16.0f);

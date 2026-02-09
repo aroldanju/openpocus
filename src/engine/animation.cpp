@@ -96,6 +96,21 @@ Animation Animation::createFromFrame(Texture& frame, const Color* colorKey) {
 	return std::move(animation);
 }
 
+Animation Animation::createFromAnimation(const Animation& source, const Color* colorKey) {
+	Animation animation;
+	
+	animation.fps = source.fps;
+	animation.currentFrame = source.currentFrame;
+	animation.lastUpdateTick = source.lastUpdateTick;
+	animation.randomStart = source.randomStart;
+
+	for (auto& frame : source.frames) {
+		animation.frames.push_back(frame->extract(0, 0, frame->getWidth(), frame->getHeight(), colorKey));
+	}
+
+	return std::move(animation);
+}
+
 uint32_t Animation::getWidth() const {
 	if (this->frames.empty()) {
 		return 0;

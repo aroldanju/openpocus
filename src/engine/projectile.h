@@ -15,26 +15,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "levelbackground.h"
+#ifndef PROJECTILE_H
+#define PROJECTILE_H
 
-using namespace pocus::data::asset;
+#include "entity.h"
+#include "data/asset/spriteset.h"
 
-bool LevelBackground::loadFromStream(const char *stream, uint32_t length) {
-	const uint32_t entries = 10 * 4;
-	
-	for (int i = 0; i < entries; i++) {
-		uint16_t id = *(uint16_t*)(stream);
-		this->backgroundIds.push_back(id);
-		stream += sizeof(uint16_t);
-	}
+namespace pocus {
 
-	return true;
+class Projectile : public Entity {
+public:
+	Projectile(Entity* owner = nullptr);
+
+	void setSprite(const data::asset::Sprite& sprite, Texture& sheet);
+	Projectile clone(Entity* owner = nullptr);
+
+	Entity* getOwner();
+
+private:
+	Entity* owner;
+};
+
 }
 
-void LevelBackground::release() {
-	this->backgroundIds.erase(this->backgroundIds.begin(), this->backgroundIds.end());
-}
-
-const std::vector<uint16_t>& LevelBackground::getBackgroundIds() const {
-	return this->backgroundIds;
-}
+#endif // PROJECTILE_H

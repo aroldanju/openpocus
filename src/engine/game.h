@@ -25,6 +25,7 @@
 #include "hocus.h"
 #include "data/asset/iteminfo.h"
 #include "fade.h"
+#include "particles.h"
 
 namespace pocus {
 
@@ -49,10 +50,13 @@ public:
 	std::map<uint32_t, std::unique_ptr<Texture>>& getScoreTextures();
 	std::vector<std::unique_ptr<Texture>>& getHintTextures();
 	std::unique_ptr<Sound>& getSoundHint();
-	std::unique_ptr<Sound>& getSoundItem();
 	std::unique_ptr<Sound>& getSoundCrystal();
+	std::unique_ptr<Sound>& getSoundSpecialItem();
 	std::unique_ptr<Sound>& getSoundPotion();
 	std::unique_ptr<Sound>& getSoundHit();
+	std::vector<std::unique_ptr<Sound>>& getSoundsItem();
+	std::unique_ptr<Sound>& getSoundShot();
+	//std::vector<std::unique_ptr<Texture>>& getProjectileTextures();
 	
 	void addScoreText(Texture& texture, const Point& point);
 	
@@ -80,6 +84,11 @@ public:
 	void hideHint();
 	void activate();
 	void hurt(uint8_t health);
+	void startShooting();
+	void stopShooting();
+	void shoot();
+	void updateProjectiles(float dt);
+	void addFirePower(uint8_t power = 1);
 	
 private:
 	Size viewportSize { 320.0f, 200.0f };
@@ -99,14 +108,19 @@ private:
 	std::vector<Entity> scoreTexts;
 	std::vector<std::unique_ptr<Texture>> hintTextures;
 	int currentHint { -1 };
-	std::unique_ptr<Sound> soundHint, soundItem, soundCrystal, soundPotion, soundHit;
+	std::unique_ptr<Sound> soundHint, soundCrystal, soundPotion, soundHit, soundSpecialItem;
+	std::vector<std::unique_ptr<Sound>> soundsItem;
+	std::unique_ptr<Sound> soundShot;
 	Fade fadeCrystal;
-	
+	//std::vector<std::unique_ptr<Texture>> projectileTextures;
+	std::vector<Projectile> projectiles;
+
 	void move(float dt);
 	void checkItems();
 	void checkHazards();
 	void centerCamera(const Hocus& hocus, const Size& viewportSize);
 	bool isShowingHint() const;
+	void createProjectile(const Entity& source);
 };
 
 }

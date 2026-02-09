@@ -65,6 +65,7 @@ set(engine_sources
         src/engine/size.cpp
         src/engine/rect.cpp
         src/engine/hocus.cpp
+        src/engine/projectile.cpp
         )
 
 set(sdl_sources

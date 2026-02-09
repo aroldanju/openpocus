@@ -74,3 +74,11 @@ bool Player::hasGoldenKey() const {
 void Player::setGoldKey(bool goldKey) {
 	Player::goldKey = goldKey;
 }
+
+uint8_t Player::getFirePower() const {
+	return this->firePower;
+}
+
+void Player::setFirePower(uint8_t power) {
+	Player::firePower = power;
+}

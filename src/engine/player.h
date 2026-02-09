@@ -38,6 +38,8 @@ public:
 	void setSilverKey(bool silverKey);
 	[[nodiscard]] bool hasGoldenKey() const;
 	void setGoldKey(bool goldKey);
+	[[nodiscard]] uint8_t getFirePower() const;
+	void setFirePower(uint8_t power);
 
 private:
 	uint8_t crystals;
@@ -46,6 +48,7 @@ private:
 	uint8_t level;
 	uint8_t episode;
 	bool silverKey, goldKey;
+	uint8_t firePower { 1 };
 };
 
 }

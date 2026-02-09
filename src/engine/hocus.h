@@ -23,12 +23,13 @@
 #include "entity.h"
 #include "animation.h"
 #include "data/asset/spriteset.h"
+#include "projectile.h"
 
 namespace pocus {
 
 class Hocus : public Entity {
 public:
-	enum State_t { STAND, WALK, JUMP, FALL, SHOOT };
+	enum State_t { STAND, WALK, JUMP, FALL };
 	
 public:
 	State_t getState() const;
@@ -40,13 +41,21 @@ public:
 	void startFalling();
 	void grounded();
 	void jump();
+	void startShooting();
+	void stopShooting();
+	bool isShooting() const;
+	Projectile shoot();
 	
 	virtual void move(float dt) override;
+	virtual void update() override;
 	
 private:
 	State_t state { STAND };
 	Tick tickHit;
-	bool hitBlinking;
+	bool shooting;
+	Tick tickShot;
+	Projectile projectilePrototype;
+	std::vector<Projectile*> projectiles;
 	
 };
 
