@@ -27,6 +27,12 @@ namespace pocus {
 #define MAP_WIDTH		240
 #define MAP_HEIGHT		60
 
+enum Difficulty_t {
+	EASY = 1,
+	NORMAL = 3,
+	HARD = 4
+};
+
 #define __DEBUG_POCUS__
 #ifdef __DEBUG_POCUS__
 //#	define __DEBUG_ITEM__

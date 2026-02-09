@@ -36,10 +36,12 @@ void StateManager::quit(int signal) {
 	this->quitSignal = signal;
 }
 
-void StateManager::addState(const std::string &name, std::unique_ptr<State> state) {
+State& StateManager::addState(const std::string &name, std::unique_ptr<State> state) {
 	LOGD << "StateManager: state name '" << name << "' inserted.";
 
 	this->states.insert(std::make_pair(name, std::move(state)));
+	
+	return *this->states[name];
 }
 
 void StateManager::changeState(const std::string &name) {

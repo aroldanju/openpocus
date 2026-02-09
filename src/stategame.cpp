@@ -32,9 +32,15 @@
 #include "engine/data/asset/spriteset.h"
 #include "engine/data/asset/iteminfo.h"
 #include "engine/provider/provider.h"
+#include "engine/data/asset/levelmusic.h"
 #include "engine/data/asset/voc.h"
 #include "engine/projectile.h"
+#include "engine/musicplayer.h"
 #include <fstream>
+
+pocus::Game& StateGame::getGame() {
+	return this->game;
+}
 
 void StateGame::loadLevel(pocus::data::Data& data, pocus::data::Data& executable, uint8_t episode, uint8_t stage) {
 	episode--;
@@ -129,6 +135,15 @@ void StateGame::loadLevel(pocus::data::Data& data, pocus::data::Data& executable
 	map.setBackground(background.createTexture());
 	
 	map.create(MAP_WIDTH, MAP_HEIGHT);
+
+	// Music
+	pocus::data::DataFile& levelMusicInfoFile = executable.fetchFile(EXEFILE_MUSIC);
+	pocus::data::asset::LevelMusic levelMusicInfo;
+	levelMusicInfo.loadFromStream(levelMusicInfoFile.getContent(), levelMusicInfoFile.getLength());
+	pocus::data::DataFile& backgroundMusicFile = data.fetchFile(DATFILE_MUSIC_LEVEL_START + levelMusicInfo.getMusicId(episode, stage));
+	pocus::data::asset::Midi musicMidi;
+	musicMidi.loadFromStream(backgroundMusicFile.getContent(), backgroundMusicFile.getLength());
+	this->backgroundMusic = musicMidi.createAsSound();
 }
 
 void StateGame::createHud(pocus::data::Data& data) {
@@ -332,6 +347,8 @@ void StateGame::onAttach() {
 	LOGI << "StateGame: onAttach";
 	
 	this->game.start();
+
+	pocus::MusicPlayer::getInstance().play(std::move(this->backgroundMusic));
 }
 
 void StateGame::release() {

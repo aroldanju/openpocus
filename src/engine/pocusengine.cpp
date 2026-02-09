@@ -55,7 +55,7 @@ bool PocusEngine::initialize() {
 		LOGE << "Engine: error loading config.xml file.";
 		return false;
 	}
-	
+
 	if (!this->renderer || !this->renderer->initialize()) {
 		LOGE << "Engine: error initializing renderer.";
 		return false;
@@ -73,6 +73,11 @@ bool PocusEngine::initialize() {
 	
 	if (!loadExecutable()) {
 		LOGE << "Engine: error loading executable.";
+		return false;
+	}
+	
+	if (!loadRules()) {
+		LOGE << "Engine: error loading rules.xml file.";
 		return false;
 	}
 	
@@ -193,8 +198,16 @@ data::DataManager& PocusEngine::getDataManager() {
 	return this->dataManger;
 }
 
+Rules& PocusEngine::getRules() {
+	return this->rules;
+}
+
 bool PocusEngine::loadConfig() {
 	return this->config.load("../data/config.xml");
+}
+
+bool PocusEngine::loadRules() {
+	return this->rules.load("../data/rules.xml");
 }
 
 bool PocusEngine::loadData() {

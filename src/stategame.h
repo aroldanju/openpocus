@@ -34,6 +34,8 @@ public:
 	void handleEvents(pocus::EventHandler &eventHandler) override;
 	void render(pocus::Renderer &renderer) override;
 	void update(float dt) override;
+
+	pocus::Game& getGame();
 	
 private:
 	pocus::Game game;
@@ -46,6 +48,9 @@ private:
 	
 	std::unique_ptr<pocus::Texture> loadTexture(pocus::data::Data& data, uint32_t paletteFileIndex, uint32_t imageFileIndex);
 	std::unique_ptr<pocus::Texture> loadTexture(pocus::data::Data& data, const pocus::data::asset::Palette& palette, uint32_t imageFileIndex);
+
+	std::unique_ptr<pocus::Sound> backgroundMusic;
+
 };
 
 #endif //STATEGAME_H

@@ -37,8 +37,8 @@ OpenPocus::OpenPocus(const pocus::RendererParameters &rendererParameters):
 void OpenPocus::createStates(pocus::StateManager& stateManager) {
 	stateManager.addState(STATE_SPLASH_APOGEE, std::make_unique<ApogeeSplash>());
 	stateManager.addState(STATE_SPLASH_INTRO, std::make_unique<IntroSplash>());
-	stateManager.addState(STATE_GAME, std::make_unique<StateGame>());
 	stateManager.addState(STATE_MENU_MAIN, std::make_unique<MainMenu>());
+	reinterpret_cast<StateGame&>(stateManager.addState(STATE_GAME, std::make_unique<StateGame>())).getGame().setRules(getRules());
 	
 	//stateManager.setStartupState(STATE_SPLASH_APOGEE);
 	//stateManager.setStartupState(STATE_MENU_MAIN);

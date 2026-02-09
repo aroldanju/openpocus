@@ -26,6 +26,7 @@
 #include "data/asset/iteminfo.h"
 #include "fade.h"
 #include "particles.h"
+#include "rules.h"
 
 namespace pocus {
 
@@ -61,6 +62,8 @@ public:
 	void addScoreText(Texture& texture, const Point& point);
 	
 	void setTextColor(uint8_t color);
+
+	void setRules(const Rules& rules);
 	
 	void start();
 	void render(Renderer& renderer);
@@ -121,6 +124,8 @@ private:
 	void centerCamera(const Hocus& hocus, const Size& viewportSize);
 	bool isShowingHint() const;
 	void createProjectile(const Entity& source);
+
+	Rules rules;
 };
 
 }

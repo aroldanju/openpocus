@@ -39,6 +39,7 @@ set(data_sources
         src/engine/data/asset/levelbackground.cpp
         src/engine/data/asset/spriteset.cpp
         src/engine/data/asset/iteminfo.cpp
+        src/engine/data/asset/levelmusic.cpp
         )
 
 set(engine_sources
@@ -66,6 +67,7 @@ set(engine_sources
         src/engine/rect.cpp
         src/engine/hocus.cpp
         src/engine/projectile.cpp
+        src/engine/rules.cpp
         )
 
 set(sdl_sources

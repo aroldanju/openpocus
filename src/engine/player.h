@@ -19,6 +19,7 @@
 #define PLAYER_H
 
 #include <cstdint>
+#include "definitions.h"
 
 namespace pocus {
 
@@ -40,15 +41,20 @@ public:
 	void setGoldKey(bool goldKey);
 	[[nodiscard]] uint8_t getFirePower() const;
 	void setFirePower(uint8_t power);
+	[[nodiscard]] Difficulty_t getDifficulty() const;
+	void setDifficulty(Difficulty_t difficulty);
 
 private:
-	uint8_t crystals;
-	uint32_t score;
-	uint8_t health;
-	uint8_t level;
-	uint8_t episode;
-	bool silverKey, goldKey;
+	uint8_t crystals { 0 };
+	uint32_t score { 0 };
+	uint8_t health { 100 };
+	uint8_t level { 1 };
+	uint8_t episode { 1 };
+	bool silverKey { false };
+	bool goldKey { false };
 	uint8_t firePower { 1 };
+	Difficulty_t difficulty { Difficulty_t::NORMAL };
+	
 };
 
 }

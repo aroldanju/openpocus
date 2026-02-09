@@ -82,3 +82,11 @@ uint8_t Player::getFirePower() const {
 void Player::setFirePower(uint8_t power) {
 	Player::firePower = power;
 }
+
+pocus::Difficulty_t Player::getDifficulty() const {
+	return this->difficulty;
+}
+
+void Player::setDifficulty(pocus::Difficulty_t difficulty) {
+	Player::difficulty = difficulty;
+}

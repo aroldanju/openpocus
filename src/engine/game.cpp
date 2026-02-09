@@ -23,11 +23,15 @@ using namespace pocus;
 
 Game::Game()
 {
-	this->fadeCrystal.setSpeed(12.0f);
+	this->fadeCrystal.setSpeed(24.0f);
 	this->fadeCrystal.setColor(color::red);
 	this->fadeCrystal.setOnFinished([this]() -> void {
 		this->fadeCrystal.stop();
 	});
+}
+
+void Game::setRules(const Rules& rules) {
+	this->rules = rules;
 }
 
 Map& Game::getMap() {
@@ -617,7 +621,7 @@ void Game::checkItems() {
 			this->map.removeTile(0, position);
 			this->map.disableEvent(position);
 
-			addFirePower(1);
+			addFirePower(item.firePower);
 			
 			if (this->soundSpecialItem) {
 				this->soundSpecialItem->play();
@@ -637,8 +641,7 @@ void Game::checkHazards() {
 	
 	data::asset::EventLayer::Event_t event = this->map.getEvent(position);
 	if (event == data::asset::EventLayer::LAVA || event == data::asset::EventLayer::SPIKES) {
-		// TODO move to constant
-		hurt(4);
+		hurt(this->rules.getHazardDamage() * (this->player.getDifficulty() * this->rules.getDamageMultiplierPerDifficulty()));
 	}
 }
 
