@@ -24,7 +24,7 @@
 
 namespace pocus {
 
-#define LOG 	PLOG
+//#define LOG 	PLOG
 #define LOGI 	PLOG_INFO
 #define LOGD 	PLOG_DEBUG
 #define LOGE 	PLOG_ERROR

@@ -92,9 +92,11 @@ void Entity::setDirection(Entity::Direction_t direction) {
 
 Point Entity::getTilePosition() {
 	float width = 0.0f;
+	/*
 	if (this->direction == RIGHT) {
 		width = TILE_SIZE / 2;
 	}
+	*/
 	
 	return {
 		std::round((this->rect.getPosition().getX() + width) / TILE_SIZE),

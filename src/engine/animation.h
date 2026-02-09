@@ -40,6 +40,7 @@ public:
 	static Animation createFromTexture(Texture& texture, uint32_t columns, uint32_t rows);
 	static Animation createFromFrame(std::unique_ptr<Texture> frame);
 	static Animation createFromFrame(Texture& frame, const Color* colorKey = nullptr);
+	static Animation createFromAnimation(const Animation& animation, const Color* colorKey = nullptr);
 	void createFrom(const Animation& animation);
 	
 	[[nodiscard]] uint32_t getWidth() const;

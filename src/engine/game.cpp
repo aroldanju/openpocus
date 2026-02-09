@@ -62,6 +62,12 @@ std::map<uint32_t, std::unique_ptr<Texture>>& Game::getScoreTextures() {
 	return this->scoreTextures;
 }
 
+/*
+std::vector<std::unique_ptr<Texture>>& Game::getProjectileTextures() {
+	return this->projectileTextures;
+}
+*/
+
 std::vector<std::unique_ptr<Texture>>& Game::getHintTextures() {
 	return this->hintTextures;
 }
@@ -70,8 +76,8 @@ std::unique_ptr<Sound>& Game::getSoundHint() {
 	return this->soundHint;
 }
 
-std::unique_ptr<Sound>& Game::getSoundItem() {
-	return this->soundItem;
+std::vector<std::unique_ptr<Sound>>& Game::getSoundsItem() {
+	return this->soundsItem;
 }
 
 std::unique_ptr<Sound>& Game::getSoundCrystal() {
@@ -86,6 +92,14 @@ std::unique_ptr<Sound>& Game::getSoundHit() {
 	return this->soundHit;
 }
 
+std::unique_ptr<Sound>& Game::getSoundSpecialItem() {
+	return this->soundSpecialItem;
+}
+
+std::unique_ptr<Sound>& Game::getSoundShot() {
+	return this->soundShot;
+}
+
 void Game::start() {
 	this->hud.updateScore(this->player.getScore());
 	this->hud.updateCrystals(this->player.getCrystals(), this->map.getCrystals());
@@ -96,6 +110,11 @@ void Game::start() {
 	
 	this->tickStart = getNow();
 	this->map.start();
+	
+	centerCamera(this->hocus, Size(
+		this->viewportSize.getWidth(),
+		this->viewportSize.getHeight() - this->hud.getBackground().getHeight()
+	));
 }
 
 void Game::render(Renderer &renderer) {
@@ -106,6 +125,10 @@ void Game::render(Renderer &renderer) {
 	}
 	
 	this->hocus.render(renderer, this->offset);
+
+	for (Projectile& projectile : this->projectiles) {
+		projectile.render(renderer, this->offset);
+	}
 	
 	this->hud.render(renderer);
 	
@@ -160,8 +183,10 @@ void Game::update(float dt) {
 		this->fadeCrystal.update(dt);
 	}
 	
+	// Hocus
 	this->hocus.update();
-	
+	shoot();
+
 	for (auto& scoreText : this->scoreTexts) {
 		if (getElapsedTime(scoreText.getTickCreation()) < SCORE_TEXT_LIFETIME) {
 			scoreText.move(dt);
@@ -169,7 +194,9 @@ void Game::update(float dt) {
 	}
 	
 	move(dt);
-	
+
+	updateProjectiles(dt);
+
 	checkItems();
 	checkHazards();
 }
@@ -179,6 +206,67 @@ uint32_t Game::getElapsedTime() {
 	return ::getElapsedTime(this->tickStart) / 1000;
 }
 */
+
+void Game::shoot() {
+	if (this->hocus.isShooting()) {
+		// Not available projectiles
+		if (this->player.getFirePower() <= 0) {
+			return;
+		}
+
+		// Not available projectiles
+		if (this->projectiles.size() >= this->player.getFirePower()) {
+			return;
+		}
+
+		Projectile projectile = this->hocus.shoot();
+		this->projectiles.push_back(std::move(projectile));
+
+		if (this->soundShot) {
+			this->soundShot->play();
+		}
+	}
+}
+
+void Game::updateProjectiles(float dt) {
+	auto iterator = this->projectiles.begin();
+	while (iterator != this->projectiles.end()) {
+		Projectile& projectile = *iterator;
+
+		projectile.update();
+		projectile.move(dt);
+
+		Point tilePosition = projectile.getTilePosition();
+		tilePosition.setY(tilePosition.getY() - 1);
+
+		if (projectile.getDirection() == pocus::Entity::LEFT) {
+			Tile& tile = this->map.getLayer(1).getTile(tilePosition.getX() - 1, tilePosition.getY());
+			if (tile.isVisible()) {
+				iterator = this->projectiles.erase(iterator);
+				continue;
+			}
+
+			if (projectile.getRect().getPosition().getX() < this->hocus.getRect().getPosition().getX() - this->viewportSize.getWidth() / 2) {
+				iterator = this->projectiles.erase(iterator);
+				continue;
+			}
+		}
+		else if (projectile.getDirection() == pocus::Entity::RIGHT) {
+			Tile& tile = this->map.getLayer(1).getTile(tilePosition.getX() + 1, tilePosition.getY());
+			if (tile.isVisible()) {
+				iterator = this->projectiles.erase(iterator);
+				continue;
+			}
+
+			if (projectile.getRect().getPosition().getX() > this->hocus.getRect().getPosition().getX() + this->viewportSize.getWidth() / 2) {
+				iterator = this->projectiles.erase(iterator);
+				continue;
+			}
+		}
+
+		++iterator;
+	}
+}
 
 void Game::addScore(uint32_t score) {
 	this->player.setScore(this->player.getScore() + score);
@@ -240,6 +328,10 @@ void Game::addHealth(uint8_t health) {
 	}
 	
 	this->hud.updateHealth(this->player.getHealth());
+}
+
+void Game::addFirePower(uint8_t power) {
+	this->player.setFirePower(this->player.getFirePower() + power);
 }
 
 void Game::addSilverKey() {
@@ -492,9 +584,7 @@ void Game::checkItems() {
 			this->map.removeTile(0, position);
 			this->map.disableEvent(position);
 			addScore(item.score);
-			if (this->soundItem) {
-				this->soundItem->play();
-			}
+			this->soundsItem[rand() % this->soundsItem.size()]->play();
 		}
 		else if (event == asset::EventLayer::CRYSTAL) {
 			this->map.removeTile(0, position);
@@ -519,8 +609,18 @@ void Game::checkItems() {
 				case asset::EventLayer::GOLD_KEY: addGoldenKey(); break;
 				case asset::EventLayer::SILVER_KEY: addSilverKey(); break;
 			}
-			if (this->soundCrystal) {
-				this->soundCrystal->play();
+			if (this->soundSpecialItem) {
+				this->soundSpecialItem->play();
+			}
+		}
+		else if (event == asset::EventLayer::ZAPPER) {
+			this->map.removeTile(0, position);
+			this->map.disableEvent(position);
+
+			addFirePower(1);
+			
+			if (this->soundSpecialItem) {
+				this->soundSpecialItem->play();
 			}
 		}
 	};
@@ -544,4 +644,12 @@ void Game::checkHazards() {
 
 bool Game::isShowingHint() const {
 	return this->currentHint != -1;
+}
+
+void Game::startShooting() {
+	this->hocus.startShooting();
+}
+
+void Game::stopShooting() {
+	this->hocus.stopShooting();
 }

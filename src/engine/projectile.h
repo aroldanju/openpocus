@@ -25,10 +25,15 @@ namespace pocus {
 
 class Projectile : public Entity {
 public:
-	void setSprite(const data::asset::Sprite& sprite, Texture& sheet);
-	
-private:
+	Projectile(Entity* owner = nullptr);
 
+	void setSprite(const data::asset::Sprite& sprite, Texture& sheet);
+	Projectile clone(Entity* owner = nullptr);
+
+	Entity* getOwner();
+
+private:
+	Entity* owner;
 };
 
 }

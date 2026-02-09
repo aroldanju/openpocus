@@ -20,6 +20,12 @@
 
 using namespace pocus;
 
+Projectile::Projectile(Entity* owner):
+	owner(owner)
+{
+	setSpeed(4.0f);
+}
+
 void Projectile::setSprite(const data::asset::Sprite& sprite, Texture& sheet) {
 	
 	const Color colorKey = color::pink;
@@ -33,7 +39,7 @@ void Projectile::setSprite(const data::asset::Sprite& sprite, Texture& sheet) {
 			y = height;
 		}
 		
-		return sheet.extract(frame * width, y, width, height, &colorKey);
+		return sheet.extract(frame * width, y, width, height, nullptr);
 	};
 	
 	addState("right", Animation::createFromFrame(extract(sprite.header.projectileFrame, RIGHT)));
@@ -42,4 +48,23 @@ void Projectile::setSprite(const data::asset::Sprite& sprite, Texture& sheet) {
 	addState("up_left", Animation::createFromFrame(extract(sprite.header.projectileFrame + 1, LEFT)));
 	
 	setCurrentState("right");
+}
+
+Projectile Projectile::clone(Entity* owner) {
+	const Color colorKey = color::pink;
+
+	Projectile projectile(owner);
+	
+	projectile.addState("right", Animation::createFromAnimation(this->states.find("right")->second, &colorKey));
+	projectile.addState("left", Animation::createFromAnimation(this->states.find("left")->second, &colorKey));
+	projectile.addState("up_right", Animation::createFromAnimation(this->states.find("up_right")->second, &colorKey));
+	projectile.addState("up_left", Animation::createFromAnimation(this->states.find("up_left")->second, &colorKey));
+
+	projectile.setCurrentState("right");
+
+	return std::move(projectile);
+}
+
+Entity* Projectile::getOwner() {
+	return this->owner;
 }
